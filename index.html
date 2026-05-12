@@ -2,1320 +2,1023 @@
 <html lang="es">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Europa 2026 — Itinerario Familiar</title>
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Europa 2026</title>
 <style>
-:root {
-  --blue:#1565c0; --blue-l:#e3f2fd; --blue-m:#42a5f5;
-  --red:#c62828;  --red-l:#ffebee;
-  --green:#2e7d32;--green-l:#e8f5e9; --green-m:#66bb6a;
-  --orange:#e65100;--orange-l:#fff3e0;--amber:#f57c00;
-  --grey:#546e7a; --grey-l:#eceff1;
-  --text:#212121; --text-l:#546e7a;
-  --border:#cfd8dc; --shadow:0 2px 8px rgba(0,0,0,.10);
-  --r:12px;
+:root{
+  --a1:#1a3a6e;--a2:#1d4ed8;--al:#dbeafe;--at:#1d4ed8;
+  --b1:#7f1d1d;--b2:#dc2626;--bl:#fee2e2;--bt:#dc2626;
+  --c1:#14532d;--c2:#16a34a;--cl:#dcfce7;--ct:#15803d;
+  --or:#c2410c;--orl:#ffedd5;--am:#d97706;
+  --gy:#64748b;--gyl:#f1f5f9;--bdr:#e2e8f0;
+  --tx:#1e293b;--txl:#64748b;--bg:#f0f4f8;--cd:#fff;
+  --sh:0 1px 6px rgba(0,0,0,.08);--r:12px;
+  --nh:60px;--th:48px;
 }
-*{box-sizing:border-box;margin:0;padding:0}
-body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;background:#f5f7fa;color:var(--text);font-size:14px;line-height:1.55}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+html{height:100%}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:var(--bg);color:var(--tx);font-size:14px;line-height:1.5;padding-top:var(--th);padding-bottom:calc(var(--nh) + env(safe-area-inset-bottom,0px));min-height:100%}
 
-/* HERO */
-.hero{background:linear-gradient(135deg,#1a237e 0%,#0288d1 55%,#26c6da 100%);color:#fff;padding:44px 24px 36px;text-align:center}
-.hero h1{font-size:2.2em;font-weight:800;letter-spacing:-1px;margin-bottom:6px}
-.hero .sub{font-size:1em;opacity:.88;margin-bottom:22px}
-.stats{display:flex;justify-content:center;gap:20px;flex-wrap:wrap}
-.stat{background:rgba(255,255,255,.15);border-radius:10px;padding:10px 18px;text-align:center}
-.stat .v{font-size:1.4em;font-weight:700}
-.stat .l{font-size:.78em;opacity:.8}
+/* TOP BAR */
+.top-bar{position:fixed;top:0;left:0;right:0;z-index:200;height:var(--th);background:linear-gradient(135deg,var(--a1) 0%,var(--a2) 60%,#38bdf8 100%);display:flex;align-items:center;padding:0 16px;box-shadow:0 2px 8px rgba(0,0,0,.2)}
+.top-title{color:#fff;font-weight:700;font-size:.95em;flex:1}
+.top-date{color:rgba(255,255,255,.75);font-size:.72em;text-align:right}
 
-/* LAYOUT */
-.wrap{max-width:960px;margin:0 auto;padding:28px 14px}
+/* BOTTOM NAV */
+.bottom-nav{position:fixed;bottom:0;left:0;right:0;z-index:200;height:calc(var(--nh) + env(safe-area-inset-bottom,0px));background:#fff;border-top:1px solid var(--bdr);display:flex;align-items:stretch;padding-bottom:env(safe-area-inset-bottom,0px);box-shadow:0 -2px 10px rgba(0,0,0,.07)}
+.nav-tab{flex:1;border:none;background:none;cursor:pointer;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1px;padding:4px 2px;color:var(--txl);font-size:.58em;font-weight:600;transition:color .15s}
+.nav-tab .ti{font-size:1.55em;line-height:1;transition:transform .15s}
+.nav-tab.active{color:var(--a2)}
+.nav-tab.active .ti{transform:scale(1.12)}
 
-/* ALERTS */
-.alert{border-radius:var(--r);padding:14px 18px;margin-bottom:10px;border-left:5px solid}
-.alert.danger {background:var(--red-l);   border-color:var(--red)}
-.alert.warn   {background:var(--orange-l);border-color:var(--orange)}
-.alert.info   {background:var(--blue-l);  border-color:var(--blue)}
-.alert-title{font-weight:700;margin-bottom:6px}
-.alert ul{padding-left:18px}.alert li{margin-bottom:3px}
+/* SECTIONS */
+.tab-section{display:none;min-height:100%}
+.tab-section.active{display:block}
+.si{max-width:640px;margin:0 auto;padding:14px 12px 12px}
 
-/* CHART */
-.chart-wrap{background:#fff;border-radius:var(--r);box-shadow:var(--shadow);padding:20px;margin-bottom:28px}
-.chart-wrap h2{font-size:1em;color:var(--text-l);text-transform:uppercase;letter-spacing:.5px;margin-bottom:4px}
-.chart-sub{font-size:.82em;color:var(--text-l);margin-bottom:16px}
-canvas{width:100%!important}
+/* CARDS */
+.card{background:var(--cd);border-radius:var(--r);box-shadow:var(--sh);margin-bottom:10px;overflow:hidden}
+.card-hdr{display:flex;align-items:center;gap:7px;padding:10px 13px;cursor:pointer;user-select:none;border-bottom:1px solid transparent;flex-wrap:wrap}
+.card-hdr.expanded{border-bottom-color:var(--bdr)}
+.card-body{padding:11px 13px;display:none}
+.card-body.open{display:block}
+.dn{border-radius:6px;padding:2px 7px;font-size:.7em;font-weight:700;white-space:nowrap;flex-shrink:0}
+.dn-a{background:var(--al);color:var(--at)}
+.dn-b{background:var(--bl);color:var(--bt)}
+.dn-c{background:var(--cl);color:var(--ct)}
+.dn-x{background:var(--gyl);color:var(--gy)}
+.ct{font-weight:600;flex:1;font-size:.86em;line-height:1.3;min-width:0}
+.badge{font-size:.66em;font-weight:700;padding:2px 7px;border-radius:20px;white-space:nowrap;flex-shrink:0}
+.ok{background:var(--cl);color:var(--ct)}
+.pend{background:var(--orl);color:var(--or)}
+.mod{background:#e0e7ff;color:#4338ca}
+.kp{background:var(--gyl);color:var(--gy);font-size:.68em;font-weight:700;padding:2px 7px;border-radius:20px;white-space:nowrap;flex-shrink:0}
+.ea{font-size:.8em;color:var(--txl);flex-shrink:0;transition:transform .2s;margin-left:auto}
+.card-hdr.expanded .ea{transform:rotate(180deg)}
+.route{color:var(--txl);font-size:.8em;margin-bottom:9px}
+.hlg{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:8px}
+@media(max-width:360px){.hlg{grid-template-columns:1fr}}
+.hl h4{font-size:.68em;color:var(--txl);text-transform:uppercase;letter-spacing:.5px;margin-bottom:5px}
+.hl ul{padding-left:13px}
+.hl li{margin-bottom:3px;font-size:.84em}
+.cft{padding:7px 13px;background:var(--gyl);font-size:.78em;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:4px}
+.ni{color:var(--txl)}.ni strong{color:var(--tx)}
+.co{color:var(--c2);font-weight:700}
+.np{background:var(--orl);border:1px dashed var(--am);border-radius:7px;padding:7px 11px;font-size:.8em;color:var(--or);margin-top:7px}
+.na{background:var(--bl);border:1px solid #fca5a5;border-radius:7px;padding:7px 11px;font-size:.8em;color:var(--bt);margin-top:7px}
 
 /* BLOCK HEADERS */
-.block-hdr{display:flex;align-items:center;gap:10px;padding:14px 18px;border-radius:var(--r);margin:28px 0 14px;color:#fff;font-weight:700;font-size:1.05em}
-.ba{background:linear-gradient(90deg,#1565c0,#42a5f5)}
-.bb{background:linear-gradient(90deg,#c62828,#ef5350)}
-.bc{background:linear-gradient(90deg,#2e7d32,#66bb6a)}
-.block-dates{margin-left:auto;font-size:.82em;opacity:.88;font-weight:400}
+.bh{display:flex;align-items:center;gap:8px;padding:11px 13px;border-radius:var(--r);margin:14px 0 8px;color:#fff;font-weight:700;font-size:.9em}
+.ba{background:linear-gradient(90deg,var(--a1),var(--a2))}
+.bb{background:linear-gradient(90deg,var(--b1),var(--b2))}
+.bc{background:linear-gradient(90deg,var(--c1),var(--c2))}
+.bd{margin-left:auto;font-size:.72em;opacity:.85;font-weight:400}
 
-/* DAY CARDS */
-.card{background:#fff;border-radius:var(--r);box-shadow:var(--shadow);margin-bottom:14px;overflow:hidden}
-.card-hdr{display:flex;align-items:center;gap:10px;padding:12px 18px;border-bottom:1px solid var(--border);flex-wrap:wrap}
-.dn{border-radius:6px;padding:3px 8px;font-size:.78em;font-weight:600;white-space:nowrap}
-.dn-a{background:var(--blue-l);color:var(--blue)}
-.dn-b{background:var(--red-l); color:var(--red)}
-.dn-c{background:var(--green-l);color:var(--green)}
-.dn-x{background:var(--grey-l);color:var(--grey)}
-.card-title{font-weight:700;flex:1;font-size:.97em}
-.badge{font-size:.72em;font-weight:700;padding:3px 10px;border-radius:20px;white-space:nowrap}
-.ok {background:var(--green-l);color:var(--green)}
-.pend{background:var(--orange-l);color:var(--orange)}
-.mod {background:#e8eaf6;color:#3949ab}
-.can {background:var(--red-l);color:var(--red)}
+/* ALERTS */
+.alert{border-radius:var(--r);padding:11px 13px;margin-bottom:9px;border-left:4px solid}
+.alert.danger{background:var(--bl);border-color:var(--b2)}
+.alert.warn{background:var(--orl);border-color:var(--or)}
+.alert.info{background:var(--al);border-color:var(--a2)}
+.at{font-weight:700;margin-bottom:4px;font-size:.86em}
+.alert p,.alert ul{font-size:.8em}
+.alert ul{padding-left:15px}.alert li{margin-bottom:2px}
 
-.card-body{padding:14px 18px}
-.route{color:var(--text-l);font-size:.86em;margin-bottom:12px;display:flex;align-items:flex-start;gap:6px}
-.cols{display:grid;grid-template-columns:1fr 1fr;gap:14px}
-@media(max-width:580px){.cols{grid-template-columns:1fr}}
-.hl h4{font-size:.75em;color:var(--text-l);text-transform:uppercase;letter-spacing:.5px;margin-bottom:7px}
-.hl ul{padding-left:16px}.hl li{margin-bottom:4px;font-size:.91em}
-.km-pill{margin-left:auto;background:var(--grey-l);color:var(--grey);font-size:.78em;font-weight:700;padding:3px 10px;border-radius:20px;white-space:nowrap}
+/* DASHBOARD */
+.dh{background:linear-gradient(135deg,var(--a1) 0%,var(--a2) 60%,#38bdf8 100%);border-radius:var(--r);padding:20px;margin-bottom:13px;color:#fff;text-align:center}
+.dc{font-size:2.2em;font-weight:800;margin-bottom:3px}
+.ds{font-size:.86em;opacity:.82;margin-bottom:14px}
+.dn2{font-size:1.15em;font-weight:800;margin-bottom:2px}
+.dt{font-size:.9em;font-weight:600;opacity:.88;margin-bottom:10px}
+.dstats{display:flex;justify-content:center;gap:8px;flex-wrap:wrap;margin-top:10px}
+.dstat{background:rgba(255,255,255,.18);border-radius:9px;padding:7px 12px;text-align:center}
+.dstat .v{font-size:1em;font-weight:700}
+.dstat .l{font-size:.65em;opacity:.8}
+.dash-card{background:var(--cd);border-radius:var(--r);box-shadow:var(--sh);padding:13px;margin-bottom:10px}
+.dash-card h3{font-size:.7em;text-transform:uppercase;letter-spacing:.5px;color:var(--txl);margin-bottom:7px}
+.dash-list{list-style:none;padding:0}
+.dash-list li{padding:5px 0;border-bottom:1px solid var(--bdr);font-size:.86em}
+.dash-list li:last-child{border-bottom:none}
+.bp{display:inline-block;padding:3px 10px;border-radius:20px;font-size:.72em;font-weight:700;color:#fff}
+.bpa{background:linear-gradient(90deg,var(--a1),var(--a2))}
+.bpb{background:linear-gradient(90deg,var(--b1),var(--b2))}
+.bpc{background:linear-gradient(90deg,var(--c1),var(--c2))}
+.bpx{background:var(--gy)}
+.go-btn{display:block;width:100%;padding:9px;margin-top:9px;border:none;background:linear-gradient(90deg,var(--a1),var(--a2));color:#fff;font-size:.86em;font-weight:700;border-radius:8px;cursor:pointer}
 
-.card-ft{display:flex;justify-content:space-between;align-items:center;padding:9px 18px;background:var(--grey-l);font-size:.83em;flex-wrap:wrap;gap:6px}
-.night{color:var(--text-l)}.night strong{color:var(--text)}
-.cost{color:var(--green);font-weight:700}
+/* VIAJE HERO */
+.th{background:linear-gradient(135deg,var(--a1) 0%,var(--a2) 60%,#38bdf8 100%);border-radius:var(--r);padding:15px;margin-bottom:13px;color:#fff}
+.th h2{font-size:1em;font-weight:800;margin-bottom:3px}
+.th-s{font-size:.76em;opacity:.8;margin-bottom:10px}
+.sc{display:flex;gap:7px;flex-wrap:wrap}
+.sp{background:rgba(255,255,255,.18);border-radius:7px;padding:5px 9px;font-size:.74em;font-weight:600}
+.sp .sv{font-size:1.1em;display:block}
 
-.note-pend{background:var(--orange-l);border:1px dashed var(--amber);border-radius:8px;padding:10px 13px;font-size:.86em;color:var(--orange);margin-top:10px}
-.note-alert{background:var(--red-l);border:1px solid #ef9a9a;border-radius:8px;padding:9px 13px;font-size:.86em;color:var(--red);margin-top:8px}
+/* EQUIPAJE */
+.eqg{background:var(--cd);border-radius:var(--r);box-shadow:var(--sh);margin-bottom:11px;overflow:hidden}
+.eqgh{padding:11px 13px;color:#fff;font-weight:700;font-size:.86em;display:flex;align-items:flex-start;justify-content:space-between;gap:6px}
+.eqgh .sub{font-weight:400;font-size:.78em;opacity:.82;display:block;margin-top:1px}
+.eqgh .cnt{font-size:.75em;opacity:.88;font-weight:400;white-space:nowrap;padding-top:2px}
+.eqpb{height:3px;background:rgba(255,255,255,.25)}
+.eqpbb{height:100%;background:rgba(255,255,255,.8);transition:width .3s}
+.eqsh{padding:5px 13px 3px;font-size:.66em;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:var(--txl);background:#f8fafc;border-bottom:1px solid var(--bdr)}
+.eqi{display:flex;align-items:flex-start;gap:9px;padding:8px 13px;border-bottom:1px solid var(--bdr)}
+.eqi:last-child{border-bottom:none}
+.eqi input[type=checkbox]{width:17px;height:17px;flex-shrink:0;cursor:pointer;margin-top:2px;accent-color:var(--a2)}
+.eqi label{flex:1;cursor:pointer;font-size:.86em}
+.eqi.chk label{text-decoration:line-through;color:var(--txl)}
+.en{font-size:.73em;color:var(--txl);display:block;margin-top:1px}
+.reset-btn{display:block;width:calc(100% - 24px);margin:12px auto;padding:9px;border:1.5px solid var(--bdr);background:none;border-radius:var(--r);color:var(--txl);font-size:.82em;font-weight:600;cursor:pointer;transition:all .15s}
+.reset-btn:active{border-color:#ef4444;color:#ef4444}
 
-/* PACKING */
-.section-title{font-size:1.15em;font-weight:700;margin:28px 0 14px;color:var(--text);border-bottom:2px solid var(--border);padding-bottom:7px}
-.bags{display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;margin-bottom:28px}
-@media(max-width:680px){.bags{grid-template-columns:1fr}}
-.bag{background:#fff;border-radius:var(--r);box-shadow:var(--shadow);overflow:hidden}
-.bag-hdr{padding:12px 16px;font-weight:700;font-size:.92em;color:#fff}
-.bag-hdr.ca{background:linear-gradient(90deg,#1565c0,#1976d2)}
-.bag-hdr.cb{background:linear-gradient(90deg,#6a1b9a,#8e24aa)}
-.bag-hdr.cc{background:linear-gradient(90deg,#2e7d32,#388e3c)}
-.bag-hdr span{font-weight:400;font-size:.82em;opacity:.88;display:block;margin-top:2px}
-.bag-body{padding:12px 16px}
-.pack-cat{margin-bottom:12px}
-.pack-cat h5{font-size:.76em;text-transform:uppercase;letter-spacing:.5px;color:var(--text-l);margin-bottom:6px}
-.pack-item{display:flex;align-items:flex-start;gap:8px;padding:4px 0;border-bottom:1px solid var(--border);font-size:.88em}
-.pack-item:last-child{border-bottom:none}
-.pi-icon{flex-shrink:0;width:18px;text-align:center}
-.pi-note{color:var(--text-l);font-size:.82em}
+/* LOGÍSTICA */
+.lgg{background:var(--cd);border-radius:var(--r);box-shadow:var(--sh);margin-bottom:11px;overflow:hidden}
+.lggh{padding:11px 13px;font-weight:700;font-size:.86em;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--bdr)}
+.lpb{background:var(--orl);color:var(--or);font-size:.7em;padding:2px 7px;border-radius:20px;font-weight:700}
+.lgi{display:flex;align-items:flex-start;gap:9px;padding:8px 13px;border-bottom:1px solid var(--bdr)}
+.lgi:last-child{border-bottom:none}
+.lgi input[type=checkbox]{width:17px;height:17px;flex-shrink:0;cursor:pointer;margin-top:2px;accent-color:var(--c2)}
+.lgi label{flex:1;cursor:pointer;font-size:.86em}
+.lgi.chk label{text-decoration:line-through;color:var(--txl)}
+.ln{font-size:.73em;color:var(--txl);display:block;margin-top:1px}
+.lw{font-size:.78em;font-weight:700;background:var(--orl);color:var(--or);border-radius:4px;padding:1px 5px;white-space:nowrap;flex-shrink:0}
 
-/* BUDGET */
-table{width:100%;border-collapse:collapse;background:#fff;border-radius:var(--r);overflow:hidden;box-shadow:var(--shadow);margin-bottom:28px}
-th{background:var(--grey-l);padding:9px 13px;text-align:left;font-size:.82em;color:var(--text-l)}
-td{padding:9px 13px;border-top:1px solid var(--border);font-size:.88em}
-tr.total td{font-weight:700;background:var(--green-l)}
+/* MATEO */
+.mh{background:linear-gradient(135deg,#7c3aed,#a855f7,#ec4899);border-radius:var(--r);padding:16px;margin-bottom:13px;color:#fff;text-align:center}
+.mh h2{font-size:1.1em;font-weight:800;margin-bottom:3px}
+.mh p{font-size:.8em;opacity:.85}
+.mc{background:var(--cd);border-radius:var(--r);box-shadow:var(--sh);margin-bottom:11px;overflow:hidden}
+.mch{padding:11px 13px;font-weight:700;font-size:.88em;border-bottom:1px solid var(--bdr);display:flex;align-items:center;gap:7px}
+.mcb{padding:11px 13px}
+.mi{padding:6px 0;border-bottom:1px solid var(--bdr);font-size:.86em}
+.mi:last-child{border-bottom:none}
+.mtag{display:inline-block;padding:2px 7px;border-radius:20px;font-size:.7em;font-weight:700;margin-bottom:3px}
+.tp{background:#f3e8ff;color:#7c3aed}
+.tpk{background:#fce7f3;color:#be185d}
+.tb{background:var(--al);color:var(--at)}
+.tg{background:var(--cl);color:var(--ct)}
+.to{background:var(--orl);color:var(--or)}
+.mtip{background:#f3e8ff;border-left:3px solid #7c3aed;border-radius:6px;padding:7px 11px;font-size:.8em;color:#5b21b6;margin-top:7px}
 
-/* CHECKLIST */
-.checklist{background:#fff;border-radius:var(--r);box-shadow:var(--shadow);padding:18px}
-.cl-section{margin-bottom:18px}
-.cl-section h3{font-size:.8em;color:var(--text-l);text-transform:uppercase;letter-spacing:.5px;margin-bottom:9px}
-.cl-item{display:flex;align-items:flex-start;gap:9px;padding:7px 0;border-bottom:1px solid var(--border);font-size:.9em}
-.cl-item:last-child{border-bottom:none}
-.cl-icon{font-size:1.1em;flex-shrink:0;width:22px}
-.cl-note{color:var(--text-l);font-size:.83em;margin-top:2px}
-
-.footer{text-align:center;color:var(--text-l);font-size:.8em;padding:28px 14px}
+/* NOTAS */
+.nf{background:var(--cd);border-radius:var(--r);box-shadow:var(--sh);padding:13px;margin-bottom:13px}
+.nf textarea{width:100%;border:1.5px solid var(--bdr);border-radius:8px;padding:9px 11px;font-size:.9em;font-family:inherit;line-height:1.5;resize:vertical;min-height:90px;color:var(--tx);background:#f8fafc;outline:none;transition:border-color .15s}
+.nf textarea:focus{border-color:var(--a2);background:#fff}
+.sv-btn{display:block;width:100%;margin-top:8px;padding:9px;border:none;background:linear-gradient(90deg,var(--a1),var(--a2));color:#fff;font-size:.88em;font-weight:700;border-radius:8px;cursor:pointer}
+.ni-list{display:flex;flex-direction:column;gap:9px}
+.ni-item{background:var(--cd);border-radius:var(--r);box-shadow:var(--sh);overflow:hidden}
+.ni-meta{display:flex;align-items:center;justify-content:space-between;padding:7px 11px 5px;border-bottom:1px solid var(--bdr)}
+.ni-date{font-size:.7em;color:var(--txl)}
+.ni-del{background:none;border:none;color:#ef4444;font-size:.73em;cursor:pointer;padding:2px 5px;border-radius:4px}
+.ni-txt{padding:9px 11px;font-size:.86em;white-space:pre-wrap;line-height:1.55}
+.n-empty{text-align:center;color:var(--txl);font-size:.86em;padding:24px 14px}
+.n-foot{text-align:center;font-size:.7em;color:var(--txl);padding:12px 14px 4px}
+.day-cur{box-shadow:0 0 0 2px var(--a2),var(--sh)}
 </style>
 </head>
 <body>
 
-<div class="hero">
-  <h1>🌍 Europa 2026</h1>
-  <div class="sub">Itinerario Familiar · Suiza · Italia · Austria</div>
-  <div class="stats">
-    <div class="stat"><div class="v">18 may → 8 jun</div><div class="l">Fechas</div></div>
-    <div class="stat"><div class="v">22 noches</div><div class="l">Duración</div></div>
-    <div class="stat"><div class="v">~2.155 km</div><div class="l">Total en ruta</div></div>
-    <div class="stat"><div class="v">Mariana · Mery · Mateo</div><div class="l">Familia (hijo ~4 años)</div></div>
+<header class="top-bar">
+  <span class="top-title">🌍 Europa 2026</span>
+  <span class="top-date" id="topDate"></span>
+</header>
+
+<nav class="bottom-nav">
+  <button class="nav-tab active" onclick="showTab('hoy',this)"><span class="ti">🗓</span>Hoy</button>
+  <button class="nav-tab" onclick="showTab('viaje',this)"><span class="ti">📍</span>Viaje</button>
+  <button class="nav-tab" onclick="showTab('equipaje',this)"><span class="ti">🧳</span>Equipaje</button>
+  <button class="nav-tab" onclick="showTab('logistica',this)"><span class="ti">✅</span>Logística</button>
+  <button class="nav-tab" onclick="showTab('mateo',this)"><span class="ti">🎮</span>Mateo</button>
+  <button class="nav-tab" onclick="showTab('notas',this)"><span class="ti">📝</span>Notas</button>
+</nav>
+
+<main>
+
+<!-- ═══════════════ HOY ═══════════════ -->
+<section id="tab-hoy" class="tab-section active">
+  <div class="si" id="dash-content"></div>
+</section>
+
+<!-- ═══════════════ VIAJE ═══════════════ -->
+<section id="tab-viaje" class="tab-section">
+<div class="si">
+
+<div class="th">
+  <h2>🌍 Europa 2026 — Itinerario Familiar</h2>
+  <div class="th-s">Mariana · Mery · Mateo (4 años) · Suiza · Italia · Austria</div>
+  <div class="sc">
+    <div class="sp"><span class="sv">18 may → 8 jun</span>Fechas</div>
+    <div class="sp"><span class="sv">22 noches</span>Duración</div>
+    <div class="sp"><span class="sv">~2.155 km</span>En ruta</div>
+    <div class="sp"><span class="sv">3 bloques</span>Alpes · Como · Camper</div>
   </div>
 </div>
 
-<div class="wrap">
+<div class="alert danger"><div class="at">❌ Selva Negra CANCELADA</div><p>Triberg y Titisee eliminados. Reemplazado con 1 noche extra en Frutigen + Schaffhausen.</p></div>
+<div class="alert warn"><div class="at">⚠️ Decisiones pendientes</div><ul><li><strong>23/5:</strong> Noche extra Frutigen reservada — ¿qué actividad?</li><li><strong>24/5:</strong> Schaffhausen reservado — ¿Berna de camino?</li><li><strong>Campings Bloque C:</strong> temporada alta — reservar pronto</li></ul></div>
+<div class="alert info"><div class="at">💡 Propuesta para días liberados</div><ul><li><strong>23/5:</strong> Grindelwald + vista Eiger, o Niesen teleférico, o descanso</li><li><strong>24/5:</strong> Frutigen → Berna (osos, Zytglogge) → Schaffhausen</li></ul></div>
 
-<!-- ALERTAS -->
-<div style="margin:20px 0 24px">
-  <div class="alert danger">
-    <div class="alert-title">❌ Selva Negra CANCELADA — días 23 y 24 de mayo liberados</div>
-    <p>Triberg y Titisee se eliminan del itinerario. Se reemplaza con 1 noche extra en Frutigen + Schaffhausen.</p>
-  </div>
-  <div class="alert warn">
-    <div class="alert-title">⚠️ Decisiones pendientes</div>
-    <ul>
-      <li><strong>23/5:</strong> Noche extra en Frutigen ya reservada. ¿Qué actividad? (opciones abajo)</li>
-      <li><strong>24/5:</strong> Schaffhausen reservado. ¿Se hace Berna de camino?</li>
-      <li><strong>25/5:</strong> Cataratas del Rin en Schaffhausen → integrar de mañana antes de salir a Stein am Rhein</li>
-      <li><strong>Campings Bloque C:</strong> temporada alta — reservar con anticipación</li>
-    </ul>
-  </div>
-  <div class="alert info">
-    <div class="alert-title">💡 Propuesta para los días liberados</div>
-    <ul>
-      <li><strong>23/5:</strong> Excursión a Grindelwald (45 min) + vista al Eiger, o Niesen en teleférico, o día de descanso</li>
-      <li><strong>24/5:</strong> Frutigen → Berna (2h visita: osos, Zytglogge, Rose Garden) → Schaffhausen (noche)</li>
-      <li><strong>25/5:</strong> Cataratas del Rin de mañana → Stein am Rhein → Root/Lucerna (igual que el Día 7 original)</li>
-    </ul>
-  </div>
+<div class="bh ba">🏔 BLOQUE A — Alpes Suizos <span class="bd">19/5 → 26/5 · 8 días</span></div>
+
+<div class="card" id="day-0">
+<div class="card-hdr" onclick="toggleCard(this)"><span class="dn dn-x">Lun 18/5</span><span class="ct">Vuelo de salida ✈️</span><span class="badge ok">✓</span><span class="kp">0 km</span><span class="ea">▾</span></div>
+<div class="card-body"><div class="route">✈️ Salida hacia Milán Malpensa (MXP) · Llegada 19/5 a las 10:15</div><div class="cft"><span class="ni">🌙 En vuelo</span></div></div>
 </div>
 
-<!-- CHART KM -->
-<div class="chart-wrap">
-  <h2>📍 Kilómetros por día</h2>
-  <div class="chart-sub">Total estimado en ruta: ~2.155 km · Promedio días con conducción: ~103 km/día</div>
-  <canvas id="kmChart" height="280"></canvas>
+<div class="card" id="day-1">
+<div class="card-hdr" onclick="toggleCard(this)"><span class="dn dn-a">Día 1 · Mar 19/5</span><span class="ct">Llegada MXP → Alpes del Valais (Ausserberg)</span><span class="badge ok">✓</span><span class="kp">165 km</span><span class="ea">▾</span></div>
+<div class="card-body">
+<div class="route">🛣️ MXP → Castelletto Ticino → Vogogna → Simplon Pass → Brig-Glis → Ausserberg</div>
+<div class="hlg">
+<div class="hl"><h4>Highlights</h4><ul><li>🛒 Decathlon Castelletto Ticino</li><li>🏰 Vogogna — castillo medieval + almuerzo</li><li>🏔 Simplon Pass (2.005m) — nieve para Mateo</li><li>📸 Ganterbrücke — puente curvo (drone)</li><li>🛒 Aldi/Lidl en Brig-Glis</li></ul></div>
+<div class="hl"><h4>Notas</h4><ul><li>Subir lado derecho del tren en Simplon</li><li>Zona drone Simplon Pass: libre</li><li>Gelato en Vogogna antes de cruzar</li></ul></div>
+</div>
+<div class="cft"><span class="ni">🌙 <strong>Ausserberg</strong> — Airbnb</span><span class="co">USD 159</span></div>
+</div>
 </div>
 
-<!-- BLOQUE A -->
-<div class="block-hdr ba">🏔 BLOQUE A — Alpes Suizos <span class="block-dates">19/5 → 26/5 · 8 días</span></div>
-
-<!-- Día 0 -->
-<div class="card">
-  <div class="card-hdr">
-    <span class="dn dn-x">Lun 18/5</span>
-    <span class="card-title">Vuelo de salida</span>
-    <span class="badge ok">Confirmado</span>
-    <span class="km-pill">0 km</span>
-  </div>
-  <div class="card-body">
-    <div class="route">✈️ Salida hacia Milán Malpensa (MXP) · Llegada 19/5 a las 10:15</div>
-  </div>
-  <div class="card-ft"><span class="night">🌙 En vuelo</span></div>
+<div class="card" id="day-2">
+<div class="card-hdr" onclick="toggleCard(this)"><span class="dn dn-a">Día 2 · Mié 20/5</span><span class="ct">Zermatt & Gornergrat → Frutigen</span><span class="badge ok">✓</span><span class="kp">110 km</span><span class="ea">▾</span></div>
+<div class="card-body">
+<div class="route">🛣️ Ausserberg → Täsch (parking) → Zermatt (tren) → Visp → Kandersteg (autoverlad) → Frutigen</div>
+<div class="hlg">
+<div class="hl"><h4>Highlights</h4><ul><li>🅿️ Parking Täsch (Matterhorn Terminal)</li><li>🛝 Aire de jeux Obere Matten — parque vista Matterhorn</li><li>🚂 Gornergrat Bahn (3.089m) — subir por la derecha</li><li>❄️ Riffelsee — reflejo del Matterhorn</li><li>🐑 Ovejas Schwarznasenschaf / establo Julen</li><li>🚂 Autoverlad Lötschberg — coche en tren (15min)</li></ul></div>
+<div class="hl"><h4>Notas</h4><ul><li>Drone: restricciones en Zermatt — volar desde Täsch</li><li>Almuerzo: picnic en montaña o Restaurant Julen</li><li>🛒 Coop de Visp: compras para el Airbnb</li></ul></div>
+</div>
+<div class="cft"><span class="ni">🌙 <strong>Frutigen</strong> — Airbnb (1/5)</span><span class="co">USD 475 base</span></div>
+</div>
 </div>
 
-<!-- Día 1 -->
-<div class="card">
-  <div class="card-hdr">
-    <span class="dn dn-a">Día 1 · Mar 19/5</span>
-    <span class="card-title">Llegada MXP → Alpes del Valais (Ausserberg)</span>
-    <span class="badge ok">Confirmado</span>
-    <span class="km-pill">165 km</span>
-  </div>
-  <div class="card-body">
-    <div class="route">🛣️ MXP → Castelletto Ticino → Vogogna → Simplon Pass → Brig-Glis → Ausserberg</div>
-    <div class="cols">
-      <div class="hl"><h4>Highlights</h4><ul>
-        <li>🛒 Decathlon Castelletto Ticino</li>
-        <li>🏰 Vogogna — castillo medieval + almuerzo Ristorante Del Vecchio Borgo</li>
-        <li>🏔 Simplon Pass (2.005 m) — nieve para Mateo</li>
-        <li>📸 Ganterbrücke — puente curvo (drone)</li>
-        <li>🛒 Aldi/Lidl en Brig-Glis</li>
-      </ul></div>
-      <div class="hl"><h4>Notas</h4><ul>
-        <li>Subir el lado derecho del tren en Simplon para mejores vistas</li>
-        <li>Zona drone en Simplon Pass: libre</li>
-        <li>Gelato en Vogogna antes de cruzar</li>
-      </ul></div>
-    </div>
-  </div>
-  <div class="card-ft">
-    <span class="night">🌙 <strong>Ausserberg</strong> — Airbnb</span>
-    <span class="cost">USD 159</span>
-  </div>
+<div class="card" id="day-3">
+<div class="card-hdr" onclick="toggleCard(this)"><span class="dn dn-a">Día 3 · Jue 21/5</span><span class="ct">Lagos de Cristal & Castillos del Oberland</span><span class="badge ok">✓</span><span class="kp">85 km</span><span class="ea">▾</span></div>
+<div class="card-body">
+<div class="route">🛣️ Frutigen → Blausee → Kandersteg → Thun → Castillo Oberhofen → Frutigen</div>
+<div class="hlg">
+<div class="hl"><h4>Highlights</h4><ul><li>🌲 Blausee 9:00 — lago turquesa + bote cristal + parque infantil</li><li>🚠 Lago Oeschinen en teleférico desde Kandersteg</li><li>🎢 Rodelbahn — tobogán de montaña (Mateo gratis con adulto)</li><li>🏰 Thun — casco antiguo y puentes cubiertos</li><li>📸 Castillo Oberhofen — jardines frente al lago</li></ul></div>
+<div class="hl"><h4>Costos</h4><ul><li>Blausee: 12 CHF</li><li>Teleférico Oeschinen: 32 CHF</li><li>Rodelbahn: 6 CHF (Mateo gratis)</li><li>Parking: ~15 CHF</li></ul></div>
+</div>
+<div class="cft"><span class="ni">🌙 <strong>Frutigen</strong> — Airbnb (2/5)</span></div>
+</div>
 </div>
 
-<!-- Día 2 -->
-<div class="card">
-  <div class="card-hdr">
-    <span class="dn dn-a">Día 2 · Mié 20/5</span>
-    <span class="card-title">Zermatt & Gornergrat → Frutigen</span>
-    <span class="badge ok">Confirmado</span>
-    <span class="km-pill">110 km</span>
-  </div>
-  <div class="card-body">
-    <div class="route">🛣️ Ausserberg → Täsch (parking) → Zermatt (tren) → Visp → Kandersteg (autoverlad) → Frutigen</div>
-    <div class="cols">
-      <div class="hl"><h4>Highlights</h4><ul>
-        <li>🅿️ Parking Täsch (Matterhorn Terminal)</li>
-        <li>🛝 Aire de jeux Obere Matten — parque con vista al Matterhorn</li>
-        <li>🚂 Gornergrat Bahn (3.089 m) — subir por la derecha</li>
-        <li>❄️ Riffelsee — reflejo del Matterhorn</li>
-        <li>🐑 Ovejas Schwarznasenschaf o establo familia Julen</li>
-        <li>🚂 Autoverlad Lötschberg — coche en tren (15 min)</li>
-      </ul></div>
-      <div class="hl"><h4>Notas</h4><ul>
-        <li>Drone: restricciones fuertes en Zermatt. Volar saliendo de Täsch</li>
-        <li>Almuerzo: picnic en montaña o Restaurant Julen</li>
-        <li>🛒 Coop de Visp: compras para el Airbnb</li>
-      </ul></div>
-    </div>
-  </div>
-  <div class="card-ft">
-    <span class="night">🌙 <strong>Frutigen</strong> — Airbnb (noche 1/5)</span>
-    <span class="cost">USD 475 base (3 noches orig.)</span>
-  </div>
+<div class="card" id="day-4">
+<div class="card-hdr" onclick="toggleCard(this)"><span class="dn dn-a">Día 4 · Vie 22/5</span><span class="ct">Lauterbrunnen: Cascadas, Mürren e Iseltwald</span><span class="badge ok">✓</span><span class="kp">95 km</span><span class="ea">▾</span></div>
+<div class="card-body">
+<div class="route">🛣️ Frutigen → Lauterbrunnen → Mürren → Iseltwald → Brienz → Interlaken → Frutigen</div>
+<div class="hlg">
+<div class="hl"><h4>Highlights</h4><ul><li>🌄 Lauterbrunnen — foto en el banco de la iglesia</li><li>💦 Staubbachfall — gratuita, 10-15 min caminata</li><li>🚡 Mürren — almuerzo con vistas al Eiger</li><li>🛝 Allmendhubel Flower Park (Mateo)</li><li>🌊 Iseltwald — muelle famoso (5 CHF)</li><li>🏘 Brienz — Brunngasse, la calle más bonita de Europa</li></ul></div>
+<div class="hl"><h4>Notas</h4><ul><li>Allmendhubel: ~38 CHF; muelle Iseltwald: 5 CHF</li><li>Drone: Iseltwald (toma aérea muelle y lago Brienz)</li><li>Primer día apertura Allmendhubel en temporada</li></ul></div>
+</div>
+<div class="na">⚠️ Trümmelbachfälle: No permite niños &lt;4 años. Reemplazado por Staubbachfall.</div>
+<div class="cft"><span class="ni">🌙 <strong>Frutigen</strong> — Airbnb (3/5)</span></div>
+</div>
 </div>
 
-<!-- Día 3 -->
-<div class="card">
-  <div class="card-hdr">
-    <span class="dn dn-a">Día 3 · Jue 21/5</span>
-    <span class="card-title">Lagos de Cristal & Castillos del Oberland</span>
-    <span class="badge ok">Confirmado</span>
-    <span class="km-pill">85 km</span>
-  </div>
-  <div class="card-body">
-    <div class="route">🛣️ Frutigen → Blausee → Kandersteg → Thun → Castillo Oberhofen → Frutigen</div>
-    <div class="cols">
-      <div class="hl"><h4>Highlights</h4><ul>
-        <li>🌲 Blausee 9:00 — lago turquesa + bote fondo cristal + parque infantil</li>
-        <li>🚠 Lago Oeschinen en teleférico desde Kandersteg</li>
-        <li>🎢 Rodelbahn — tobogán de montaña (Mateo gratis con adulto)</li>
-        <li>🏰 Thun — casco antiguo y puentes cubiertos</li>
-        <li>📸 Castillo Oberhofen — jardines frente al lago (gratis exteriores)</li>
-      </ul></div>
-      <div class="hl"><h4>Costos aprox.</h4><ul>
-        <li>Blausee: 12 CHF</li>
-        <li>Teleférico Oeschinensee: 32 CHF</li>
-        <li>Rodelbahn: 6 CHF (Mateo gratis)</li>
-        <li>Parking: ~15 CHF</li>
-      </ul></div>
-    </div>
-  </div>
-  <div class="card-ft"><span class="night">🌙 <strong>Frutigen</strong> — Airbnb (noche 2/5)</span></div>
+<div class="card" id="day-5">
+<div class="card-hdr" onclick="toggleCard(this)"><span class="dn dn-a">Día 5 · Sáb 23/5</span><span class="ct">Día extra en Frutigen — a definir</span><span class="badge pend">Pendiente</span><span class="kp">~40 km</span><span class="ea">▾</span></div>
+<div class="card-body">
+<div class="route">🛣️ Base Frutigen — excursión de día (ruta a definir)</div>
+<div class="hlg">
+<div class="hl"><h4>Opción A — Grindelwald</h4><ul><li>🏔 Al pie del Eiger (~45 min)</li><li>🚠 First Cliff Walk o Bachalpsee</li><li>🛝 Parque infantil con vistas</li></ul></div>
+<div class="hl"><h4>Opción B — Niesen o descanso</h4><ul><li>🏔 Niesen en teleférico ("pirámide de los Alpes")</li><li>🛀 Día de descanso total / caminata corta</li><li>También puede hacerse Berna hoy</li></ul></div>
+</div>
+<div class="np">🔶 Noche en Frutigen ya reservada. Confirmar actividad.</div>
+<div class="cft"><span class="ni">🌙 <strong>Frutigen</strong> — Airbnb (4/5)</span></div>
+</div>
 </div>
 
-<!-- Día 4 -->
-<div class="card">
-  <div class="card-hdr">
-    <span class="dn dn-a">Día 4 · Vie 22/5</span>
-    <span class="card-title">Lauterbrunnen: Cascadas, Mürren e Iseltwald</span>
-    <span class="badge ok">Confirmado</span>
-    <span class="km-pill">95 km</span>
-  </div>
-  <div class="card-body">
-    <div class="route">🛣️ Frutigen → Lauterbrunnen → Mürren → Iseltwald → Brienz → Interlaken → Frutigen</div>
-    <div class="cols">
-      <div class="hl"><h4>Highlights</h4><ul>
-        <li>🌄 Lauterbrunnen — foto en el banco de la iglesia</li>
-        <li>💦 Staubbachfall — gratuita, 10-15 min caminata</li>
-        <li>🚡 Mürren — almuerzo con vistas al Eiger</li>
-        <li>🛝 Allmendhubel Flower Park — parque alpino (Mateo)</li>
-        <li>🌊 Iseltwald — muelle famoso (Crash Landing on You)</li>
-        <li>🏘 Brienz — Brunngasse, la calle más bonita de Europa</li>
-        <li>♟️ Interlaken — ajedrez gigante + parapentes</li>
-      </ul></div>
-      <div class="hl"><h4>Notas</h4><ul>
-        <li>Allmendhubel: ~38 CHF; muelle Iseltwald: 5 CHF</li>
-        <li>Drone: Iseltwald (toma aérea del muelle y lago Brienz)</li>
-        <li>Primer día de apertura Allmendhubel en la temporada</li>
-      </ul></div>
-    </div>
-    <div class="note-alert">⚠️ <strong>Trümmelbachfälle:</strong> No permiten niños menores de 4 años. Reemplazado por Staubbachfall (gratuita, sin restricción).</div>
-  </div>
-  <div class="card-ft"><span class="night">🌙 <strong>Frutigen</strong> — Airbnb (noche 3/5 — última original)</span></div>
+<div class="card" id="day-6">
+<div class="card-hdr" onclick="toggleCard(this)"><span class="dn dn-a">Día 6 · Dom 24/5</span><span class="ct">Berna → Schaffhausen</span><span class="badge pend">Pendiente</span><span class="kp">190 km</span><span class="ea">▾</span></div>
+<div class="card-body">
+<div class="route">🛣️ Frutigen → Berna (mañana) → Schaffhausen (tarde) · ~2.5h conducción</div>
+<div class="hlg">
+<div class="hl"><h4>Berna</h4><ul><li>🐻 Bärengraben — osos en el parque (Mateo)</li><li>🕰 Torre Zytglogge — figuras animadas</li><li>⛲ Fuentes históricas de las arcadas</li><li>🌳 Rosengarten — picnic panorámico</li></ul></div>
+<div class="hl"><h4>Schaffhausen</h4><ul><li>Ciudad medieval a orillas del Rin</li><li>Casco histórico con pinturas en fachadas</li><li>Cataratas del Rin a 3 km del centro</li></ul></div>
+</div>
+<div class="np">🔶 Schaffhausen ya reservado. ¿Se incluye Berna de camino?</div>
+<div class="cft"><span class="ni">🌙 <strong>Schaffhausen</strong> — Hotel reservado</span></div>
+</div>
 </div>
 
-<!-- Día 5 — EXTRA FRUTIGEN -->
-<div class="card">
-  <div class="card-hdr">
-    <span class="dn dn-a">Día 5 · Sáb 23/5</span>
-    <span class="card-title">Día extra en Frutigen — actividad a definir</span>
-    <span class="badge pend">Pendiente</span>
-    <span class="km-pill">~40 km</span>
-  </div>
-  <div class="card-body">
-    <div class="route">🛣️ Base Frutigen — excursión de día (ruta a definir)</div>
-    <div class="cols">
-      <div class="hl"><h4>Opción A — Grindelwald</h4><ul>
-        <li>🏔 Pueblo al pie del Eiger (~45 min desde Frutigen)</li>
-        <li>🚠 First Cliff Walk o teleférico a Bachalpsee</li>
-        <li>🛝 Parque infantil del pueblo con vistas</li>
-        <li>🍰 Cake en una Bäckerei local</li>
-      </ul></div>
-      <div class="hl"><h4>Opción B — Niesen o descanso</h4><ul>
-        <li>🏔 Niesen en teleférico ("pirámide de los Alpes") — vista 360°</li>
-        <li>🛀 <strong>O bien:</strong> día de descanso total en el Airbnb, caminata corta, juego libre para Mateo</li>
-        <li>También se puede hacer Berna hoy (45 min) y el 24/5 ir directo a Schaffhausen</li>
-      </ul></div>
-    </div>
-    <div class="note-pend">🔶 Noche en Frutigen ya reservada (extensión). Confirmar actividad.</div>
-  </div>
-  <div class="card-ft"><span class="night">🌙 <strong>Frutigen</strong> — Airbnb (noche 4/5)</span></div>
+<div class="card" id="day-7">
+<div class="card-hdr" onclick="toggleCard(this)"><span class="dn dn-a">Día 7 · Lun 25/5</span><span class="ct">Cataratas del Rin → Stein am Rhein → Lucerna</span><span class="badge mod">Modificado</span><span class="kp">80 km</span><span class="ea">▾</span></div>
+<div class="card-body">
+<div class="route">🛣️ Schaffhausen → Cataratas del Rin → Stein am Rhein → Root (Lucerna)</div>
+<div class="hlg">
+<div class="hl"><h4>Highlights</h4><ul><li>🌊 Cataratas del Rin — salida más potente de Europa</li><li>🚢 Barco amarillo a la roca central (Mateo)</li><li>🏰 Castillo de Laufen — miradores</li><li>🎨 Stein am Rhein — pueblo medieval pintado</li><li>🦢 Paseo Rin viendo cisnes</li></ul></div>
+<div class="hl"><h4>Costos</h4><ul><li>Barco roca central: 10 CHF</li><li>Mirador Castillo Laufen: 5 CHF</li><li>Parking Stein am Rhein: ~5 CHF</li></ul></div>
+</div>
+<div class="cft"><span class="ni">🌙 <strong>Root</strong> (Lucerna) — Airbnb (1/2)</span></div>
+</div>
 </div>
 
-<!-- Día 6 — Berna → Schaffhausen -->
-<div class="card">
-  <div class="card-hdr">
-    <span class="dn dn-a">Día 6 · Dom 24/5</span>
-    <span class="card-title">Berna → Schaffhausen</span>
-    <span class="badge pend">Pendiente</span>
-    <span class="km-pill">190 km</span>
-  </div>
-  <div class="card-body">
-    <div class="route">🛣️ Frutigen → Berna (mañana) → Schaffhausen (tarde) · ~190 km · ~2.5h conducción</div>
-    <div class="cols">
-      <div class="hl"><h4>Berna (mañana)</h4><ul>
-        <li>🐻 Bärengraben — osos en el parque (Mateo lo ama)</li>
-        <li>🕰 Torre Zytglogge — figuras animadas al dar la hora</li>
-        <li>⛲ Fuentes históricas de las arcadas</li>
-        <li>🌳 Rosengarten — picnic con vistas panorámicas</li>
-      </ul></div>
-      <div class="hl"><h4>Schaffhausen (tarde/noche)</h4><ul>
-        <li>Ciudad medieval a orillas del Rin</li>
-        <li>Casco histórico con pinturas en las fachadas</li>
-        <li>Cataratas del Rin a 3 km del centro</li>
-        <li>Cena tranquila con Mateo en el casco antiguo</li>
-      </ul></div>
-    </div>
-    <div class="note-pend">🔶 Schaffhausen ya reservado. ¿Se incluye Berna de camino? (encaja perfecto). ¿O se hizo Berna el día 23?</div>
-  </div>
-  <div class="card-ft"><span class="night">🌙 <strong>Schaffhausen</strong> — Hotel reservado</span></div>
+<div class="card" id="day-8">
+<div class="card-hdr" onclick="toggleCard(this)"><span class="dn dn-a">Día 8 · Mar 26/5</span><span class="ct">Lucerna — Puentes, Murallas y Lago</span><span class="badge ok">✓</span><span class="kp">15 km</span><span class="ea">▾</span></div>
+<div class="card-body">
+<div class="route">🛣️ Root → Lucerna · Día chill 100%</div>
+<div class="hlg">
+<div class="hl"><h4>Highlights</h4><ul><li>🌉 Kapellbrücke — puente de madera más antiguo de Europa</li><li>🦁 Löwendenkmal — monumento al León</li><li>🚢 Ferry circular 1h por el lago</li><li>🏰 Murallas de Musegg — torres gratuitas</li><li>🛝 Inseli Park — parque en el paseo marítimo</li></ul></div>
+<div class="hl"><h4>Costos</h4><ul><li>Ferry lago: ~30 CHF</li><li>Murallas: gratis</li><li>Parking céntrico: 15-20 CHF</li></ul></div>
+</div>
+<div class="cft"><span class="ni">🌙 <strong>Root</strong> (Lucerna) — Airbnb (2/2)</span></div>
+</div>
 </div>
 
-<!-- Día 7 -->
-<div class="card">
-  <div class="card-hdr">
-    <span class="dn dn-a">Día 7 · Lun 25/5</span>
-    <span class="card-title">Cataratas del Rin → Stein am Rhein → Lucerna</span>
-    <span class="badge mod">Modificado</span>
-    <span class="km-pill">80 km</span>
-  </div>
-  <div class="card-body">
-    <div class="route">🛣️ Schaffhausen → Cataratas del Rin → Stein am Rhein → Root (Lucerna) · ~80 km</div>
-    <div class="cols">
-      <div class="hl"><h4>Highlights</h4><ul>
-        <li>🌊 Cataratas del Rin — salida de agua más potente de Europa</li>
-        <li>🚢 Barco amarillo a la roca central (Mateo va a flipar)</li>
-        <li>🏰 Castillo de Laufen — miradores sobre el abismo</li>
-        <li>🎨 Stein am Rhein — pueblo medieval pintado, zona peatonal</li>
-        <li>🦢 Paseo por el Rin viendo cisnes</li>
-      </ul></div>
-      <div class="hl"><h4>Costos</h4><ul>
-        <li>Barco roca central: 10 CHF</li>
-        <li>Mirador Castillo Laufen: 5 CHF</li>
-        <li>Parking Stein am Rhein: ~5 CHF</li>
-      </ul></div>
-    </div>
-  </div>
-  <div class="card-ft"><span class="night">🌙 <strong>Root</strong> (cerca de Lucerna) — Airbnb (noche 1/2)</span></div>
+<div class="bh bb">🇮🇹 BLOQUE B — Como & Milán (con Marta y Fede) <span class="bd">27/5 → 29/5 · 3 días</span></div>
+
+<div class="card" id="day-9">
+<div class="card-hdr" onclick="toggleCard(this)"><span class="dn dn-b">Día 9 · Mié 27/5</span><span class="ct">Cruce de los Alpes → Reencuentro en Como</span><span class="badge ok">✓</span><span class="kp">160 km</span><span class="ea">▾</span></div>
+<div class="card-body">
+<div class="route">🛣️ Root → Passo San Gottardo (La Tremola) → Lugano → Como · ~3h</div>
+<div class="hlg">
+<div class="hl"><h4>Highlights</h4><ul><li>🏔 Passo Gottardo — La Tremola: carretera histórica en curvas de piedra</li><li>📸 Chiosco Panorama — vista del zigzag (drone top 1)</li><li>❄️ Nieve en la cima para Mateo</li><li>🧀 Caseificio del Gottardo (Airolo) — quesería almuerzo</li><li>🌴 Lugano — Parco Ciani</li><li>🥂 Reencuentro con Marta y Fede</li></ul></div>
+<div class="hl"><h4>Notas</h4><ul><li>🚁 La Tremola: mejor toma aérea del viaje</li><li>Peaje autopista Italia: ~€5</li><li>Almuerzo Airolo: 25-30 CHF</li></ul></div>
+</div>
+<div class="cft"><span class="ni">🌙 <strong>Como</strong> — Alojamiento (1/3)</span></div>
+</div>
 </div>
 
-<!-- Día 8 -->
-<div class="card">
-  <div class="card-hdr">
-    <span class="dn dn-a">Día 8 · Mar 26/5</span>
-    <span class="card-title">Lucerna — Puentes, Murallas y Lago</span>
-    <span class="badge ok">Confirmado</span>
-    <span class="km-pill">15 km</span>
-  </div>
-  <div class="card-body">
-    <div class="route">🛣️ Root → Lucerna · Día chill 100%</div>
-    <div class="cols">
-      <div class="hl"><h4>Highlights</h4><ul>
-        <li>🌉 Kapellbrücke — puente de madera más antiguo de Europa</li>
-        <li>🦁 Löwendenkmal — monumento al León</li>
-        <li>🚢 Ferry circular 1h por el Lago de los Cuatro Cantones</li>
-        <li>🏰 Murallas de Musegg — torres gratuitas (relojes para Mateo)</li>
-        <li>🛝 Inseli Park — parque infantil en el paseo marítimo</li>
-      </ul></div>
-      <div class="hl"><h4>Costos</h4><ul>
-        <li>Ferry lago: ~30 CHF</li>
-        <li>Murallas: gratis</li>
-        <li>Parking céntrico: 15-20 CHF (o transporte público)</li>
-      </ul></div>
-    </div>
-  </div>
-  <div class="card-ft"><span class="night">🌙 <strong>Root</strong> (Lucerna) — Airbnb (noche 2/2)</span></div>
+<div class="card" id="day-10">
+<div class="card-hdr" onclick="toggleCard(this)"><span class="dn dn-b">Día 10 · Jue 28/5</span><span class="ct">Milán — La Dolce Vita</span><span class="badge ok">✓</span><span class="kp">45 km</span><span class="ea">▾</span></div>
+<div class="card-body">
+<div class="route">🚆 Tren Como Lago → Milano Cadorna · 45-60 min por tramo</div>
+<div class="hlg">
+<div class="hl"><h4>Highlights</h4><ul><li>🏰 Castello Sforzesco — patios amplios para Mateo</li><li>🌳 Parco Sempione — pulmón verde</li><li>🍕 Almuerzo en Brera (barrio bohemio)</li><li>⛪ Duomo — terrazas en ascensor entre agujas</li><li>🐂 Galería Vittorio Emanuele II — giro sobre el toro</li><li>☕ Terraza La Rinascente — café vista Duomo</li></ul></div>
+<div class="hl"><h4>Costos</h4><ul><li>Tren ida/vuelta: €10</li><li>Ascensor Duomo: €20</li><li>❌ Drone prohibido en Milán centro</li></ul></div>
+</div>
+<div class="cft"><span class="ni">🌙 <strong>Como</strong> — Alojamiento (2/3)</span></div>
+</div>
 </div>
 
-<!-- BLOQUE B -->
-<div class="block-hdr bb">🇮🇹 BLOQUE B — Como & Milán (con Marta y Fede) <span class="block-dates">27/5 → 29/5 · 3 días</span></div>
-
-<!-- Día 9 -->
-<div class="card">
-  <div class="card-hdr">
-    <span class="dn dn-b">Día 9 · Mié 27/5</span>
-    <span class="card-title">Cruce de los Alpes → Reencuentro en Como</span>
-    <span class="badge ok">Confirmado</span>
-    <span class="km-pill">160 km</span>
-  </div>
-  <div class="card-body">
-    <div class="route">🛣️ Root → Passo San Gottardo (La Tremola) → Lugano → Como · ~160 km · ~3h</div>
-    <div class="cols">
-      <div class="hl"><h4>Highlights</h4><ul>
-        <li>🏔 Passo San Gottardo — La Tremola: carretera histórica en curvas de piedra</li>
-        <li>📸 Chiosco Panorama — vista desde arriba del zigzag</li>
-        <li>❄️ Nieve en la cima para Mateo</li>
-        <li>🧀 Caseificio del Gottardo (Airolo) — quesería para almorzar</li>
-        <li>🌴 Lugano — Parco Ciani + paseo frente al lago</li>
-        <li>🥂 Reencuentro con Marta y Fede en Como</li>
-      </ul></div>
-      <div class="hl"><h4>Notas</h4><ul>
-        <li>🚁 La Tremola: mejor toma aérea del Bloque A/B</li>
-        <li>Peaje autopista Italia: ~€5</li>
-        <li>Almuerzo Airolo: 25-30 CHF</li>
-      </ul></div>
-    </div>
-  </div>
-  <div class="card-ft"><span class="night">🌙 <strong>Como</strong> — Alojamiento (noche 1/3)</span></div>
+<div class="card" id="day-11">
+<div class="card-hdr" onclick="toggleCard(this)"><span class="dn dn-b">Día 11 · Vie 29/5</span><span class="ct">Lago de Como — Varenna & Bellagio en ferry</span><span class="badge ok">✓</span><span class="kp">5 km</span><span class="ea">▾</span></div>
+<div class="card-body">
+<div class="route">🚢 Ferry público (Batello) · Día sin coche</div>
+<div class="hlg">
+<div class="hl"><h4>Highlights</h4><ul><li>🚢 Ferry desde Como al centro del lago</li><li>🏘 Varenna — Passerella degli Innamorati</li><li>🚤 Ferry 15 min a Bellagio</li><li>🍝 Almuerzo grupal — pasta + pescado del lago</li><li>🍦 Gelato para Mateo en Piazza Mazzini</li><li>💐 Jardines Villa Melzi (senderos planos)</li></ul></div>
+<div class="hl"><h4>Costos</h4><ul><li>Abono ferry zona centro: €25.80</li><li>Jardines Villa Melzi: €10</li><li>🚁 Villa del Balbianello desde el ferry</li></ul></div>
+</div>
+<div class="cft"><span class="ni">🌙 <strong>Como</strong> — Alojamiento (3/3)</span></div>
+</div>
 </div>
 
-<!-- Día 10 -->
-<div class="card">
-  <div class="card-hdr">
-    <span class="dn dn-b">Día 10 · Jue 28/5</span>
-    <span class="card-title">Milán — La Dolce Vita</span>
-    <span class="badge ok">Confirmado</span>
-    <span class="km-pill">45 km</span>
-  </div>
-  <div class="card-body">
-    <div class="route">🚆 Tren Como Lago → Milano Cadorna · 45-60 min por tramo</div>
-    <div class="cols">
-      <div class="hl"><h4>Highlights</h4><ul>
-        <li>🏰 Castello Sforzesco — patios amplios para Mateo</li>
-        <li>🌳 Parco Sempione — pulmón verde detrás del castillo</li>
-        <li>🍕 Almuerzo en Brera (barrio bohemio)</li>
-        <li>⛪ Duomo — terrazas en ascensor entre las agujas de mármol</li>
-        <li>🐂 Galería Vittorio Emanuele II — giro sobre el toro (buena suerte)</li>
-        <li>☕ Terraza La Rinascente — café con vista al Duomo</li>
-      </ul></div>
-      <div class="hl"><h4>Costos</h4><ul>
-        <li>Tren ida/vuelta: €10</li>
-        <li>Ascensor Duomo: €20</li>
-        <li>❌ Drone prohibido en Milán centro</li>
-      </ul></div>
-    </div>
-  </div>
-  <div class="card-ft"><span class="night">🌙 <strong>Como</strong> — Alojamiento (noche 2/3)</span></div>
+<div class="bh bc">🚐 BLOQUE C — Ruta en Camper · Dolomitas & Alpes <span class="bd">30/5 → 8/6 · 10 días</span></div>
+
+<div class="card" id="day-12">
+<div class="card-hdr" onclick="toggleCard(this)"><span class="dn dn-c">Día 12 · Sáb 30/5</span><span class="ct">Logística Camper → Lago de Iseo → Verona</span><span class="badge ok">✓</span><span class="kp">175 km</span><span class="ea">▾</span></div>
+<div class="card-body">
+<div class="route">🛣️ Como → Milán (entrega auto + retiro camper) → Lago Iseo → Verona</div>
+<div class="hlg">
+<div class="hl"><h4>Highlights</h4><ul><li>🚗 08:30 — Entrega auto en Milán</li><li>🚐 09:30 — Retiro camper Indie Campers</li><li>🛒 Supermercado — abastecimiento camper</li><li>💎 Lago de Iseo (Sarnico) — primer almuerzo</li><li>🏛 Verona nocturna — Arena iluminada</li><li>🍷 Cena Piazza delle Erbe con Marta y Fede</li></ul></div>
+<div class="hl"><h4>Logística</h4><ul><li>Camping Castel San Pietro — colina con vista</li><li>Funicular Verona: €5</li><li>Camping: €45-50</li><li>🚁 Drone: Iseo con Monte Isola</li></ul></div>
+</div>
+<div class="cft"><span class="ni">🌙 <strong>Verona</strong> — Camping Castel San Pietro</span><span class="co">~€50</span></div>
+</div>
 </div>
 
-<!-- Día 11 -->
-<div class="card">
-  <div class="card-hdr">
-    <span class="dn dn-b">Día 11 · Vie 29/5</span>
-    <span class="card-title">Lago de Como — Varenna & Bellagio en ferry</span>
-    <span class="badge ok">Confirmado</span>
-    <span class="km-pill">5 km</span>
-  </div>
-  <div class="card-body">
-    <div class="route">🚢 Ferry público (Batello) · Día sin coche</div>
-    <div class="cols">
-      <div class="hl"><h4>Highlights</h4><ul>
-        <li>🚢 Ferry desde Como al centro del lago</li>
-        <li>🏘 Varenna — Passerella degli Innamorati (pasarela roja sobre el agua)</li>
-        <li>🚤 Ferry 15 min a Bellagio</li>
-        <li>🍝 Almuerzo grupal — pasta + pescado del lago</li>
-        <li>🍦 Gelato para Mateo en Piazza Mazzini</li>
-        <li>💐 Jardines Villa Melzi — senderos planos (apto carrito)</li>
-      </ul></div>
-      <div class="hl"><h4>Costos</h4><ul>
-        <li>Abono ferry zona centro: €25.80</li>
-        <li>Jardines Villa Melzi: €10</li>
-        <li>🚁 Villa del Balbianello desde el ferry (James Bond / Star Wars)</li>
-      </ul></div>
-    </div>
-  </div>
-  <div class="card-ft"><span class="night">🌙 <strong>Como</strong> — Alojamiento (noche 3/3 — última)</span></div>
+<div class="card" id="day-13">
+<div class="card-hdr" onclick="toggleCard(this)"><span class="dn dn-c">Día 13 · Dom 31/5</span><span class="ct">Santuario de la Roca → Norte del Garda</span><span class="badge ok">✓</span><span class="kp">110 km</span><span class="ea">▾</span></div>
+<div class="card-body">
+<div class="route">🛣️ Verona → Spiazzi (Santuario) → Lazise → Riva del Garda</div>
+<div class="hlg">
+<div class="hl"><h4>Highlights</h4><ul><li>🏔 Madonna della Corona — santuario en la roca</li><li>🚌 Bus lanzadera desde Spiazzi (€3) — ideal con Mateo</li><li>🏰 Lazise — pueblo amurallado + parque infantil junto al lago</li><li>🏔 Riva del Garda — llegada con picos alpinos</li></ul></div>
+<div class="hl"><h4>Camping</h4><ul><li>🌟 Camping Brione (Riva del Garda) — más elegante</li><li>🏄 Camping Al Porto (Torbole) — vibra deportiva</li><li>Costo: €45-55</li></ul></div>
+</div>
+<div class="cft"><span class="ni">🌙 <strong>Riva del Garda / Torbole</strong> — Camping</span><span class="co">€45-55</span></div>
+</div>
 </div>
 
-<!-- BLOQUE C -->
-<div class="block-hdr bc">🚐 BLOQUE C — Ruta en Camper · Dolomitas & Alpes <span class="block-dates">30/5 → 8/6 · 10 días</span></div>
-
-<!-- Día 12 -->
-<div class="card">
-  <div class="card-hdr">
-    <span class="dn dn-c">Día 12 · Sáb 30/5</span>
-    <span class="card-title">Logística Camper → Lago de Iseo → Verona</span>
-    <span class="badge ok">Confirmado</span>
-    <span class="km-pill">175 km</span>
-  </div>
-  <div class="card-body">
-    <div class="route">🛣️ Como → Milán (entrega auto + retiro camper) → Lago Iseo → Verona · ~175 km</div>
-    <div class="cols">
-      <div class="hl"><h4>Highlights</h4><ul>
-        <li>🚗 08:30 — Entrega auto en Milán</li>
-        <li>🚐 09:30 — Retiro camper Indie Campers Milán</li>
-        <li>🛒 Supermercado — abastecimiento camper</li>
-        <li>💎 Lago de Iseo (Sarnico) — primer almuerzo frente al agua</li>
-        <li>🏛 Verona nocturna — Arena iluminada + Piazza Bra</li>
-        <li>🏰 Casa di Giulietta — balcón famoso</li>
-        <li>🍷 Cena Piazza delle Erbe con Marta y Fede</li>
-      </ul></div>
-      <div class="hl"><h4>Logística</h4><ul>
-        <li>Camping Castel San Pietro — colina con vista (bajar al centro a pie)</li>
-        <li>Funicular Verona: €5</li>
-        <li>Camping: €45-50</li>
-        <li>🚁 Drone: Iseo con Monte Isola de fondo</li>
-      </ul></div>
-    </div>
-  </div>
-  <div class="card-ft">
-    <span class="night">🌙 <strong>Verona</strong> — Camping Castel San Pietro</span>
-    <span class="cost">~€50</span>
-  </div>
+<div class="card" id="day-14">
+<div class="card-hdr" onclick="toggleCard(this)"><span class="dn dn-c">Día 14 · Lun 1/6</span><span class="ct">Lago del Arcoíris → Gran Altiplano (Val Gardena)</span><span class="badge ok">✓</span><span class="kp">120 km</span><span class="ea">▾</span></div>
+<div class="card-body">
+<div class="route">🛣️ Riva del Garda → Lago di Carezza → Ortisei (Val Gardena) · ~2.5h</div>
+<div class="hlg">
+<div class="hl"><h4>Highlights</h4><ul><li>🌈 Lago di Carezza — sendero circular 30 min (plano, apto Mateo)</li><li>🥨 Picnic frente al lago con Latemar de fondo</li><li>🚠 Alpe di Siusi — teleférico desde Ortisei, altiplano más grande de Europa</li><li>🐄 Praderas con vacas — Mateo corre libre</li><li>🍰 Malga Sanon — strudel con vista al Sassolungo</li></ul></div>
+<div class="hl"><h4>Costos</h4><ul><li>Parking Carezza: €5</li><li>Teleférico Alpe di Siusi (I/V): €28</li><li>Área camper Ortisei/Santa Cristina: ~USD 40</li></ul></div>
+</div>
+<div class="cft"><span class="ni">🌙 <strong>Ortisei / Santa Cristina</strong> — Área Camper</span><span class="co">~USD 40</span></div>
+</div>
 </div>
 
-<!-- Día 13 -->
-<div class="card">
-  <div class="card-hdr">
-    <span class="dn dn-c">Día 13 · Dom 31/5</span>
-    <span class="card-title">Santuario de la Roca → Norte del Garda</span>
-    <span class="badge ok">Confirmado</span>
-    <span class="km-pill">110 km</span>
-  </div>
-  <div class="card-body">
-    <div class="route">🛣️ Verona → Spiazzi (Santuario) → Lazise → Riva del Garda · ~110 km</div>
-    <div class="cols">
-      <div class="hl"><h4>Highlights</h4><ul>
-        <li>🏔 Madonna della Corona — santuario incrustado en la roca</li>
-        <li>🚌 Bus lanzadera desde Spiazzi (€3) — ideal con Mateo</li>
-        <li>🏰 Lazise — pueblo amurallado + parque infantil junto al lago</li>
-        <li>🏔 Riva del Garda — llegada con picos alpinos</li>
-      </ul></div>
-      <div class="hl"><h4>Camping (opciones)</h4><ul>
-        <li>🌟 <strong>Camping Brione (Riva del Garda)</strong> — más elegante, paseos largos</li>
-        <li>🏄 <strong>Camping Al Porto (Torbole)</strong> — vibra deportiva</li>
-        <li>Costo: €45-55</li>
-      </ul></div>
-    </div>
-  </div>
-  <div class="card-ft">
-    <span class="night">🌙 <strong>Riva del Garda / Torbole</strong> — Camping</span>
-    <span class="cost">€45-55</span>
-  </div>
+<div class="card" id="day-15">
+<div class="card-hdr" onclick="toggleCard(this)"><span class="dn dn-c">Día 15 · Mar 2/6</span><span class="ct">Crestas de Seceda → Noche en Lago di Braies</span><span class="badge ok">✓</span><span class="kp">95 km</span><span class="ea">▾</span></div>
+<div class="card-body">
+<div class="route">🛣️ Ortisei → Passo Gardena → Val di Funes → Lago di Braies · ~3h</div>
+<div class="hlg">
+<div class="hl"><h4>Highlights</h4><ul><li>🚠 Seceda — subida temprana (2 tramos de teleférico)</li><li>🏔 Mirador de las Odle — vista más icónica de los Dolomitas</li><li>🏔 Passo Gardena — carretera serpenteante (drone)</li><li>⛪ Val di Funes — iglesita San Giovanni in Ranui</li><li>🛶 Lago di Braies — llegar después de 18:00</li></ul></div>
+<div class="hl"><h4>Costos</h4><ul><li>Teleférico Seceda (I/V): €39.50</li><li>Parking P2 Braies pernocta: €30-35</li><li>🚁 Seceda: prioridad máxima del viaje para drone</li></ul></div>
+</div>
+<div class="cft"><span class="ni">🌙 <strong>Parking P2 Lago di Braies</strong> — autorizado pernocta</span><span class="co">€30-35</span></div>
+</div>
 </div>
 
-<!-- Día 14 -->
-<div class="card">
-  <div class="card-hdr">
-    <span class="dn dn-c">Día 14 · Lun 1/6</span>
-    <span class="card-title">Lago del Arcoíris → Gran Altiplano (Val Gardena)</span>
-    <span class="badge ok">Confirmado</span>
-    <span class="km-pill">120 km</span>
-  </div>
-  <div class="card-body">
-    <div class="route">🛣️ Riva del Garda → Lago di Carezza → Ortisei (Val Gardena) · ~120 km · ~2.5h</div>
-    <div class="cols">
-      <div class="hl"><h4>Highlights</h4><ul>
-        <li>🌈 Lago di Carezza — sendero circular 30 min (plano, apto Mateo)</li>
-        <li>🥨 Picnic frente al lago con el Latemar de fondo</li>
-        <li>🚠 Alpe di Siusi — teleférico desde Ortisei, altiplano más grande de Europa</li>
-        <li>🐄 Praderas con vacas y caballos — Mateo corre libre</li>
-        <li>🍰 Malga Sanon — strudel con vista al Sassolungo</li>
-      </ul></div>
-      <div class="hl"><h4>Costos</h4><ul>
-        <li>Parking Carezza: €5</li>
-        <li>Teleférico Alpe di Siusi (I/V): €28</li>
-        <li>Área camper Ortisei/Santa Cristina: ~USD 40</li>
-      </ul></div>
-    </div>
-  </div>
-  <div class="card-ft">
-    <span class="night">🌙 <strong>Ortisei / Santa Cristina</strong> — Área Camper</span>
-    <span class="cost">~USD 40</span>
-  </div>
+<div class="card" id="day-16">
+<div class="card-hdr" onclick="toggleCard(this)"><span class="dn dn-c">Día 16 · Mié 3/6</span><span class="ct">Amanecer en Braies → Fun Bob San Candido</span><span class="badge ok">✓</span><span class="kp">35 km</span><span class="ea">▾</span></div>
+<div class="card-body">
+<div class="route">🛣️ Braies → Lago di Dobbiaco → San Candido → Sesto</div>
+<div class="hlg">
+<div class="hl"><h4>Highlights</h4><ul><li>🌅 Amanecer en Braies — caminata circular 1.5h</li><li>🚣 09:00 — Alquiler bote de madera</li><li>🌊 Lago di Dobbiaco — almuerzo + sendero educativo</li><li>🎢 Fun Bob San Candido — tobogán con Mateo</li><li>🍦 Paseo San Candido — miel y speck local</li><li>🏊 Caravan Park Sexten — piscina + spa</li></ul></div>
+<div class="hl"><h4>Costos</h4><ul><li>Bote Braies: €30 (30 min)</li><li>Fun Bob: €12 por viaje</li><li>Camping Sexten: ~€65</li></ul></div>
+</div>
+<div class="cft"><span class="ni">🌙 <strong>Caravan Park Sexten</strong> — Camping Premium</span><span class="co">~€65</span></div>
+</div>
 </div>
 
-<!-- Día 15 -->
-<div class="card">
-  <div class="card-hdr">
-    <span class="dn dn-c">Día 15 · Mar 2/6</span>
-    <span class="card-title">Crestas de Seceda → Noche en Lago di Braies</span>
-    <span class="badge ok">Confirmado</span>
-    <span class="km-pill">95 km</span>
-  </div>
-  <div class="card-body">
-    <div class="route">🛣️ Ortisei → Passo Gardena → Val di Funes → Lago di Braies · ~95 km · ~3h</div>
-    <div class="cols">
-      <div class="hl"><h4>Highlights</h4><ul>
-        <li>🚠 Seceda — subida temprana (2 tramos de teleférico)</li>
-        <li>🏔 Mirador de las Odle — vista más icónica de los Dolomitas</li>
-        <li>🍴 Almuerzo en Rifugio Seceda o Baita Sofie</li>
-        <li>🏔 Passo Gardena — carretera serpenteante (drone)</li>
-        <li>⛪ Val di Funes — iglesita San Giovanni in Ranui "en el prado"</li>
-        <li>🛶 Lago di Braies — llegar después de 18:00 (sin turistas)</li>
-      </ul></div>
-      <div class="hl"><h4>Costos</h4><ul>
-        <li>Teleférico Seceda (I/V): €39.50</li>
-        <li>Parking P2 Braies pernocta: €30-35</li>
-        <li>🚁 Seceda: prioridad máxima del viaje para drone</li>
-      </ul></div>
-    </div>
-  </div>
-  <div class="card-ft">
-    <span class="night">🌙 <strong>Parking P2 Lago di Braies</strong> — autorizado pernocta</span>
-    <span class="cost">€30-35</span>
-  </div>
+<div class="card" id="day-17">
+<div class="card-hdr" onclick="toggleCard(this)"><span class="dn dn-c">Día 17 · Jue 4/6</span><span class="ct">Tre Cime di Lavaredo → Misurina → Passo Giau</span><span class="badge ok">✓</span><span class="kp">80 km</span><span class="ea">▾</span></div>
+<div class="card-body">
+<div class="route">🛣️ Sesto → Refugio Auronzo → Misurina → Passo Giau · ~2.5h</div>
+<div class="hlg">
+<div class="hl"><h4>Highlights</h4><ul><li>🏔 Tre Cime di Lavaredo — subida por carretera de peaje</li><li>🗻 Cadini di Misurina — trekking 30-40 min al mirador</li><li>🌊 Lago di Misurina — almuerzo + parque infantil</li><li>🚠 Cinque Torri (opcional) — formaciones de roca</li><li>📸 Passo Giau — atardecer con Ra Gusela</li></ul></div>
+<div class="hl"><h4>Costos</h4><ul><li>Peaje carretera Auronzo (camper): €45</li><li>Parking Misurina: €5</li><li>🚁 Cadini di Misurina — "money shot" Dolomitas</li></ul></div>
+</div>
+<div class="cft"><span class="ni">🌙 <strong>Cortina / Parking Passo Giau</strong></span></div>
+</div>
 </div>
 
-<!-- Día 16 -->
-<div class="card">
-  <div class="card-hdr">
-    <span class="dn dn-c">Día 16 · Mié 3/6</span>
-    <span class="card-title">Amanecer en Braies → Fun Bob en San Candido</span>
-    <span class="badge ok">Confirmado</span>
-    <span class="km-pill">35 km</span>
-  </div>
-  <div class="card-body">
-    <div class="route">🛣️ Braies → Lago di Dobbiaco → San Candido → Sesto · ~35 km</div>
-    <div class="cols">
-      <div class="hl"><h4>Highlights</h4><ul>
-        <li>🌅 Amanecer en Braies — caminata circular 1.5h (plana y fácil)</li>
-        <li>🚣 09:00 — Alquiler bote de madera (fotos sobre el agua)</li>
-        <li>🌊 Lago di Dobbiaco — almuerzo + sendero educativo</li>
-        <li>🎢 Fun Bob San Candido — tobogán de montaña con Mateo</li>
-        <li>🍦 Paseo San Candido — miel y speck local</li>
-        <li>🏊 Caravan Park Sexten — piscina + spa</li>
-      </ul></div>
-      <div class="hl"><h4>Costos</h4><ul>
-        <li>Bote Braies: €30 (30 min)</li>
-        <li>Fun Bob: €12 por viaje</li>
-        <li>Camping Sexten: ~€65</li>
-      </ul></div>
-    </div>
-  </div>
-  <div class="card-ft">
-    <span class="night">🌙 <strong>Caravan Park Sexten</strong> — Camping Premium</span>
-    <span class="cost">~€65</span>
-  </div>
+<div class="card" id="day-18">
+<div class="card-hdr" onclick="toggleCard(this)"><span class="dn dn-c">Día 18 · Vie 5/6</span><span class="ct">Vipiteno → Innsbruck</span><span class="badge ok">✓</span><span class="kp">135 km</span><span class="ea">▾</span></div>
+<div class="card-body">
+<div class="route">🛣️ Cortina → Vipiteno → Paso Brennero → Innsbruck · ~2.5h</div>
+<div class="hlg">
+<div class="hl"><h4>Highlights</h4><ul><li>🏰 Vipiteno — Torre de las Doce, pueblo medieval tirolés</li><li>🍦 Último gelato italiano</li><li>🦌 Rossy Park — animales de granja para Mateo</li><li>🛣 Cruce del Brennero (Vignette Austria)</li><li>🐺 Alpenzoo Innsbruck — zoológico más alto de Europa</li><li>🏘 Tejado Dorado iluminado por la noche</li></ul></div>
+<div class="hl"><h4>Costos</h4><ul><li>Vignette Austria: €11.50 (10 días)</li><li>Alpenzoo: €15</li><li>Camping Kranebitten: €45-50</li><li>🚁 Europabrücke — puente más alto de la autopista</li></ul></div>
+</div>
+<div class="cft"><span class="ni">🌙 <strong>Innsbruck</strong> — Camping Kranebitten</span><span class="co">€45-50</span></div>
+</div>
 </div>
 
-<!-- Día 17 -->
-<div class="card">
-  <div class="card-hdr">
-    <span class="dn dn-c">Día 17 · Jue 4/6</span>
-    <span class="card-title">Tre Cime di Lavaredo → Misurina → Passo Giau</span>
-    <span class="badge ok">Confirmado</span>
-    <span class="km-pill">80 km</span>
-  </div>
-  <div class="card-body">
-    <div class="route">🛣️ Sesto → Refugio Auronzo → Misurina → Passo Giau · ~80 km · ~2.5h</div>
-    <div class="cols">
-      <div class="hl"><h4>Highlights</h4><ul>
-        <li>🏔 Tre Cime di Lavaredo — subida por carretera de peaje</li>
-        <li>🗻 Cadini di Misurina — trekking 30-40 min al mirador</li>
-        <li>🌊 Lago di Misurina — almuerzo + parque infantil frente al agua</li>
-        <li>🚠 Cinque Torri (opcional) — telesilla + formaciones de roca</li>
-        <li>📸 Passo Giau — atardecer con Ra Gusela (imbatible)</li>
-      </ul></div>
-      <div class="hl"><h4>Costos</h4><ul>
-        <li>Peaje carretera Auronzo (camper): €45</li>
-        <li>Parking Misurina: €5</li>
-        <li>🚁 Cadini di Misurina — "money shot" de los Dolomitas</li>
-      </ul></div>
-    </div>
-  </div>
-  <div class="card-ft">
-    <span class="night">🌙 <strong>Cortina d'Ampezzo / Parking Passo Giau</strong></span>
-  </div>
+<div class="card" id="day-19">
+<div class="card-hdr" onclick="toggleCard(this)"><span class="dn dn-c">Día 19 · Sáb 6/6</span><span class="ct">Engadina → St. Moritz</span><span class="badge ok">✓</span><span class="kp">190 km</span><span class="ea">▾</span></div>
+<div class="card-body">
+<div class="route">🛣️ Innsbruck → Landeck → Lago di Resia → Paso del Maloja → St. Moritz · ~3h</div>
+<div class="hlg">
+<div class="hl"><h4>Highlights</h4><ul><li>🌊 Lago di Resia — campanario sumergido (foto icónica)</li><li>🏔 Paso del Maloja — Engadina alta, lagos azul acero</li><li>🏘 St. Moritz — orilla del lago, veleros</li><li>☕ Café Hanselmann — Engadiner Nusstorte</li></ul></div>
+<div class="hl"><h4>Costos</h4><ul><li>Camping Silvaplana/St. Moritz: €55-60</li><li>🚁 Lago di Resia — campanario cenital</li><li>🚁 Lagos Engadina alineados desde arriba</li></ul></div>
+</div>
+<div class="cft"><span class="ni">🌙 <strong>Silvaplana / St. Moritz</strong> — Camping</span><span class="co">€55-60</span></div>
+</div>
 </div>
 
-<!-- Día 18 -->
-<div class="card">
-  <div class="card-hdr">
-    <span class="dn dn-c">Día 18 · Vie 5/6</span>
-    <span class="card-title">Vipiteno → Innsbruck</span>
-    <span class="badge ok">Confirmado</span>
-    <span class="km-pill">135 km</span>
-  </div>
-  <div class="card-body">
-    <div class="route">🛣️ Cortina → Vipiteno → Paso Brennero → Innsbruck · ~135 km · ~2.5h</div>
-    <div class="cols">
-      <div class="hl"><h4>Highlights</h4><ul>
-        <li>🏰 Vipiteno (Sterzing) — Torre de las Doce, pueblo medieval tirolés</li>
-        <li>🍦 Último gelato italiano</li>
-        <li>🦌 Rossy Park — animales de granja para Mateo</li>
-        <li>🛣 Cruce del Brennero (verificar Vignette Austria)</li>
-        <li>🐺 Alpenzoo Innsbruck — zoológico más alto de Europa</li>
-        <li>🏘 Tejado Dorado iluminado por la noche</li>
-      </ul></div>
-      <div class="hl"><h4>Costos</h4><ul>
-        <li>Vignette Austria: €11.50 (10 días)</li>
-        <li>Alpenzoo: €15</li>
-        <li>Camping Kranebitten: €45-50</li>
-        <li>🚁 Europabrücke — puente más alto de la autopista</li>
-      </ul></div>
-    </div>
-  </div>
-  <div class="card-ft">
-    <span class="night">🌙 <strong>Innsbruck</strong> — Camping Kranebitten</span>
-    <span class="cost">€45-50</span>
-  </div>
+<div class="card" id="day-20">
+<div class="card-hdr" onclick="toggleCard(this)"><span class="dn dn-c">Día 20 · Dom 7/6</span><span class="ct">Bernina → Tirano → Somma Lombardo</span><span class="badge ok">✓</span><span class="kp">215 km</span><span class="ea">▾</span></div>
+<div class="card-body">
+<div class="route">🛣️ St. Moritz → Paso Bernina → Tirano → Lago Como orilla este → Somma Lombardo · ~4h</div>
+<div class="hlg">
+<div class="hl"><h4>Highlights</h4><ul><li>🚞 Marta y Fede suben al Bernina Express en St. Moritz</li><li>🏔 Lago Bianco — ver pasar el tren rojo desde la camper</li><li>🇮🇹 Tirano — Pizzoccheri de la Valtellina</li><li>🏠 Somma Lombardo — 10 min de Malpensa</li><li>🍕 Última cena del viaje</li></ul></div>
+<div class="hl"><h4>Logística</h4><ul><li>🧹 Limpiar camper + vaciar depósitos</li><li>Tren Bernina Marta/Fede: ~€60</li><li>🚁 Paso Bernina — camper paralela al tren rojo</li></ul></div>
+</div>
+<div class="cft"><span class="ni">🌙 <strong>Somma Lombardo</strong> — cerca de Malpensa</span></div>
+</div>
 </div>
 
-<!-- Día 19 -->
-<div class="card">
-  <div class="card-hdr">
-    <span class="dn dn-c">Día 19 · Sáb 6/6</span>
-    <span class="card-title">Engadina → St. Moritz</span>
-    <span class="badge ok">Confirmado</span>
-    <span class="km-pill">190 km</span>
-  </div>
-  <div class="card-body">
-    <div class="route">🛣️ Innsbruck → Landeck → Lago di Resia → Paso del Maloja → St. Moritz · ~190 km · ~3h</div>
-    <div class="cols">
-      <div class="hl"><h4>Highlights</h4><ul>
-        <li>🌊 Lago di Resia — campanario sumergido (foto icónica)</li>
-        <li>🏔 Paso del Maloja — Engadina alta, lagos color azul acero</li>
-        <li>🏘 St. Moritz — orilla del lago, veleros (caminata chill)</li>
-        <li>☕ Café Hanselmann — Engadiner Nusstorte</li>
-      </ul></div>
-      <div class="hl"><h4>Costos</h4><ul>
-        <li>Camping Silvaplana/St. Moritz: €55-60</li>
-        <li>🚁 Lago di Resia — campanario cenital</li>
-        <li>🚁 Lagos Engadina alineados desde arriba</li>
-      </ul></div>
-    </div>
-  </div>
-  <div class="card-ft">
-    <span class="night">🌙 <strong>Silvaplana / St. Moritz</strong> — Camping</span>
-    <span class="cost">€55-60</span>
-  </div>
+<div class="card" id="day-21">
+<div class="card-hdr" onclick="toggleCard(this)"><span class="dn dn-c">Día 21 · Lun 8/6</span><span class="ct">Entrega Camper → Vuelo de Regreso ✈️</span><span class="badge ok">✓</span><span class="kp">10 km</span><span class="ea">▾</span></div>
+<div class="card-body">
+<div class="route">🛣️ Somma Lombardo → Indie Campers Malpensa → Terminal MXP</div>
+<div class="hlg">
+<div class="hl"><h4>Horarios clave</h4><ul><li>⛽ 08:15 — Cargar diesel (dejar tanque lleno)</li><li>🚐 09:00 — Entrega camper Indie Campers Malpensa</li><li>🚌 Transfer a terminal aeropuerto</li><li>✈️ 13:00 — Vuelo de regreso</li></ul></div>
+<div class="hl"><h4>Notas finales</h4><ul><li>Revisar condiciones devolución camper</li><li>Llegar aeropuerto con margen (check-in con niño)</li><li>Vaciado de aguas negras antes de entrega</li></ul></div>
+</div>
+<div class="cft"><span class="ni">✈️ ¡Regreso a casa!</span></div>
+</div>
 </div>
 
-<!-- Día 20 -->
-<div class="card">
-  <div class="card-hdr">
-    <span class="dn dn-c">Día 20 · Dom 7/6</span>
-    <span class="card-title">Bernina → Tirano → Somma Lombardo</span>
-    <span class="badge ok">Confirmado</span>
-    <span class="km-pill">215 km</span>
-  </div>
-  <div class="card-body">
-    <div class="route">🛣️ St. Moritz → Paso Bernina → Tirano → Lago Como (orilla este) → Somma Lombardo · ~215 km · ~4h</div>
-    <div class="cols">
-      <div class="hl"><h4>Highlights</h4><ul>
-        <li>🚞 Marta y Fede suben al Bernina Express en St. Moritz</li>
-        <li>🏔 Lago Bianco — ver pasar el tren rojo desde la camper</li>
-        <li>🇮🇹 Tirano — reencuentro + almuerzo Pizzoccheri de la Valtellina</li>
-        <li>🛣 Ruta orilla este Lago Como hacia el sur</li>
-        <li>🏠 Somma Lombardo — 10 min de Malpensa</li>
-        <li>🍕 Última cena del viaje</li>
-      </ul></div>
-      <div class="hl"><h4>Logística</h4><ul>
-        <li>🧹 Limpiar camper + vaciar depósitos</li>
-        <li>Tren Bernina Marta/Fede: ~€60</li>
-        <li>🚁 Bernina Pass — camper paralela al tren rojo con glaciares</li>
-      </ul></div>
-    </div>
-  </div>
-  <div class="card-ft">
-    <span class="night">🌙 <strong>Somma Lombardo</strong> — Cerca de Malpensa</span>
-  </div>
+</div><!-- /si -->
+</section>
+
+<!-- ═══════════════ EQUIPAJE ═══════════════ -->
+<section id="tab-equipaje" class="tab-section">
+<div class="si">
+<div style="margin-bottom:13px"><strong style="font-size:.95em">🧳 Equipaje</strong> <span style="font-size:.78em;color:var(--txl);margin-left:6px">Tildá los ítems listos — se guarda automáticamente</span></div>
+<div id="eq-container"></div>
+</div>
+</section>
+
+<!-- ═══════════════ LOGÍSTICA ═══════════════ -->
+<section id="tab-logistica" class="tab-section">
+<div class="si">
+<div style="margin-bottom:13px"><strong style="font-size:.95em">✅ Logística & Pendientes</strong></div>
+<div id="log-container"></div>
+</div>
+</section>
+
+<!-- ═══════════════ MATEO ═══════════════ -->
+<section id="tab-mateo" class="tab-section">
+<div class="si">
+
+<div class="mh">
+  <h2>🎮 Mateo en el viaje</h2>
+  <p>Ideas, apps, actividades y tips para Mateo (4 años) en 22 días por Europa</p>
 </div>
 
-<!-- Día 21 -->
-<div class="card">
-  <div class="card-hdr">
-    <span class="dn dn-c">Día 21 · Lun 8/6</span>
-    <span class="card-title">Entrega Camper → Vuelo de Regreso ✈️</span>
-    <span class="badge ok">Confirmado</span>
-    <span class="km-pill">10 km</span>
-  </div>
-  <div class="card-body">
-    <div class="route">🛣️ Somma Lombardo → Indie Campers Malpensa → Terminal MXP · ~10 km</div>
-    <div class="cols">
-      <div class="hl"><h4>Horarios clave</h4><ul>
-        <li>⛽ 08:15 — Cargar diesel (dejar tanque lleno)</li>
-        <li>🚐 09:00 — Entrega camper Indie Campers Malpensa</li>
-        <li>🚌 Transfer a terminal aeropuerto</li>
-        <li>✈️ 13:00 — Vuelo de regreso</li>
-      </ul></div>
-      <div class="hl"><h4>Notas</h4><ul>
-        <li>Revisar condiciones devolución camper</li>
-        <li>Llegar aeropuerto con margen (check-in con niño)</li>
-        <li>Vaciado de aguas negras antes de entrega</li>
-      </ul></div>
-    </div>
-  </div>
-  <div class="card-ft"><span class="night">✈️ ¡Regreso a casa!</span></div>
+<div class="mc">
+<div class="mch">🚗 En el auto / camper</div>
+<div class="mcb">
+<div class="mi"><span class="mtag tp">Juego</span><br><strong>I Spy / Veo Veo</strong> — "Veo veo, una cosa de color azul..." · Funciona en cualquier idioma</div>
+<div class="mi"><span class="mtag tp">Juego</span><br><strong>20 Preguntas</strong> — "Estoy pensando en un animal..." · Mateo puede adivinar y también proponer</div>
+<div class="mi"><span class="mtag tp">Juego</span><br><strong>Cazador de matrículas</strong> — buscar matrículas de CH, IT, AT, DE, FR · ¡Punto por país nuevo!</div>
+<div class="mi"><span class="mtag tp">Juego</span><br><strong>Adivinar colores de autos</strong> — "¿Cuántos autos rojos pasarán antes de llegar al túnel?"</div>
+<div class="mi"><span class="mtag tp">Juego</span><br><strong>El juego de los túneles</strong> — Los Alpes tienen muchos · Contar, medir tiempo, hacer silencio total hasta salir</div>
+<div class="mtip">💡 <strong>Estrategia siesta:</strong> Las rutas largas pueden coincidir con la siesta. Berna→Schaffhausen (2.5h) e Innsbruck→St.Moritz (3h) son ideales. Salir justo después del almuerzo.</div>
+</div>
 </div>
 
-<!-- PACKING LIST -->
-<div class="section-title">🧳 Equipaje — Distribución real</div>
-
-<!-- Tip lavandería -->
-<div class="alert info" style="margin-bottom:16px">
-  <div class="alert-title">💡 Estrategia clave: lavar en ruta</div>
-  <p>Con 2 lavadas planificadas (Airbnb Frutigen ~día 3 + apartamento Como) podés llevar ropa para 5-6 días en vez de 22. Esto libera kilos valiosos en la valija para zapatos y campismo. La ropa de Mateo (talle pequeño) entra fácil en el carry-on.</p>
+<div class="mc">
+<div class="mch">📱 Apps para descargar offline (antes de salir)</div>
+<div class="mcb">
+<div class="mi"><span class="mtag tpk">App</span> <strong>Duolingo Kids</strong> — aprende inglés con juegos y canciones · gratis · funciona offline</div>
+<div class="mi"><span class="mtag tpk">App</span> <strong>Khan Academy Kids</strong> — cuentos, matemáticas, arte · gratis · todo offline</div>
+<div class="mi"><span class="mtag tpk">App</span> <strong>YouTube Kids</strong> — descargar episodios en casa antes de salir · Bluey en español, Peppa, Numberblocks</div>
+<div class="mi"><span class="mtag tpk">App</span> <strong>Puffin Academy</strong> — Flash games educativos offline</div>
+<div class="mi"><span class="mtag tpk">App</span> <strong>Libby / Epic!</strong> — libros y cuentos ilustrados digitales para leer juntos</div>
+<div class="mtip">💡 Descargar TODO antes del vuelo. En montaña la señal puede ser muy débil.</div>
+</div>
 </div>
 
-<div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:28px">
-
-  <!-- Carry-on Mateo -->
-  <div class="bag">
-    <div class="bag-hdr ca">
-      👜 Carry-on de Mateo — 12-13 kg
-      <span>Toda la ropa de Mateo + sus cosas de viaje</span>
-    </div>
-    <div class="bag-body">
-      <div class="pack-cat">
-        <h5>👦 Ropa Mateo (para ~5-6 días + lavada)</h5>
-        <div class="pack-item"><span class="pi-icon">👕</span><div>Remeras x5 <div class="pi-note">Secado rápido — nada de algodón grueso</div></div></div>
-        <div class="pack-item"><span class="pi-icon">👖</span><div>Pantalones/joggers x3</div></div>
-        <div class="pack-item"><span class="pi-icon">🧥</span><div>Polar/fleece x1 + rompevientos ligero<div class="pi-note">Indispensable para Simplon (2000m) y Gottardo</div></div></div>
-        <div class="pack-item"><span class="pi-icon">🩲</span><div>Ropa interior x6 + calcetines x5</div></div>
-        <div class="pack-item"><span class="pi-icon">🩱</span><div>Traje de baño x1 (camping Sexten tiene piscina)</div></div>
-        <div class="pack-item"><span class="pi-icon">🧤</span><div>Guantes finos + bufanda liviana (montaña)</div></div>
-        <div class="pack-item"><span class="pi-icon">🧢</span><div>Gorra/cap para el sol</div></div>
-      </div>
-      <div class="pack-cat">
-        <h5>👟 Calzado Mateo</h5>
-        <div class="pack-item"><span class="pi-icon">🥾</span><div>Zapatillas deportivas cómodas x1<div class="pi-note">Que sirvan para caminar y teleférico</div></div></div>
-        <div class="pack-item"><span class="pi-icon">🩴</span><div>Sandalia/ojota x1 (camping y ciudad)</div></div>
-      </div>
-      <div class="pack-cat">
-        <h5>✈️ Entretenimiento vuelo (acceso inmediato)</h5>
-        <div class="pack-item"><span class="pi-icon">📱</span><div>Tablet cargada + auriculares niño<div class="pi-note">Cargar la noche antes del vuelo</div></div></div>
-        <div class="pack-item"><span class="pi-icon">🎨</span><div>Kit de dibujo compacto + cuaderno pequeño</div></div>
-        <div class="pack-item"><span class="pi-icon">🧸</span><div>1-2 juguetes favoritos pequeños</div></div>
-        <div class="pack-item"><span class="pi-icon">🍎</span><div>Snacks para el vuelo (fruta seca, galletitas)</div></div>
-        <div class="pack-item"><span class="pi-icon">👕</span><div>Mudada de emergencia para el vuelo<div class="pi-note">Accesible en bolsillo externo — por si acaso</div></div></div>
-      </div>
-      <div class="pack-cat">
-        <h5>📊 Estimado de peso</h5>
-        <div class="pack-item"><span class="pi-icon">⚖️</span><div>Ropa Mateo (talle 3-4): ~2.5 kg · Zapatos: ~0.7 kg · Tablet+accesorios: ~0.5 kg · Juguetes/snacks: ~0.8 kg<div class="pi-note">Total estimado: ~4.5-5 kg → sobran 7-8 kg de capacidad</div></div></div>
-      </div>
-    </div>
-  </div>
-
-  <!-- Carry-on Electrónica -->
-  <div class="bag">
-    <div class="bag-hdr cb">
-      👜 Carry-on Electrónica — 12-13 kg
-      <span>Todo lo tecnológico + documentos + ropa de acceso rápido</span>
-    </div>
-    <div class="bag-body">
-      <div class="pack-cat">
-        <h5>🚁 Drone kit — DJI Mini 2 (249g)</h5>
-        <div class="pack-item"><span class="pi-icon">🚁</span><div>DJI Mini 2 (plegado) + control remoto</div></div>
-        <div class="pack-item"><span class="pi-icon">🔋</span><div>Baterías extra x2-3 <div class="pi-note">⚠️ Baterías LiPo: SOLO en cabina, nunca en bodega</div></div></div>
-        <div class="pack-item"><span class="pi-icon">🔌</span><div>Charging hub + cable USB-C drone</div></div>
-        <div class="pack-item"><span class="pi-icon">💾</span><div>Tarjetas microSD x2 (128GB mínimo c/u)</div></div>
-      </div>
-      <div class="pack-cat">
-        <h5>🎥 GoPro kit</h5>
-        <div class="pack-item"><span class="pi-icon">🎥</span><div>GoPro + funda protectora</div></div>
-        <div class="pack-item"><span class="pi-icon">🔋</span><div>Baterías GoPro x2 extra <div class="pi-note">También en cabina</div></div></div>
-        <div class="pack-item"><span class="pi-icon">🤿</span><div>Floating hand grip (imprescindible en botes y lagos)</div></div>
-        <div class="pack-item"><span class="pi-icon">🎽</span><div>Chest mount o suction mount (para el auto en montaña)</div></div>
-        <div class="pack-item"><span class="pi-icon">💾</span><div>Tarjeta SD U3/V30 x2</div></div>
-      </div>
-      <div class="pack-cat">
-        <h5>🔋 Energía (todo en cabina)</h5>
-        <div class="pack-item"><span class="pi-icon">🔋</span><div>Power banks x2 (máx 20.000 mAh c/u) <div class="pi-note">Obligatorio en cabina — prohibido en bodega</div></div></div>
-        <div class="pack-item"><span class="pi-icon">🔌</span><div>Adaptador universal tipo C + multienchufe compacto</div></div>
-        <div class="pack-item"><span class="pi-icon">🧵</span><div>Cables: USB-C x3, Lightning (si iPhone viejo), microUSB</div></div>
-      </div>
-      <div class="pack-cat">
-        <h5>📄 Documentos + dinero</h5>
-        <div class="pack-item"><span class="pi-icon">🛂</span><div>Pasaportes x3 + copias digitales offline</div></div>
-        <div class="pack-item"><span class="pi-icon">🏥</span><div>Seguros de viaje impresos + póliza</div></div>
-        <div class="pack-item"><span class="pi-icon">📋</span><div>Confirmaciones: auto, camper, Airbnbs (PDF offline)</div></div>
-        <div class="pack-item"><span class="pi-icon">💳</span><div>Tarjetas + efectivo EUR/CHF (~200 EUR para emergencias)</div></div>
-      </div>
-      <div class="pack-cat">
-        <h5>👕 Ropa de acceso rápido</h5>
-        <div class="pack-item"><span class="pi-icon">🧥</span><div>Rompevientos adultos x2 (llevarlos puestos o en el top)<div class="pi-note">Si la valija llega tarde, sobreviven con esto</div></div></div>
-        <div class="pack-item"><span class="pi-icon">🎧</span><div>Auriculares adultos x2</div></div>
-        <div class="pack-item"><span class="pi-icon">🧴</span><div>Bolsa líquidos 100ml: protector solar compacto, gel, etc.</div></div>
-      </div>
-      <div class="pack-cat">
-        <h5>📊 Estimado de peso</h5>
-        <div class="pack-item"><span class="pi-icon">⚖️</span><div>Drone kit: ~1.5 kg · GoPro kit: ~1 kg · Power banks: ~1.2 kg · Cables/adaptadores: ~0.5 kg · Documentos: ~0.3 kg · Ropa acceso: ~1 kg<div class="pi-note">Total estimado: ~5.5-6 kg → sobran 6-7 kg para ropa extra si necesitan</div></div></div>
-      </div>
-    </div>
-  </div>
-
-  <!-- Valija grande -->
-  <div class="bag" style="grid-column:1/-1">
-    <div class="bag-hdr cc">
-      🧳 Valija grande — 23 kg máx · Seba + Mery (compartida)
-      <span>Ropa adultos · Calzado · Camping · Higiene</span>
-    </div>
-    <div class="bag-body" style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px">
-      <div>
-        <div class="pack-cat">
-          <h5>👗 Ropa Seba (5-6 días + lavar)</h5>
-          <div class="pack-item"><span class="pi-icon">👕</span><div>Remeras manga corta x3 <div class="pi-note">Dry-fit o lino</div></div></div>
-          <div class="pack-item"><span class="pi-icon">👚</span><div>Camisa/manga larga x1 + fleece x1</div></div>
-          <div class="pack-item"><span class="pi-icon">👖</span><div>Pantalón trekking convertible x2</div></div>
-          <div class="pack-item"><span class="pi-icon">🩲</span><div>Ropa interior x5 + calcetines Merino x4</div></div>
-          <div class="pack-item"><span class="pi-icon">🩱</span><div>Malla/traje de baño x1</div></div>
-          <div class="pack-item"><span class="pi-icon">👕</span><div>1 opción más arreglada (Milán/Como)</div></div>
-        </div>
-        <div class="pack-cat">
-          <h5>👗 Ropa Mery (5-6 días + lavar)</h5>
-          <div class="pack-item"><span class="pi-icon">👕</span><div>Remeras x3 + camiseta térmica x1</div></div>
-          <div class="pack-item"><span class="pi-icon">🧥</span><div>Polar/fleece x1</div></div>
-          <div class="pack-item"><span class="pi-icon">👖</span><div>Pantalón trekking x1 + leggins x1</div></div>
-          <div class="pack-item"><span class="pi-icon">🩲</span><div>Ropa interior x5 + calcetines Merino x4</div></div>
-          <div class="pack-item"><span class="pi-icon">🩱</span><div>Malla x1</div></div>
-          <div class="pack-item"><span class="pi-icon">👗</span><div>1 opción más arreglada para ciudad</div></div>
-        </div>
-      </div>
-      <div>
-        <div class="pack-cat">
-          <h5>👟 Calzado adultos (el más pesado)</h5>
-          <div class="pack-item"><span class="pi-icon">🥾</span><div>Zapatillas trekking Seba x1 par <div class="pi-note">La elección más importante del viaje</div></div></div>
-          <div class="pack-item"><span class="pi-icon">🥾</span><div>Zapatillas trekking Mery x1 par</div></div>
-          <div class="pack-item"><span class="pi-icon">🩴</span><div>Sandalias Seba x1 par (ciudad + camping)</div></div>
-          <div class="pack-item"><span class="pi-icon">🩴</span><div>Sandalias Mery x1 par</div></div>
-        </div>
-        <div class="pack-cat">
-          <h5>🏕 Camping & Camper</h5>
-          <div class="pack-item"><span class="pi-icon">🛁</span><div>Toallas microfibra x3 (secado rápido)</div></div>
-          <div class="pack-item"><span class="pi-icon">🔦</span><div>Linterna frontal x2</div></div>
-          <div class="pack-item"><span class="pi-icon">🌂</span><div>Paraguas compacto x1</div></div>
-          <div class="pack-item"><span class="pi-icon">🌡️</span><div>Bolsa térmica plegable (picnics)</div></div>
-          <div class="pack-item"><span class="pi-icon">🧤</span><div>Guantes adultos x2 pares (montaña alta)</div></div>
-        </div>
-      </div>
-      <div>
-        <div class="pack-cat">
-          <h5>🧴 Higiene y salud</h5>
-          <div class="pack-item"><span class="pi-icon">☀️</span><div>Protector solar FPS 50+ x2 (adultos + Mateo)<div class="pi-note">Alpes = UV altísimo incluso con nubes</div></div></div>
-          <div class="pack-item"><span class="pi-icon">🦟</span><div>Repelente (zona lacustre)</div></div>
-          <div class="pack-item"><span class="pi-icon">💊</span><div>Botiquín completo:<br>· Ibuprofeno + Paracetamol (adulto y niño)<br>· Antidiarreico<br>· Antihistamínico + crema alérgica<br>· Curitas surtidas + venda<br>· Alcohol en gel<br>· Termómetro digital</div></div>
-          <div class="pack-item"><span class="pi-icon">🦷</span><div>Higiene estándar x3 (cepillos, pasta, desodorante)</div></div>
-          <div class="pack-item"><span class="pi-icon">🌸</span><div>Labial FPS + crema corporal compacta</div></div>
-        </div>
-        <div class="pack-cat">
-          <h5>📊 Estimado de peso</h5>
-          <div class="pack-item"><span class="pi-icon">⚖️</span><div>Ropa adultos: ~6-7 kg · Calzado x4 pares: ~3-4 kg · Camping: ~1.5 kg · Higiene/botiquín: ~2 kg<div class="pi-note">Total estimado: ~13-15 kg → margen de 8-10 kg disponible</div></div></div>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <!-- Mochilas -->
-  <div class="bag" style="grid-column:1/-1">
-    <div class="bag-hdr" style="background:linear-gradient(90deg,#37474f,#546e7a)">
-      🎒 Mochilas (1-2) — Ítem personal bajo el asiento + mochila de excursiones
-      <span>No cuentan como carry-on · Van bajo el asiento o en el compartimento anterior · También se usan para las excursiones diarias</span>
-    </div>
-    <div class="bag-body" style="display:grid;grid-template-columns:1fr 1fr;gap:16px">
-      <div>
-        <div class="pack-cat">
-          <h5>✈️ Durante el vuelo (acceso inmediato)</h5>
-          <div class="pack-item"><span class="pi-icon">🛂</span><div>Pasaportes + boarding passes (físico o digital)</div></div>
-          <div class="pack-item"><span class="pi-icon">💊</span><div>Medicamentos de urgencia (accesibles siempre)</div></div>
-          <div class="pack-item"><span class="pi-icon">🎮</span><div>Jueguitos Mateo: figuritas, auto pequeño, pegatinas</div></div>
-          <div class="pack-item"><span class="pi-icon">📱</span><div>iPhones x2 (en el bolsillo o en la mochila)</div></div>
-          <div class="pack-item"><span class="pi-icon">🧴</span><div>Crema manos + labial (vuelo largo seca mucho)</div></div>
-          <div class="pack-item"><span class="pi-icon">🍪</span><div>Snacks extra Mateo por si las del carry-on no alcanzan</div></div>
-        </div>
-      </div>
-      <div>
-        <div class="pack-cat">
-          <h5>🏔 En el viaje (mochila de excursiones)</h5>
-          <div class="pack-item"><span class="pi-icon">🎒</span><div>Mochila 20-25L x1 (la principal para trekking y excursiones)<div class="pi-note">Va doblada en la valija · Se usa todos los días en el viaje</div></div></div>
-          <div class="pack-item"><span class="pi-icon">💧</span><div>Botella de agua reutilizable x2 (Europa tiene fuentes potables)</div></div>
-          <div class="pack-item"><span class="pi-icon">🥪</span><div>Picnic del día: pan, queso, frutas, snacks</div></div>
-          <div class="pack-item"><span class="pi-icon">🧴</span><div>Protector solar del día</div></div>
-          <div class="pack-item"><span class="pi-icon">🧥</span><div>Rompevientos (siempre en la mochila en montaña)</div></div>
-          <div class="pack-item"><span class="pi-icon">🔋</span><div>Power bank del día + cable</div></div>
-          <div class="pack-item"><span class="pi-icon">🚁</span><div>Drone en su funda (cabe en mochila 20L sin problemas)</div></div>
-        </div>
-      </div>
-    </div>
-  </div>
-
+<div class="mc">
+<div class="mch">🎬 Series y pelis para descargar</div>
+<div class="mcb">
+<div class="mi"><span class="mtag tb">Serie</span> <strong>Bluey</strong> — perfecto para 4 años, episodios de 7 min · descargar toda la temporada 3</div>
+<div class="mi"><span class="mtag tb">Serie</span> <strong>Peppa Pig</strong> — en español o inglés · familiar, corto, calma inmediata en camper</div>
+<div class="mi"><span class="mtag tb">Peli</span> <strong>Moana</strong> — tiene agua, canoas, aventura · Mateo va a verla en ambiente con lagos reales</div>
+<div class="mi"><span class="mtag tb">Peli</span> <strong>Up</strong> — globos, aventura, paisajes · empieza con 10 min que igual emocionan a los adultos</div>
+<div class="mi"><span class="mtag tb">Peli</span> <strong>El viaje de Chihiro</strong> — para el vuelo largo, con subtítulos, funciona muy bien con 4 años</div>
+</div>
 </div>
 
-<!-- BUDGET -->
-<div class="section-title">💰 Presupuesto Estimado (por adulto)</div>
-<table>
-  <thead>
-    <tr><th>Concepto</th><th>Moneda</th><th>Estimado/adulto</th><th>Notas</th></tr>
-  </thead>
-  <tbody>
-    <tr><td>Ausserberg — Airbnb (1 noche)</td><td>USD</td><td>~80</td><td>USD 159 total</td></tr>
-    <tr><td>Frutigen — Airbnb (5 noches)</td><td>USD</td><td>~300</td><td>USD 475 base; +2 noches extra a confirmar precio</td></tr>
-    <tr><td>Schaffhausen — 1 noche</td><td>CHF</td><td>~60</td><td>Ya reservado</td></tr>
-    <tr><td>Root / Lucerna — 2 noches</td><td>CHF</td><td>~100</td><td>Verificar confirmación</td></tr>
-    <tr><td>Como — 3 noches</td><td>EUR</td><td>~150</td><td>Coordinar con Marta y Fede</td></tr>
-    <tr><td>Campings Bloque C (~8 noches)</td><td>EUR</td><td>~360</td><td>€40-65/noche según camping</td></tr>
-    <tr><td>Teleféricos y atracciones</td><td>CHF/EUR</td><td>~400</td><td>Zermatt, Oeschinen, Seceda, Alpe di Siusi, etc.</td></tr>
-    <tr><td>Comidas</td><td>Mixto</td><td>~600</td><td>Mix supermercado + restaurantes</td></tr>
-    <tr><td>Combustible y peajes</td><td>EUR</td><td>~200</td><td>Incl. Vignette Austria €11.50 y peaje Tre Cime €45</td></tr>
-    <tr><td>Parkings</td><td>CHF/EUR</td><td>~100</td><td>Estimado acumulado 22 días</td></tr>
-    <tr class="total"><td>TOTAL ESTIMADO</td><td></td><td>~USD 2.350</td><td>Por adulto · sin vuelos ni alquiler de vehículos</td></tr>
-  </tbody>
-</table>
-
-<!-- CHECKLIST -->
-<div class="section-title">📋 Logística & Pendientes</div>
-<div class="checklist">
-  <div class="cl-section">
-    <h3>🚗 Transporte</h3>
-    <div class="cl-item"><span class="cl-icon">✅</span><div><strong>Auto Malpensa (19/5 → 30/5)</strong><div class="cl-note">Retiro al llegar 19/5 · Entrega 30/5 08:30 en Milán</div></div></div>
-    <div class="cl-item"><span class="cl-icon">✅</span><div><strong>Camper Indie Campers Milán (30/5 → 8/6)</strong><div class="cl-note">Retiro 09:30 del 30/5 · Entrega 09:00 del 8/6 en Malpensa · Tanque diesel lleno al devolver</div></div></div>
-    <div class="cl-item"><span class="cl-icon">⚠️</span><div><strong>Vignette Austria</strong><div class="cl-note">Comprar antes de cruzar el Brennero (5/6). €11.50 para 10 días. Pegar en el parabrisas interior</div></div></div>
-    <div class="cl-item"><span class="cl-icon">✅</span><div><strong>Silla de auto para Mateo</strong><div class="cl-note">Incluida en el alquiler del auto (MXP). Verificar también para la camper al retirarla el 30/5.</div></div></div>
-    <div class="cl-item"><span class="cl-icon">⚠️</span><div><strong>Auto — ¿Peugeot 2008 o upgrade?</strong><div class="cl-note">Ver sección de Vehículo más abajo. El 2008 (434L) puede ser justo con 1 valija + 2 carry-on. Se recomienda el 3008 (520L) o similar.</div></div></div>
-  </div>
-  <div class="cl-section">
-    <h3>🏨 Alojamientos</h3>
-    <div class="cl-item"><span class="cl-icon">✅</span><div><strong>Ausserberg — Airbnb 19/5</strong></div></div>
-    <div class="cl-item"><span class="cl-icon">✅</span><div><strong>Frutigen — Airbnb 20-23/5 (+1 noche ext. ya reservada)</strong><div class="cl-note">¿Extender también el 24/5? Si no, el 24 es Schaffhausen</div></div></div>
-    <div class="cl-item"><span class="cl-icon">✅</span><div><strong>Schaffhausen — 1 noche (24/5) ✓ confirmado</strong><div class="cl-note">Hotel reservado. Cataratas del Rin a 3 km del centro.</div></div></div>
-    <div class="cl-item"><span class="cl-icon">❓</span><div><strong>Root / Lucerna — Airbnb 25-26/5</strong><div class="cl-note">Verificar confirmación</div></div></div>
-    <div class="cl-item"><span class="cl-icon">❓</span><div><strong>Como — 3 noches 27-29/5</strong><div class="cl-note">Coordinar con Marta y Fede</div></div></div>
-    <div class="cl-item"><span class="cl-icon">⏳</span><div><strong>Campings Bloque C — pendiente (se reserva más cerca del viaje)</strong><div class="cl-note">Junio = temporada alta. Priorizar: Caravan Park Sexten, Camping Kranebitten, Camping Silvaplana.</div></div></div>
-  </div>
-  <div class="cl-section">
-    <h3>🎫 Tickets</h3>
-    <div class="cl-item"><span class="cl-icon">❓</span><div><strong>Gornergrat Bahn (Zermatt) — 20/5</strong><div class="cl-note">Comprar online anticipado — muy popular</div></div></div>
-    <div class="cl-item"><span class="cl-icon">❓</span><div><strong>Teleférico Seceda (Ortisei) — 2/6</strong><div class="cl-note">€39.50 · Reservar online si es posible</div></div></div>
-    <div class="cl-item"><span class="cl-icon">❓</span><div><strong>Bernina Express (Marta y Fede) — 7/6</strong><div class="cl-note">~€60 por persona · Reservar en SBB.ch</div></div></div>
-    <div class="cl-item"><span class="cl-icon">❓</span><div><strong>Parking P2 Lago di Braies pernocta — 2/6</strong><div class="cl-note">Solo en el lugar. Llegar antes de 18:00 para asegurar plaza</div></div></div>
-  </div>
-  <div class="cl-section">
-    <h3>👶 Mateo (casi 4 años)</h3>
-    <div class="cl-item"><span class="cl-icon">✅</span><div><strong>Trümmelbachfälle — NO apta, reemplazada por Staubbachfall</strong></div></div>
-    <div class="cl-item"><span class="cl-icon">✅</span><div><strong>Sin stroller — Mateo camina solo</strong><div class="cl-note">Para tramos largos en trekking: llevar en hombros. Considerar un hip seat carrier liviano (ej. Tula o similar) para comodidad del adulto.</div></div></div>
-    <div class="cl-item"><span class="cl-icon">📌</span><div><strong>Rodelbahn / Fun Bob</strong><div class="cl-note">Mateo puede ir con adulto — confirmar edad mínima en cada actividad</div></div></div>
-    <div class="cl-item"><span class="cl-icon">💡</span><div><strong>Lavandería en ruta</strong><div class="cl-note">Se recomienda lavar cada 5 días: Airbnb Frutigen (día 3-4), apartamento Como, algún camping del Bloque C. Esto permite llevar mucho menos ropa.</div></div></div>
-  </div>
+<div class="mc">
+<div class="mch">🌿 Actividades físicas en paradas</div>
+<div class="mcb">
+<div class="mi"><span class="mtag tg">Parque</span> <strong>Blausee (Día 3)</strong> — parque infantil junto al lago turquesa · tierra y agua · perfecto</div>
+<div class="mi"><span class="mtag tg">Parque</span> <strong>Allmendhubel (Día 4)</strong> — Flower Park alpino con estructuras de madera enormes para niños · primer día de apertura de la temporada</div>
+<div class="mi"><span class="mtag tg">Prado</span> <strong>Alpe di Siusi (Día 14)</strong> — el altiplano más grande de Europa · vacas, caballos, flores · Mateo corre libre sin límite</div>
+<div class="mi"><span class="mtag tg">Nieve</span> <strong>Simplon Pass (Día 1)</strong> — primera nieve de Mateo en Europa si nunca la vio · a 2.005m · parar a jugar mínimo 20 min</div>
+<div class="mi"><span class="mtag tg">Nieve</span> <strong>Passo San Gottardo (Día 9)</strong> — nieve garantizada · Mateo + bola de nieve = foto del año</div>
+<div class="mi"><span class="mtag tg">Parque</span> <strong>Lago di Misurina (Día 17)</strong> — parque infantil frente al agua con Tre Cime de fondo</div>
+<div class="mi"><span class="mtag tg">Zoo</span> <strong>Rossy Park, Vipiteno (Día 18)</strong> — animales de granja: vacas, cabras, gallinas · Mateo puede tocarlos</div>
+<div class="mi"><span class="mtag tg">Zoo</span> <strong>Alpenzoo Innsbruck (Día 18)</strong> — zoológico más alto de Europa · lobos, osos, águilas</div>
+</div>
 </div>
 
-<!-- VEHÍCULO -->
-<div class="section-title">🚗 Vehículo — Peugeot 2008 vs alternativas</div>
-<div class="checklist">
-  <div class="cl-section">
-    <h3>Análisis Peugeot 2008 (reservado)</h3>
-    <div class="cl-item"><span class="cl-icon">⚠️</span><div><strong>Baúl: 434 litros — puede ser justo</strong><div class="cl-note">Con 1 valija grande (23 kg) + 2 carry-ons + bolso de día + accesorios drone/GoPro, el espacio queda muy ajustado. Empacando bien se puede, pero sin margen.</div></div></div>
-    <div class="cl-item"><span class="cl-icon">✅</span><div><strong>Ideal para rutas de montaña</strong><div class="cl-note">Los pasos alpinos (Simplon, Gottardo, Maloja) no requieren 4WD en mayo/junio — cualquier SUV compacto funciona perfectamente.</div></div></div>
-    <div class="cl-item"><span class="cl-icon">💡</span><div><strong>Recomendación: solicitar automático</strong><div class="cl-note">En carreteras de montaña con curvas y pendientes, el automático es mucho más cómodo. Verificar al momento del retiro.</div></div></div>
-  </div>
-  <div class="cl-section">
-    <h3>Alternativas recomendadas (si hay posibilidad de cambio)</h3>
-    <div class="cl-item"><span class="cl-icon">🥇</span><div><strong>Peugeot 3008 — mejor opción del mismo fabricante</strong><div class="cl-note">Baúl: 520 L. Mismo nivel de confort, más espacio de carga. Upgrade natural desde el 2008.</div></div></div>
-    <div class="cl-item"><span class="cl-icon">🥈</span><div><strong>Skoda Octavia Combi (familiar) — rei del espacio</strong><div class="cl-note">Baúl: 640 L. Perfecta para viajes largos con niño. Más baja que un SUV pero muy práctica.</div></div></div>
-    <div class="cl-item"><span class="cl-icon">🥉</span><div><strong>Seat Ateca / VW T-Roc</strong><div class="cl-note">Baúl: ~485-510 L. Buen equilibrio espacio/maniobrabilidad. Bien valoradas en Europa.</div></div></div>
-    <div class="cl-item"><span class="cl-icon">ℹ️</span><div><strong>Dacia Duster — opción económica y práctica</strong><div class="cl-note">Baúl: 445 L. Económica, fiable en montaña. Estética "aventura" que encaja con el viaje.</div></div></div>
-  </div>
-  <div class="cl-section">
-    <h3>Veredicto</h3>
-    <div class="cl-item"><span class="cl-icon">📌</span><div><strong>Si empacás ordenado y hacés lavandería, el 2008 alcanza.</strong><div class="cl-note">Si podés cambiar sin costo extra, el 3008 o Octavia Combi dan mucha más comodidad. Depende del precio de cambio. La silla de auto está confirmada en el alquiler actual.</div></div></div>
-  </div>
+<div class="mc">
+<div class="mch">🚠 Tips para los teleféricos</div>
+<div class="mcb">
+<div class="mi"><span class="mtag to">Tip</span> <strong>Prepararlo antes</strong> — "Mateo, mañana subimos en una cajita mágica que vuela por la montaña. ¿Querés ver un video?" Muestra uno en YouTube la noche anterior.</div>
+<div class="mi"><span class="mtag to">Tip</span> <strong>Snack especial solo para el teleférico</strong> — una galletita favorita que SOLO se come adentro del teleférico. Crea asociación positiva.</div>
+<div class="mi"><span class="mtag to">Tip</span> <strong>Ventana o centro</strong> — si le da vértigo, que mire hacia arriba (el cielo) no hacia abajo. Si le gusta, ventana derecha para mejores vistas.</div>
+<div class="mi"><span class="mtag to">Tip</span> <strong>Contar los postes</strong> — en el teleférico, contar los postes de soporte juntos. Mantiene distraído y emocionado.</div>
+</div>
 </div>
 
-<!-- FOTOGRAFÍA -->
-<div class="section-title">📷 Plan de Fotografía — Drone, GoPro & iPhone</div>
-
-<div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:28px">
-
-  <div class="bag" style="grid-column:1/-1">
-    <div class="bag-hdr" style="background:linear-gradient(90deg,#212121,#424242)">
-      🚁 TOP 10 Tomas de Drone — En orden de prioridad
-      <span>Verificar regulaciones antes de volar en cada país · App recomendada: AirMap o DroneScout</span>
-    </div>
-    <div class="bag-body">
-      <table style="margin:0">
-        <thead><tr><th>#</th><th>Día / Fecha</th><th>Spot</th><th>Tipo de toma</th><th>Regulación</th></tr></thead>
-        <tbody>
-          <tr><td>1</td><td>Día 9 · 27/5</td><td><strong>La Tremola — Paso San Gottardo</strong></td><td>Toma cenital del zigzag de piedra, la carretera más épica del viaje. Sobrevolar de lado a lado.</td><td>🇨🇭 Libre (Open A1)</td></tr>
-          <tr><td>2</td><td>Día 15 · 2/6</td><td><strong>Seceda — Dolomitas</strong></td><td>Las agujas de roca Odle desde arriba. Combiná con selfie de la familia en el mirador.</td><td>🇮🇹 Registrar en D-Flight</td></tr>
-          <tr><td>3</td><td>Día 15-16 · 2-3/6</td><td><strong>Lago di Braies (amanecer)</strong></td><td>El clásico cenital del lago esmeralda rodeado de bosque. Mejor a las 6:00 AM sin turistas.</td><td>🇮🇹 Libre lejos del lago</td></tr>
-          <tr><td>4</td><td>Día 17 · 4/6</td><td><strong>Cadini di Misurina</strong></td><td>"Money shot": las Tres Cimas con el lago Misurina abajo. Subí al mirador y lanzá el drone desde ahí.</td><td>🇮🇹 Evitar sobre gente</td></tr>
-          <tr><td>5</td><td>Día 17 · 4/6</td><td><strong>Passo Giau — atardecer</strong></td><td>Ra Gusela iluminada por el sol poniente. El cielo se vuelve naranja. Vuelo al anochecer (luz dorada ~20:30).</td><td>🇮🇹 Zona abierta, OK</td></tr>
-          <tr><td>6</td><td>Día 19 · 6/6</td><td><strong>Lago di Resia — campanario sumergido</strong></td><td>Toma cenital del campanario que asoma del agua. Icónica. Madrugada = agua espejo.</td><td>🇮🇹/🇦🇹 frontera, verificar</td></tr>
-          <tr><td>7</td><td>Día 20 · 7/6</td><td><strong>Paso Bernina — tren rojo</strong></td><td>Posicionarse en Lago Bianco y capturar el Bernina Express pasando con glaciares de fondo.</td><td>🇨🇭 Libre (Open)</td></tr>
-          <tr><td>8</td><td>Día 1 · 19/5</td><td><strong>Ganterbrücke — puente curvo</strong></td><td>Puente de carretera con curva suave sobre el valle. Toma lateral y cenital.</td><td>🇨🇭 Libre</td></tr>
-          <tr><td>9</td><td>Día 2 · 20/5</td><td><strong>Salida de Täsch / Valle del Matterhorn</strong></td><td>Ruta serpenteante con el Matterhorn al fondo. Zermatt tiene restricciones — volar ANTES de entrar al pueblo.</td><td>🇨🇭 ⚠️ Zona restringida en Zermatt</td></tr>
-          <tr><td>10</td><td>Día 12 · 30/5</td><td><strong>Lago de Iseo — Monte Isola</strong></td><td>La isla habitada más grande de un lago de agua dulce en Europa. Toma desde el camping hacia la isla.</td><td>🇮🇹 Registrar en D-Flight</td></tr>
-        </tbody>
-      </table>
-    </div>
-  </div>
-
-  <div class="bag">
-    <div class="bag-hdr" style="background:linear-gradient(90deg,#1565c0,#0288d1)">
-      📱 iPhone (Mery + Seba) — Cuándo usarlo
-      <span>Mejor cámara del día a día</span>
-    </div>
-    <div class="bag-body">
-      <div class="pack-cat">
-        <h5>Momentos iPhone</h5>
-        <div class="pack-item"><span class="pi-icon">👨‍👩‍👦</span><div>Retratos de familia en pueblos y restaurantes</div></div>
-        <div class="pack-item"><span class="pi-icon">🍽️</span><div>Comida, platos, mercados</div></div>
-        <div class="pack-item"><span class="pi-icon">😄</span><div>Expresiones de Mateo — modo retrato, apertura abierta</div></div>
-        <div class="pack-item"><span class="pi-icon">🌆</span><div>Ciudades (Milán, Verona, Lucerna, Innsbruck)</div></div>
-        <div class="pack-item"><span class="pi-icon">🌙</span><div>Noche y hora azul — iPhone nocturno</div></div>
-      </div>
-      <div class="pack-cat">
-        <h5>Tips iPhone en Alpes</h5>
-        <div class="pack-item"><span class="pi-icon">💡</span><div>Modo 0.5x (ultra gran angular) para montañas — mucho contexto</div></div>
-        <div class="pack-item"><span class="pi-icon">💡</span><div>Silencio + modo ProRes si tenés iPhone 15 Pro para los pasajes más icónicos</div></div>
-        <div class="pack-item"><span class="pi-icon">💡</span><div>Cuadrícula ON siempre + nivel automático para paisajes</div></div>
-        <div class="pack-item"><span class="pi-icon">💡</span><div>Pantalla bloqueada cuando hace frío (el frío descarga la batería más rápido)</div></div>
-        <div class="pack-item"><span class="pi-icon">🔋</span><div>Power bank siempre encima en días de trekking</div></div>
-      </div>
-    </div>
-  </div>
-
-  <div class="bag">
-    <div class="bag-hdr" style="background:linear-gradient(90deg,#00838f,#006064)">
-      🎥 GoPro — Cuándo y cómo
-      <span>Acción, agua, polvo, alturas</span>
-    </div>
-    <div class="bag-body">
-      <div class="pack-cat">
-        <h5>Modos por situación</h5>
-        <div class="pack-item"><span class="pi-icon">🚗</span><div><strong>TimeWarp:</strong> rutas de montaña desde el parabrisas (Simplon, Gottardo, Bernina)</div></div>
-        <div class="pack-item"><span class="pi-icon">🚠</span><div><strong>4K 60fps + HyperSmooth:</strong> teleféricos (Seceda, Alpe di Siusi) y fun bob</div></div>
-        <div class="pack-item"><span class="pi-icon">💦</span><div><strong>Slow-mo 8x:</strong> cascadas (Staubbachfall, Cataratas del Rin, Braies)</div></div>
-        <div class="pack-item"><span class="pi-icon">❄️</span><div><strong>Burst 30fps:</strong> Mateo en la nieve (Simplon, Gottardo)</div></div>
-        <div class="pack-item"><span class="pi-icon">🌅</span><div><strong>Night Lapse:</strong> estrellas en camping Braies o Passo Giau</div></div>
-        <div class="pack-item"><span class="pi-icon">🚣</span><div><strong>Waterproof modo normal:</strong> bote en Braies, ferry Como, lluvia en la camper</div></div>
-      </div>
-      <div class="pack-cat">
-        <h5>Accesorios imprescindibles</h5>
-        <div class="pack-item"><span class="pi-icon">🪝</span><div>Suction mount para parabrisas (montaña)</div></div>
-        <div class="pack-item"><span class="pi-icon">🤿</span><div>Floating hand grip — botes y lagos (no se hunde si cae)</div></div>
-        <div class="pack-item"><span class="pi-icon">🎽</span><div>Chest mount — trekking, toboganes, teleférico</div></div>
-        <div class="pack-item"><span class="pi-icon">🔋</span><div>2 baterías extra mínimo (en el carry-on siempre)</div></div>
-        <div class="pack-item"><span class="pi-icon">💾</span><div>Tarjeta SD U3/V30 rápida (para 4K)</div></div>
-      </div>
-    </div>
-  </div>
-
+<div class="mc">
+<div class="mch">🧸 Kit anti-aburrimiento para el vuelo</div>
+<div class="mcb">
+<div class="mi">🎨 <strong>Cuaderno de actividades nuevo</strong> — comprarlo la semana antes, que no lo haya visto. Sorpresa en el avión.</div>
+<div class="mi">✂️ <strong>Sticker book</strong> — 30-45 minutos de entretenimiento garantizado con un buen libro de pegatinas</div>
+<div class="mi">🚗 <strong>2-3 autitos/figuras pequeños</strong> — el Mateo puede jugar en la bandejita de la butaca</div>
+<div class="mi">🎧 <strong>Auriculares para niños con limitador de volumen</strong> — los estándar sin limitador pueden dañar los oídos en presión de cabina</div>
+<div class="mi">🍪 <strong>Snacks preferidos</strong> — fruta seca, galletitas, una chocolatada pequeña. El snack especial = moneda de intercambio.</div>
+<div class="mtip">💡 El vuelo BUE→MXP dura ~13 horas. Tiene pantalla individual. Preparar playlist en Netflix Kids descargada para cuando se aburra de la pantalla del avión.</div>
+</div>
 </div>
 
-<!-- REGULACIONES DRONE -->
-<div class="alert info" style="margin-bottom:28px">
-  <div class="alert-title">🚁 DJI Mini 2 (249g) — Regulaciones en ruta · Gran ventaja al pesar &lt;250g</div>
-  <ul>
-    <li><strong>✅ Ventaja clave:</strong> El DJI Mini 2 pesa exactamente 249g — 1 gramo bajo el umbral de 250g de la regulación EASA. Esto lo pone en la categoría <strong>Open A1</strong> en toda la UE y Suiza, con requisitos mínimos.</li>
-    <li><strong>🇨🇭 Suiza (FOCA):</strong> Sin registro obligatorio para &lt;250g recreativo. Sin licencia de piloto. Límite 120m AGL. <strong>⚠️ Zermatt:</strong> zona restringida — volar antes de entrar al pueblo (en Täsch y valles aledaños).</li>
-    <li><strong>🇮🇹 Italia (D-Flight):</strong> Para drones &lt;250g sin cámara o con cámara de baja potencia → Open A1, sin registro obligatorio para uso recreativo. <strong>Recomendado:</strong> igual registrarse en d-flight.it por si acaso. Evitar volar sobre gente. Tre Cime y zonas naturales protegidas: verificar cada punto en AirMap.</li>
-    <li><strong>🇦🇹 Austria (AustroControl):</strong> Open A1 para &lt;250g. Sin registro obligatorio recreativo. <strong>⚠️ Innsbruck:</strong> cerca del aeropuerto internacional — zona restringida. Usar dronespace.austrocontrol.at para verificar.</li>
-    <li><strong>📱 Apps antes de cada vuelo:</strong> <strong>AirMap</strong> (mejor para Europa), <strong>DroneScout</strong>, o <strong>DJI Fly</strong> (tiene mapa de zonas). Verificar la noche anterior.</li>
-  </ul>
+</div><!-- /si -->
+</section>
+
+<!-- ═══════════════ NOTAS ═══════════════ -->
+<section id="tab-notas" class="tab-section">
+<div class="si">
+<div class="nf">
+  <textarea id="nota-input" placeholder="Escribí una nota del viaje... Un recuerdo, una recomendación, un dato útil."></textarea>
+  <button class="sv-btn" onclick="saveNota()">💾 Guardar nota</button>
 </div>
+<div class="ni-list" id="notas-list"></div>
+<p class="n-foot">Las notas se guardan en este dispositivo (localStorage).</p>
+</div>
+</section>
 
-<div class="footer">Generado el 11/05/2026 · Europa 2026 — Mariana, Mery y Mateo 💙</div>
-
-</div><!-- /wrap -->
+</main>
 
 <script>
-// KM por día
-const kmData = [
-  {d:"18/5",l:"Vuelo",km:0,block:"x"},
-  {d:"19/5",l:"MXP→Ausserberg",km:165,block:"a"},
-  {d:"20/5",l:"Zermatt→Frutigen",km:110,block:"a"},
-  {d:"21/5",l:"Lagos Cristal",km:85,block:"a"},
-  {d:"22/5",l:"Lauterbrunnen",km:95,block:"a"},
-  {d:"23/5",l:"Extra Frutigen",km:40,block:"a"},
-  {d:"24/5",l:"Berna→Schaffhausen",km:190,block:"a"},
-  {d:"25/5",l:"Rhine Falls→Lucerna",km:80,block:"a"},
-  {d:"26/5",l:"Lucerna chill",km:15,block:"a"},
-  {d:"27/5",l:"Gottardo→Como",km:160,block:"b"},
-  {d:"28/5",l:"Milán (tren)",km:45,block:"b"},
-  {d:"29/5",l:"Ferry Como",km:5,block:"b"},
-  {d:"30/5",l:"Como→Verona",km:175,block:"c"},
-  {d:"31/5",l:"Verona→Garda",km:110,block:"c"},
-  {d:"1/6",l:"Carezza→Gardena",km:120,block:"c"},
-  {d:"2/6",l:"Seceda→Braies",km:95,block:"c"},
-  {d:"3/6",l:"Braies→San Candido",km:35,block:"c"},
-  {d:"4/6",l:"Tre Cime→Giau",km:80,block:"c"},
-  {d:"5/6",l:"Vipiteno→Innsbruck",km:135,block:"c"},
-  {d:"6/6",l:"Innsbruck→St.Moritz",km:190,block:"c"},
-  {d:"7/6",l:"Bernina→Somma",km:215,block:"c"},
-  {d:"8/6",l:"Entrega→MXP",km:10,block:"c"},
+// ════════════════════════════════════════
+// DATOS DEL VIAJE
+// ════════════════════════════════════════
+const TRIP_DAYS = [
+  {d:0,date:'2026-05-18',label:'Lun 18/5',title:'Vuelo de salida ✈️',block:'x',km:0,sleep:'En vuelo',hl:['✈️ Salida hacia Milán Malpensa (MXP)','Llegada 19/5 a las 10:15']},
+  {d:1,date:'2026-05-19',label:'Mar 19/5',title:'Llegada MXP → Alpes del Valais',block:'a',km:165,sleep:'Ausserberg — Airbnb',hl:['🛒 Decathlon Castelletto Ticino','🏰 Vogogna — castillo medieval','🏔 Simplon Pass (2.005m) — nieve para Mateo','📸 Ganterbrücke (drone)']},
+  {d:2,date:'2026-05-20',label:'Mié 20/5',title:'Zermatt & Gornergrat → Frutigen',block:'a',km:110,sleep:'Frutigen — Airbnb',hl:['🚂 Gornergrat Bahn (3.089m)','❄️ Riffelsee — reflejo del Matterhorn','🐑 Ovejas Schwarznasenschaf','🚂 Autoverlad Lötschberg']},
+  {d:3,date:'2026-05-21',label:'Jue 21/5',title:'Lagos de Cristal & Castillos del Oberland',block:'a',km:85,sleep:'Frutigen — Airbnb',hl:['🌲 Blausee — lago turquesa + bote cristal','🚠 Lago Oeschinen en teleférico','🎢 Rodelbahn — tobogán de montaña','🏰 Castillo Oberhofen']},
+  {d:4,date:'2026-05-22',label:'Vie 22/5',title:'Lauterbrunnen: Cascadas, Mürren e Iseltwald',block:'a',km:95,sleep:'Frutigen — Airbnb',hl:['💦 Staubbachfall (gratuita)','🚡 Mürren — almuerzo vista Eiger','🛝 Allmendhubel Flower Park','🌊 Iseltwald — muelle famoso']},
+  {d:5,date:'2026-05-23',label:'Sáb 23/5',title:'Día extra en Frutigen — a definir',block:'a',km:40,sleep:'Frutigen — Airbnb',hl:['Opción A: Grindelwald + vista al Eiger','Opción B: Niesen en teleférico','Opción C: Día de descanso total']},
+  {d:6,date:'2026-05-24',label:'Dom 24/5',title:'Berna → Schaffhausen',block:'a',km:190,sleep:'Schaffhausen — Hotel',hl:['🐻 Bärengraben (Mateo)','🕰 Torre Zytglogge','🌳 Rosengarten — picnic panorámico','Ciudad medieval a orillas del Rin']},
+  {d:7,date:'2026-05-25',label:'Lun 25/5',title:'Cataratas del Rin → Stein am Rhein → Lucerna',block:'a',km:80,sleep:'Root (Lucerna) — Airbnb',hl:['🌊 Cataratas del Rin — la más potente de Europa','🚢 Barco amarillo a la roca central','🎨 Stein am Rhein — pueblo medieval pintado','🦢 Paseo Rin viendo cisnes']},
+  {d:8,date:'2026-05-26',label:'Mar 26/5',title:'Lucerna — Puentes, Murallas y Lago',block:'a',km:15,sleep:'Root (Lucerna) — Airbnb',hl:['🌉 Kapellbrücke — puente más antiguo de Europa','🚢 Ferry circular por el lago','🏰 Murallas de Musegg (gratis)','🛝 Inseli Park — parque marítimo']},
+  {d:9,date:'2026-05-27',label:'Mié 27/5',title:'Cruce de los Alpes → Reencuentro en Como',block:'b',km:160,sleep:'Como — Alojamiento',hl:['🏔 La Tremola — drone top 1','🧀 Caseificio del Gottardo (almuerzo)','🌴 Lugano — Parco Ciani','🥂 Reencuentro con Marta y Fede']},
+  {d:10,date:'2026-05-28',label:'Jue 28/5',title:'Milán — La Dolce Vita',block:'b',km:45,sleep:'Como — Alojamiento',hl:['🏰 Castello Sforzesco + Parco Sempione','⛪ Duomo — terrazas entre las agujas','🐂 Galería Vittorio Emanuele II','☕ Terraza La Rinascente']},
+  {d:11,date:'2026-05-29',label:'Vie 29/5',title:'Lago de Como — Varenna & Bellagio en ferry',block:'b',km:5,sleep:'Como — Alojamiento',hl:['🚢 Ferry público (Batello)','🏘 Varenna — Passerella degli Innamorati','🚤 Ferry 15min a Bellagio','🍝 Almuerzo grupal — pasta + pescado']},
+  {d:12,date:'2026-05-30',label:'Sáb 30/5',title:'Logística Camper → Iseo → Verona',block:'c',km:175,sleep:'Verona — Camping Castel San Pietro',hl:['🚐 Retiro camper Indie Campers Milán','💎 Lago de Iseo (Sarnico)','🏛 Verona nocturna — Arena iluminada','🍷 Cena Piazza delle Erbe']},
+  {d:13,date:'2026-05-31',label:'Dom 31/5',title:'Santuario de la Roca → Norte del Garda',block:'c',km:110,sleep:'Riva del Garda — Camping',hl:['🏔 Madonna della Corona — santuario en la roca','🚌 Bus lanzadera desde Spiazzi','🏰 Lazise — pueblo amurallado','🏔 Riva del Garda — picos alpinos']},
+  {d:14,date:'2026-06-01',label:'Lun 1/6',title:'Lago del Arcoíris → Gran Altiplano (Val Gardena)',block:'c',km:120,sleep:'Ortisei — Área Camper',hl:['🌈 Lago di Carezza — sendero 30min','🚠 Alpe di Siusi — altiplano más grande de Europa','🐄 Praderas con vacas — Mateo corre libre','🍰 Strudel en Malga Sanon']},
+  {d:15,date:'2026-06-02',label:'Mar 2/6',title:'Crestas de Seceda → Noche en Lago di Braies',block:'c',km:95,sleep:'Parking P2 Lago di Braies',hl:['🚠 Seceda — vista más icónica de los Dolomitas','🏔 Passo Gardena (drone)','⛪ Val di Funes — iglesita San Giovanni','🛶 Lago di Braies (llegar >18:00)']},
+  {d:16,date:'2026-06-03',label:'Mié 3/6',title:'Amanecer en Braies → Fun Bob San Candido',block:'c',km:35,sleep:'Caravan Park Sexten',hl:['🌅 Amanecer en Braies — caminata circular','🚣 Alquiler bote de madera','🎢 Fun Bob San Candido (Mateo)','🏊 Camping Sexten — piscina + spa']},
+  {d:17,date:'2026-06-04',label:'Jue 4/6',title:'Tre Cime di Lavaredo → Misurina → Passo Giau',block:'c',km:80,sleep:'Cortina / Parking Passo Giau',hl:['🏔 Tre Cime di Lavaredo','🗻 Cadini di Misurina (drone)','🌊 Lago di Misurina — parque infantil','📸 Passo Giau — atardecer con Ra Gusela']},
+  {d:18,date:'2026-06-05',label:'Vie 5/6',title:'Vipiteno → Innsbruck',block:'c',km:135,sleep:'Innsbruck — Camping Kranebitten',hl:['🏰 Vipiteno — pueblo medieval tirolés','🦌 Rossy Park — animales de granja','🐺 Alpenzoo Innsbruck','🏘 Tejado Dorado iluminado']},
+  {d:19,date:'2026-06-06',label:'Sáb 6/6',title:'Engadina → St. Moritz',block:'c',km:190,sleep:'Silvaplana / St. Moritz — Camping',hl:['🌊 Lago di Resia — campanario sumergido (drone)','🏔 Paso del Maloja — lagos azul acero','🏘 St. Moritz — orilla del lago','☕ Café Hanselmann']},
+  {d:20,date:'2026-06-07',label:'Dom 7/6',title:'Bernina → Tirano → Somma Lombardo',block:'c',km:215,sleep:'Somma Lombardo — cerca de Malpensa',hl:['🏔 Lago Bianco — ver el Bernina Express rojo','🇮🇹 Tirano — Pizzoccheri de la Valtellina','🛣 Ruta orilla este Lago Como','🍕 Última cena del viaje']},
+  {d:21,date:'2026-06-08',label:'Lun 8/6',title:'Entrega Camper → Vuelo de Regreso ✈️',block:'c',km:10,sleep:'¡Regreso a casa! ✈️',hl:['⛽ 08:15 — Cargar diesel','🚐 09:00 — Entrega camper Indie Campers','✈️ 13:00 — Vuelo de regreso']}
 ];
 
-const blockColor = {
-  a: {bar:"#1976d2", hover:"#1565c0"},
-  b: {bar:"#e53935", hover:"#c62828"},
-  c: {bar:"#43a047", hover:"#2e7d32"},
-  x: {bar:"#90a4ae", hover:"#607d8b"},
-};
+// ════════════════════════════════════════
+// NAVEGACIÓN
+// ════════════════════════════════════════
+function showTab(name, btn) {
+  document.querySelectorAll('.tab-section').forEach(s=>s.classList.remove('active'));
+  document.querySelectorAll('.nav-tab').forEach(b=>b.classList.remove('active'));
+  document.getElementById('tab-'+name).classList.add('active');
+  if(btn) btn.classList.add('active');
+  else document.querySelectorAll('.nav-tab').forEach(b=>{ if(b.getAttribute('onclick').includes("'"+name+"'")) b.classList.add('active'); });
+}
 
-const canvas = document.getElementById("kmChart");
-const ctx = canvas.getContext("2d");
-const DPR = window.devicePixelRatio || 1;
-const W_CSS = canvas.parentElement.clientWidth - 40;
-const H_CSS = 260;
-canvas.width = W_CSS * DPR;
-canvas.height = H_CSS * DPR;
-canvas.style.width = W_CSS + "px";
-canvas.style.height = H_CSS + "px";
-ctx.scale(DPR, DPR);
+function toggleCard(hdr) {
+  const body = hdr.nextElementSibling;
+  const open = body.classList.contains('open');
+  body.classList.toggle('open', !open);
+  hdr.classList.toggle('expanded', !open);
+}
 
-const PAD = {top:20, right:10, bottom:52, left:38};
-const plotW = W_CSS - PAD.left - PAD.right;
-const plotH = H_CSS - PAD.top - PAD.bottom;
-const maxKm = 250;
-const n = kmData.length;
-const barW = plotW / n * 0.68;
-const gap = plotW / n;
+// ════════════════════════════════════════
+// DASHBOARD (HOY)
+// ════════════════════════════════════════
+function initDashboard() {
+  const now = new Date();
+  const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+  const tripStart = new Date('2026-05-18');
+  const tripEnd = new Date('2026-06-08');
+  const cont = document.getElementById('dash-content');
 
-// Grid lines
-ctx.strokeStyle = "#eceff1";
-ctx.lineWidth = 1;
-[0,50,100,150,200,250].forEach(v => {
-  const y = PAD.top + plotH - (v / maxKm) * plotH;
-  ctx.beginPath();
-  ctx.moveTo(PAD.left, y);
-  ctx.lineTo(PAD.left + plotW, y);
-  ctx.stroke();
-  ctx.fillStyle = "#90a4ae";
-  ctx.font = "10px -apple-system,sans-serif";
-  ctx.textAlign = "right";
-  ctx.fillText(v, PAD.left - 4, y + 3);
-});
+  // Top date display
+  document.getElementById('topDate').textContent = today.toLocaleDateString('es-AR',{weekday:'short',day:'numeric',month:'short'});
 
-// Bars
-kmData.forEach((d, i) => {
-  const x = PAD.left + i * gap + (gap - barW) / 2;
-  const barH = (d.km / maxKm) * plotH;
-  const y = PAD.top + plotH - barH;
-  const col = blockColor[d.block];
-  ctx.fillStyle = col.bar;
-  // rounded top
-  const r = Math.min(4, barH / 2);
-  if (barH > 0) {
-    ctx.beginPath();
-    ctx.moveTo(x + r, y);
-    ctx.lineTo(x + barW - r, y);
-    ctx.quadraticCurveTo(x + barW, y, x + barW, y + r);
-    ctx.lineTo(x + barW, y + barH);
-    ctx.lineTo(x, y + barH);
-    ctx.lineTo(x, y + r);
-    ctx.quadraticCurveTo(x, y, x + r, y);
-    ctx.fill();
+  if(today < tripStart) {
+    const diff = Math.round((tripStart - today) / 86400000);
+    cont.innerHTML = `
+    <div class="dh">
+      <div class="dc">✈️ ${diff}</div>
+      <div class="ds">${diff === 1 ? 'día falta' : 'días faltan'} para el viaje</div>
+      <div style="font-size:.82em;opacity:.8">🗓 Salida: lunes 18 de mayo · 2026</div>
+      <div class="dstats">
+        <div class="dstat"><div class="v">22</div><div class="l">noches</div></div>
+        <div class="dstat"><div class="v">~2.155 km</div><div class="l">en ruta</div></div>
+        <div class="dstat"><div class="v">Suiza · Italia · Austria</div><div class="l">3 países</div></div>
+      </div>
+    </div>
+    <div class="dash-card">
+      <h3>📋 Checklist pre-viaje rápido</h3>
+      <ul class="dash-list">
+        <li>🧳 Equipaje preparado → revisá la pestaña <strong>Equipaje</strong></li>
+        <li>✅ Reservas confirmadas → revisá la pestaña <strong>Logística</strong></li>
+        <li>📱 Apps de Mateo descargadas offline</li>
+        <li>🚁 Drone: baterías cargadas + microSD formateadas</li>
+        <li>📄 Documentos digitales (PDF de confirmaciones offline)</li>
+        <li>💊 Botiquín completo</li>
+        <li>🔋 Power banks cargados la noche antes</li>
+      </ul>
+    </div>
+    <div class="dash-card">
+      <h3>🗺 El viaje de un vistazo</h3>
+      <ul class="dash-list">
+        <li><span class="bp bpa">Bloque A</span> &nbsp;19/5 → 26/5 · Alpes Suizos · Ausserberg, Frutigen, Zermatt, Lucerna</li>
+        <li><span class="bp bpb">Bloque B</span> &nbsp;27/5 → 29/5 · Lago de Como e Italia · Gottardo, Como, Milán, Bellagio</li>
+        <li><span class="bp bpc">Bloque C</span> &nbsp;30/5 → 8/6 · Camper · Verona, Garda, Dolomitas, Innsbruck, St. Moritz</li>
+      </ul>
+    </div>`;
+  } else if(today > tripEnd) {
+    cont.innerHTML = `
+    <div class="dh">
+      <div class="dc">🎉</div>
+      <div class="ds">¡Viaje completado!</div>
+      <div style="font-size:.86em;opacity:.9">18 mayo → 8 junio · 2026</div>
+      <div class="dstats">
+        <div class="dstat"><div class="v">22 noches</div><div class="l">vividas</div></div>
+        <div class="dstat"><div class="v">~2.155 km</div><div class="l">recorridos</div></div>
+        <div class="dstat"><div class="v">Suiza · Italia · Austria</div><div class="l">3 países</div></div>
+      </div>
+    </div>
+    <div class="dash-card">
+      <h3>📝 Guardá tus recuerdos</h3>
+      <p style="font-size:.86em;color:var(--txl);margin-bottom:8px">Escribí tus momentos favoritos del viaje antes de que se olviden.</p>
+      <button class="go-btn" onclick="showTab('notas')">📝 Ir a Notas</button>
+    </div>`;
+  } else {
+    // During trip
+    const diffFromStart = Math.round((today - tripStart) / 86400000);
+    const dayData = TRIP_DAYS.find(d => d.d === diffFromStart) || TRIP_DAYS[TRIP_DAYS.length-1];
+    const blockLabels = {a:'🏔 Bloque A — Alpes Suizos',b:'🇮🇹 Bloque B — Como & Milán',c:'🚐 Bloque C — Camper Dolomitas',x:'✈️ Viaje'};
+    const blockClasses = {a:'bpa',b:'bpb',c:'bpc',x:'bpx'};
+
+    cont.innerHTML = `
+    <div class="dh">
+      <div class="dn2">Día ${dayData.d} · ${dayData.label}</div>
+      <div class="dt">${dayData.title}</div>
+      <span class="bp ${blockClasses[dayData.block]}">${blockLabels[dayData.block]}</span>
+      <div class="dstats">
+        <div class="dstat"><div class="v">${dayData.km > 0 ? dayData.km+' km' : '—'}</div><div class="l">hoy en ruta</div></div>
+        <div class="dstat"><div class="v">Día ${dayData.d} / 21</div><div class="l">del viaje</div></div>
+        <div class="dstat"><div class="v">${21 - dayData.d}</div><div class="l">días restantes</div></div>
+      </div>
+    </div>
+    <div class="dash-card">
+      <h3>📌 Highlights de hoy</h3>
+      <ul class="dash-list">
+        ${dayData.hl.map(h=>`<li>${h}</li>`).join('')}
+      </ul>
+    </div>
+    <div class="dash-card">
+      <h3>🌙 Esta noche</h3>
+      <p style="font-size:.9em">${dayData.sleep}</p>
+    </div>
+    <button class="go-btn" onclick="goToDay(${dayData.d})">📍 Ver día completo en el itinerario</button>`;
   }
-  // Value label on bar
-  if (d.km > 0) {
-    ctx.fillStyle = "#546e7a";
-    ctx.font = "bold 9px -apple-system,sans-serif";
-    ctx.textAlign = "center";
-    ctx.fillText(d.km, x + barW / 2, y - 3);
-  }
-  // Date label
-  ctx.fillStyle = "#546e7a";
-  ctx.font = "9px -apple-system,sans-serif";
-  ctx.textAlign = "center";
-  ctx.save();
-  ctx.translate(x + barW / 2, PAD.top + plotH + 8);
-  ctx.rotate(-Math.PI / 4);
-  ctx.fillText(d.d, 0, 0);
-  ctx.restore();
-});
+}
 
-// Axis
-ctx.strokeStyle = "#cfd8dc";
-ctx.lineWidth = 1.5;
-ctx.beginPath();
-ctx.moveTo(PAD.left, PAD.top);
-ctx.lineTo(PAD.left, PAD.top + plotH);
-ctx.lineTo(PAD.left + plotW, PAD.top + plotH);
-ctx.stroke();
+function goToDay(n) {
+  // Switch to viaje tab and expand that day's card
+  showTab('viaje');
+  setTimeout(()=>{
+    const el = document.getElementById('day-'+n);
+    if(!el) return;
+    const hdr = el.querySelector('.card-hdr');
+    if(hdr && !hdr.classList.contains('expanded')) toggleCard(hdr);
+    el.scrollIntoView({behavior:'smooth',block:'start'});
+    el.classList.add('day-cur');
+    setTimeout(()=>el.classList.remove('day-cur'), 2000);
+  }, 80);
+}
 
-// Legend
-const legends = [{l:"Bloque A — Suiza",c:"#1976d2"},{l:"Bloque B — Como/Milán",c:"#e53935"},{l:"Bloque C — Camper",c:"#43a047"}];
-let lx = PAD.left;
-const ly = 8;
-legends.forEach(leg => {
-  ctx.fillStyle = leg.c;
-  ctx.fillRect(lx, ly, 10, 10);
-  ctx.fillStyle = "#546e7a";
-  ctx.font = "9px -apple-system,sans-serif";
-  ctx.textAlign = "left";
-  ctx.fillText(leg.l, lx + 13, ly + 9);
-  lx += ctx.measureText(leg.l).width + 28;
+// ════════════════════════════════════════
+// EQUIPAJE DATA
+// ════════════════════════════════════════
+const packGroups = [
+  {id:'mateo',title:'👜 Carry-on Mateo',sub:'Ropa + entretenimiento vuelo · 12-13 kg',
+   grad:'linear-gradient(90deg,#1a3a6e,#1d4ed8)',
+   items:[
+    {t:'s',l:'👦 Ropa Mateo'},
+    {id:'m1',l:'Remeras x5',n:'Secado rápido — nada de algodón grueso'},
+    {id:'m2',l:'Pantalones/joggers x3'},
+    {id:'m3',l:'Polar/fleece x1 + rompevientos ligero',n:'Indispensable para Simplon y Gottardo'},
+    {id:'m4',l:'Ropa interior x6 + calcetines x5'},
+    {id:'m5',l:'Traje de baño x1',n:'Camping Sexten tiene piscina'},
+    {id:'m6',l:'Guantes finos + bufanda liviana'},
+    {id:'m7',l:'Gorra/cap para el sol'},
+    {t:'s',l:'👟 Calzado Mateo'},
+    {id:'m8',l:'Zapatillas deportivas x1 par',n:'Que sirvan para caminar y teleférico'},
+    {id:'m9',l:'Sandalia/ojota x1 par'},
+    {t:'s',l:'✈️ Entretenimiento vuelo'},
+    {id:'m10',l:'Tablet cargada + auriculares niño',n:'Cargar la noche antes del vuelo'},
+    {id:'m11',l:'Kit de dibujo compacto + cuaderno'},
+    {id:'m12',l:'1-2 juguetes favoritos pequeños'},
+    {id:'m13',l:'Snacks para el vuelo'},
+    {id:'m14',l:'Mudada de emergencia',n:'En bolsillo externo — por si acaso'},
+  ]},
+  {id:'elec',title:'👜 Carry-on Electrónica',sub:'Drone, GoPro, energía y documentos · 12-13 kg',
+   grad:'linear-gradient(90deg,#6a1b9a,#8e24aa)',
+   items:[
+    {t:'s',l:'🚁 Drone kit — DJI Mini 2 (249g)'},
+    {id:'e1',l:'DJI Mini 2 + control remoto'},
+    {id:'e2',l:'Baterías extra x2-3',n:'⚠️ LiPo: SOLO en cabina, nunca en bodega'},
+    {id:'e3',l:'Charging hub + cable USB-C drone'},
+    {id:'e4',l:'Tarjetas microSD x2 (128GB mín.)'},
+    {t:'s',l:'🎥 GoPro kit'},
+    {id:'e5',l:'GoPro + funda protectora'},
+    {id:'e6',l:'Baterías GoPro x2 extra'},
+    {id:'e7',l:'Floating hand grip',n:'Imprescindible en botes y lagos'},
+    {id:'e8',l:'Chest mount o suction mount'},
+    {id:'e9',l:'Tarjeta SD U3/V30 x2'},
+    {t:'s',l:'🔋 Energía (todo en cabina)'},
+    {id:'e10',l:'Power banks x2 (máx 20.000 mAh c/u)',n:'Obligatorio en cabina — prohibido en bodega'},
+    {id:'e11',l:'Adaptador universal tipo C + multienchufe'},
+    {id:'e12',l:'Cables: USB-C x3, Lightning, microUSB'},
+    {t:'s',l:'📄 Documentos + dinero'},
+    {id:'e13',l:'Pasaportes x3 + copias digitales offline'},
+    {id:'e14',l:'Seguros de viaje impresos + póliza'},
+    {id:'e15',l:'Confirmaciones PDF offline (auto, camper, Airbnbs)'},
+    {id:'e16',l:'Tarjetas + efectivo (~200 EUR emergencias)'},
+    {t:'s',l:'👕 Ropa acceso rápido'},
+    {id:'e17',l:'Rompevientos adultos x2',n:'Llevar puestos o en el top del carry-on'},
+    {id:'e18',l:'Auriculares adultos x2'},
+    {id:'e19',l:'Bolsa líquidos 100ml'},
+  ]},
+  {id:'valija',title:'🧳 Valija grande',sub:'Seba + Mery · Ropa, calzado, camping, higiene · 23 kg máx',
+   grad:'linear-gradient(90deg,#14532d,#16a34a)',
+   items:[
+    {t:'s',l:'👗 Ropa Seba (5-6 días + lavar)'},
+    {id:'v1',l:'Remeras manga corta x3',n:'Dry-fit o lino'},
+    {id:'v2',l:'Camisa/manga larga x1 + fleece x1'},
+    {id:'v3',l:'Pantalón trekking convertible x2'},
+    {id:'v4',l:'Ropa interior x5 + calcetines Merino x4'},
+    {id:'v5',l:'Malla/traje de baño x1'},
+    {id:'v6',l:'1 opción más arreglada (Milán/Como)'},
+    {t:'s',l:'👗 Ropa Mery (5-6 días + lavar)'},
+    {id:'v7',l:'Remeras x3 + camiseta térmica x1'},
+    {id:'v8',l:'Polar/fleece x1'},
+    {id:'v9',l:'Pantalón trekking x1 + leggins x1'},
+    {id:'v10',l:'Ropa interior x5 + calcetines Merino x4'},
+    {id:'v11',l:'Malla x1'},
+    {id:'v12',l:'1 opción más arreglada para ciudad'},
+    {t:'s',l:'👟 Calzado adultos'},
+    {id:'v13',l:'Zapatillas trekking Seba x1 par',n:'La elección más importante del viaje'},
+    {id:'v14',l:'Zapatillas trekking Mery x1 par'},
+    {id:'v15',l:'Sandalias Seba x1 par'},
+    {id:'v16',l:'Sandalias Mery x1 par'},
+    {t:'s',l:'🏕 Camping & Camper'},
+    {id:'v17',l:'Toallas microfibra x3 (secado rápido)'},
+    {id:'v18',l:'Linterna frontal x2'},
+    {id:'v19',l:'Paraguas compacto x1'},
+    {id:'v20',l:'Bolsa térmica plegable (picnics)'},
+    {id:'v21',l:'Guantes adultos x2 pares (montaña alta)'},
+    {t:'s',l:'🧴 Higiene y salud'},
+    {id:'v22',l:'Protector solar FPS 50+ x2',n:'Alpes = UV altísimo incluso con nubes'},
+    {id:'v23',l:'Repelente (zona lacustre)'},
+    {id:'v24',l:'Botiquín completo (ibuprofeno adulto+niño, antidiarreico, antihistamínico, curitas, termómetro)'},
+    {id:'v25',l:'Higiene estándar x3 (cepillos, pasta, desodorante)'},
+    {id:'v26',l:'Labial FPS + crema corporal compacta'},
+  ]},
+  {id:'mochila',title:'🎒 Mochilas (1-2)',sub:'Ítem personal + mochila de excursiones',
+   grad:'linear-gradient(90deg,#37474f,#546e7a)',
+   items:[
+    {t:'s',l:'✈️ Durante el vuelo (acceso inmediato)'},
+    {id:'mo1',l:'Pasaportes + boarding passes (físico o digital)'},
+    {id:'mo2',l:'Medicamentos de urgencia'},
+    {id:'mo3',l:'Jueguitos Mateo (figuritas, auto, pegatinas)'},
+    {id:'mo4',l:'iPhones x2'},
+    {id:'mo5',l:'Crema manos + labial',n:'Vuelo largo seca mucho'},
+    {id:'mo6',l:'Snacks extra Mateo'},
+    {t:'s',l:'🏔 En el viaje (mochila de excursiones)'},
+    {id:'mo7',l:'Mochila 20-25L x1',n:'Va doblada en la valija · Se usa todos los días'},
+    {id:'mo8',l:'Botella agua reutilizable x2'},
+    {id:'mo9',l:'Picnic del día: pan, queso, frutas, snacks'},
+    {id:'mo10',l:'Protector solar del día'},
+    {id:'mo11',l:'Rompevientos (siempre en montaña)'},
+    {id:'mo12',l:'Power bank del día + cable'},
+    {id:'mo13',l:'Drone en su funda'},
+  ]}
+];
+
+// ════════════════════════════════════════
+// LOGÍSTICA DATA
+// ════════════════════════════════════════
+const logGroups = [
+  {id:'trans',title:'🚗 Transporte',items:[
+    {id:'t1',l:'Auto Malpensa (19/5 → 30/5)',n:'Retiro al llegar · Entrega 30/5 08:30 en Milán'},
+    {id:'t2',l:'Camper Indie Campers Milán (30/5 → 8/6)',n:'Retiro 09:30 del 30/5 · Entrega 09:00 del 8/6'},
+    {id:'t3',l:'Vignette Austria',n:'Comprar antes del Brennero (5/6) · €11.50 · 10 días · Pegar en parabrisas interior',w:true},
+    {id:'t4',l:'Silla de auto Mateo incluida en alquiler',n:'Verificar también para la camper el 30/5'},
+    {id:'t5',l:'Confirmar upgrade auto 2008 → 3008',n:'2008 (434L) puede ser justo · 3008 (520L) más cómodo',w:true},
+  ]},
+  {id:'aloj',title:'🏨 Alojamientos',items:[
+    {id:'a1',l:'Ausserberg Airbnb — 19/5'},
+    {id:'a2',l:'Frutigen Airbnb — 20-24/5 (4 noches + extensión reservada)'},
+    {id:'a3',l:'Schaffhausen hotel — 24/5 ✓',n:'Cataratas del Rin a 3km del centro'},
+    {id:'a4',l:'Root / Lucerna Airbnb — 25-26/5',n:'Verificar confirmación',w:true},
+    {id:'a5',l:'Como alojamiento — 27-29/5',n:'Coordinar con Marta y Fede',w:true},
+    {id:'a6',l:'Campings Bloque C (~8 noches)',n:'Temporada alta — reservar pronto: Sexten, Kranebitten, Silvaplana',w:true},
+  ]},
+  {id:'tickets',title:'🎫 Tickets y reservas',items:[
+    {id:'tk1',l:'Gornergrat Bahn (Zermatt) — 20/5',n:'Comprar online anticipado — muy popular',w:true},
+    {id:'tk2',l:'Teleférico Seceda (Ortisei) — 2/6',n:'€39.50 · Reservar online si es posible',w:true},
+    {id:'tk3',l:'Bernina Express Marta y Fede — 7/6',n:'~€60/persona · Reservar en SBB.ch',w:true},
+    {id:'tk4',l:'Parking P2 Lago di Braies pernocta — 2/6',n:'Solo en el lugar · Llegar antes de 18:00'},
+  ]},
+  {id:'mateol',title:'👶 Mateo & extras',items:[
+    {id:'lm1',l:'Trümmelbachfälle — NO apta (<4 años) · Reemplazada por Staubbachfall ✓'},
+    {id:'lm2',l:'Sin stroller — Mateo camina solo ✓',n:'Para tramos largos: llevar en hombros o hip seat carrier'},
+    {id:'lm3',l:'Rodelbahn/Fun Bob — confirmar edad mínima',n:'Mateo puede ir con adulto'},
+    {id:'lm4',l:'Lavandería en ruta planificada',n:'Día 3-4 Frutigen · Como · Algún camping Bloque C'},
+    {id:'lm5',l:'Apps Mateo descargadas offline (YouTube Kids, Duolingo, Khan Academy)',w:true},
+    {id:'lm6',l:'Seguros de viaje familiares — impresos + digital'},
+  ]}
+];
+
+// ════════════════════════════════════════
+// RENDER EQUIPAJE
+// ════════════════════════════════════════
+function buildEquipaje() {
+  const cont = document.getElementById('eq-container');
+  let html = '';
+  packGroups.forEach(g => {
+    const realItems = g.items.filter(i=>!i.t);
+    const total = realItems.length;
+    const checked = realItems.filter(i=>localStorage.getItem('eq_'+i.id)==='1').length;
+    const pct = total ? Math.round(checked/total*100) : 0;
+    html += `<div class="eqg"><div class="eqgh" style="background:${g.grad}"><div>${g.title}<span class="sub">${g.sub}</span></div><div class="cnt">${checked}/${total}</div></div>`;
+    html += `<div class="eqpb"><div class="eqpbb" id="epb_${g.id}" style="width:${pct}%"></div></div>`;
+    html += `<div class="eq-items">`;
+    g.items.forEach(item=>{
+      if(item.t==='s') { html += `<div class="eqsh">${item.l}</div>`; return; }
+      const chk = localStorage.getItem('eq_'+item.id)==='1';
+      html += `<div class="eqi${chk?' chk':''}" id="eqi_${item.id}"><input type="checkbox" id="eq_${item.id}"${chk?' checked':''} onchange="toggleEq('${item.id}','${g.id}',${total})"><label for="eq_${item.id}">${item.l}${item.n?`<span class="en">${item.n}</span>`:''}</label></div>`;
+    });
+    html += `</div></div>`;
+  });
+  html += `<button class="reset-btn" onclick="resetEquipaje()">↺ Resetear todos los checks de equipaje</button>`;
+  cont.innerHTML = html;
+}
+
+function toggleEq(id, gid, total) {
+  const cb = document.getElementById('eq_'+id);
+  localStorage.setItem('eq_'+id, cb.checked?'1':'0');
+  const row = document.getElementById('eqi_'+id);
+  row.classList.toggle('chk', cb.checked);
+  // update counter + progress
+  const g = packGroups.find(g=>g.id===gid);
+  const realItems = g.items.filter(i=>!i.t);
+  const checked = realItems.filter(i=>localStorage.getItem('eq_'+i.id)==='1').length;
+  const pct = total ? Math.round(checked/total*100) : 0;
+  const pb = document.getElementById('epb_'+gid);
+  if(pb) pb.style.width = pct+'%';
+  // update count label
+  const hdr = pb ? pb.closest('.eqg').querySelector('.cnt') : null;
+  if(hdr) hdr.textContent = `${checked}/${total}`;
+}
+
+function resetEquipaje() {
+  if(!confirm('¿Resetear todos los checks de equipaje?')) return;
+  packGroups.forEach(g=>g.items.filter(i=>!i.t).forEach(i=>localStorage.removeItem('eq_'+i.id)));
+  buildEquipaje();
+}
+
+// ════════════════════════════════════════
+// RENDER LOGÍSTICA
+// ════════════════════════════════════════
+function buildLogistica() {
+  const cont = document.getElementById('log-container');
+  let html = '';
+  logGroups.forEach(g => {
+    const pending = g.items.filter(i=>localStorage.getItem('log_'+i.id)!=='1').length;
+    html += `<div class="lgg"><div class="lggh">${g.title}${pending>0?`<span class="lpb">${pending} pendiente${pending>1?'s':''}</span>`:''}</div>`;
+    g.items.forEach(item=>{
+      const chk = localStorage.getItem('log_'+item.id)==='1';
+      html += `<div class="lgi${chk?' chk':''}" id="lgi_${item.id}"><input type="checkbox" id="log_${item.id}"${chk?' checked':''} onchange="toggleLog('${item.id}','${g.id}')"><label for="log_${item.id}">${item.l}${item.n?`<span class="ln">${item.n}</span>`:''}</label>${item.w&&!chk?`<span class="lw">⚠️</span>`:''}</div>`;
+    });
+    html += `</div>`;
+  });
+  cont.innerHTML = html;
+}
+
+function toggleLog(id, gid) {
+  const cb = document.getElementById('log_'+id);
+  localStorage.setItem('log_'+id, cb.checked?'1':'0');
+  const row = document.getElementById('lgi_'+id);
+  row.classList.toggle('chk', cb.checked);
+  // update pending badge
+  const g = logGroups.find(g=>g.id===gid);
+  const pending = g.items.filter(i=>localStorage.getItem('log_'+i.id)!=='1').length;
+  const hdr = row.closest('.lgg').querySelector('.lggh');
+  const existing = hdr.querySelector('.lpb');
+  if(pending>0) {
+    if(existing) existing.textContent = `${pending} pendiente${pending>1?'s':''}`;
+    else hdr.insertAdjacentHTML('beforeend',`<span class="lpb">${pending} pendiente${pending>1?'s':''}</span>`);
+  } else if(existing) existing.remove();
+}
+
+// ════════════════════════════════════════
+// NOTAS
+// ════════════════════════════════════════
+function getNotes() { try { return JSON.parse(localStorage.getItem('europa26_notes')||'[]'); } catch(e){ return []; } }
+function saveNotes(arr) { localStorage.setItem('europa26_notes', JSON.stringify(arr)); }
+
+function saveNota() {
+  const ta = document.getElementById('nota-input');
+  const txt = ta.value.trim();
+  if(!txt) return;
+  const notes = getNotes();
+  notes.unshift({id:Date.now(), date:new Date().toLocaleString('es-AR'), text:txt});
+  saveNotes(notes);
+  ta.value = '';
+  renderNotas();
+}
+
+function deleteNota(id) {
+  if(!confirm('¿Eliminar esta nota?')) return;
+  saveNotes(getNotes().filter(n=>n.id!==id));
+  renderNotas();
+}
+
+function renderNotas() {
+  const notes = getNotes();
+  const list = document.getElementById('notas-list');
+  if(!notes.length) { list.innerHTML = '<p class="n-empty">Todavía no hay notas.<br>Escribí tu primer recuerdo del viaje 📖</p>'; return; }
+  list.innerHTML = notes.map(n=>`<div class="ni-item"><div class="ni-meta"><span class="ni-date">📅 ${n.date}</span><button class="ni-del" onclick="deleteNota(${n.id})">✕ eliminar</button></div><div class="ni-txt">${n.text.replace(/</g,'&lt;')}</div></div>`).join('');
+}
+
+// ════════════════════════════════════════
+// INIT
+// ════════════════════════════════════════
+document.addEventListener('DOMContentLoaded', ()=>{
+  initDashboard();
+  buildEquipaje();
+  buildLogistica();
+  renderNotas();
 });
 </script>
 </body>
