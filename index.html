@@ -684,11 +684,8 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
     <button class="loc-btn" id="loc-btn" onclick="getGeoLocation()">📍</button>
   </div>
   <div class="nf-actions">
-    <button class="cam-btn" onclick="document.getElementById('foto-cam').click()">📷 Cámara</button>
-    <input type="file" id="foto-cam" accept="image/*" capture="environment"
-           style="display:none" onchange="onFotoSelected(this)">
-    <button class="cam-btn" onclick="document.getElementById('foto-lib').click()">🖼 Carrete</button>
-    <input type="file" id="foto-lib" accept="image/*"
+    <button class="cam-btn" onclick="document.getElementById('foto-input').click()">📷 Foto</button>
+    <input type="file" id="foto-input" accept="image/*"
            style="display:none" onchange="onFotoSelected(this)">
     <button class="sv-btn" id="sv-btn" onclick="saveNota()">💾 Guardar</button>
   </div>
@@ -1321,8 +1318,7 @@ function clearFoto() {
   _selectedFile = null;
   const wrap = document.getElementById('foto-preview-wrap');
   const preview = document.getElementById('foto-preview');
-  document.getElementById('foto-cam').value = '';
-  document.getElementById('foto-lib').value = '';
+  document.getElementById('foto-input').value = '';
   if(preview.src) URL.revokeObjectURL(preview.src);
   preview.src = '';
   wrap.style.display = 'none';
