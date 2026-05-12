@@ -143,6 +143,56 @@ Sesión próxima:
 
 ---
 
+---
+
+### 3 — 📶 Modo offline (Service Worker)
+**Complejidad:** baja-media · **Impacto:** alto (montaña + camper = señal intermitente)
+
+#### Diagnóstico: ¿qué funciona offline hoy?
+
+| Feature | ¿Funciona sin internet? | Motivo |
+|---|---|---|
+| Tabs Viaje, Mateo, Hoy | ✅ Sí | Solo HTML estático |
+| Equipaje + Logística | ✅ Sí | localStorage |
+| Diario — leer notas | ✅ Sí | localStorage fallback automático |
+| Diario — escribir notas | ✅ Sí | Va a localStorage si Firebase no responde |
+| Conversor (planeado) | ✅ Sí | Solo HTML + JS, sin red |
+| Frases útiles (planeado) | ✅ Sí | Solo HTML estático |
+| Diario — subir fotos | ❌ No | Requiere Firebase Storage |
+| Diario — sincronizar | ❌ No | Requiere Firebase RTDB |
+| Geolocalización | ⚠️ Parcial | GPS funciona, reverse geocoding (Nominatim) no → ya tiene fallback a coordenadas |
+
+**Conclusión: la app ya es ~80% offline.** El único gap real es que si el browser nunca cargó el `index.html` con internet, o si los scripts del CDN de Firebase no están cacheados, la app no abre.
+
+#### Solución: Service Worker simple
+
+Un SW con estrategia **cache-first** para assets estáticos (~50 líneas). Sin background sync, sin IndexedDB — el localStorage ya hace el trabajo pesado.
+
+**Qué cachea al instalar:**
+- `index.html`
+- Firebase SDK scripts desde CDN (`gstatic.com`)
+
+**Comportamiento:**
+- Primera visita con internet → SW instala y cachea todo
+- Visitas siguientes sin internet → sirve desde caché
+- Cuando vuelve la conexión → Firebase sincroniza automáticamente
+
+#### Qué NO se intenta hacer offline
+- Subir fotos → mostrar mensaje "Necesitás conexión para subir fotos"
+- Background sync de notas → overkill; el localStorage ya guarda todo localmente y Firebase sincroniza al reconectar
+
+#### Implementación (cuando arranquemos)
+1. Crear `sw.js` en la raíz con lógica cache-first
+2. Registrar el SW en `index.html` (3 líneas al final del `<script>`)
+3. Definir lista de URLs a precachear (index.html + 3 CDN scripts de Firebase)
+4. Manejar el `fetch` event: caché → red → fallback
+5. Agregar `<link rel="manifest">` opcional para PWA básica
+
+#### Nota sobre GitHub Pages
+GitHub Pages sirve desde HTTPS → los Service Workers funcionan sin problema.
+
+---
+
 ## Ideas en el backlog (sin planificar aún)
 
 - 🗺 Pasaporte de Mateo — sellos por ciudad visitada, animación
