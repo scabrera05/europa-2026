@@ -7,6 +7,11 @@ Archivo de planificación. Se actualiza al cerrar cada sesión de trabajo.
 
 ## Estado actual (12/5/2026)
 
+### Features completados en sesiones anteriores
+- [x] Conversor CHF/EUR/USD/UYU (tab 🛠 Útil)
+- [x] Frases útiles italiano/alemán/francés (tab 🛠 Útil)
+- [x] Service Worker offline (sw.js, cache-first)
+
 ### Tabs existentes
 | Tab | ID | Descripción |
 |---|---|---|
@@ -190,6 +195,27 @@ Un SW con estrategia **cache-first** para assets estáticos (~50 líneas). Sin b
 
 #### Nota sobre GitHub Pages
 GitHub Pages sirve desde HTTPS → los Service Workers funcionan sin problema.
+
+---
+
+---
+
+### 4 — 🔗 Corregir links de reservas en tab Logística
+**Complejidad:** muy baja · **Impacto:** alto (links actuales no funcionan)
+
+Los links del tab Logística → Reservas apuntan a URLs incorrectas.
+Links correctos provistos por la usuaria (12/5/2026):
+
+```
+Airbnb 1:  https://es-l.airbnb.com/trips/v1/reservation-details/ro/RESERVATION2_CHECKIN/HM8PXNHYKF
+Airbnb 2:  https://es-l.airbnb.com/trips/v1/reservation-details/ro/RESERVATION2_CHECKIN/HMWR2HFCJA
+Booking:   https://secure.booking.com/confirmation.es.html?...&auth_key=LEqQmo9FOmu7PvAd&source=mytrips
+Airbnb 3:  https://es-l.airbnb.com/trips/v1/reservation-details/ro/RESERVATION2_CHECKIN/HMHCM2RX4W
+Airbnb 4:  https://es-l.airbnb.com/trips/v1/reservation-details/ro/RESERVATION2_CHECKIN/HMBYQHDM8P
+Airbnb 5:  https://es-l.airbnb.com/trips/v1/reservation-details/ro/RESERVATION2_CHECKIN/HMFEJ9XW5X
+```
+
+Pendiente: identificar a qué reserva corresponde cada link y actualizar en el HTML.
 
 ---
 

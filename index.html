@@ -221,6 +221,32 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 .fb-local{background:#f1f5f9;color:var(--gy);border:1px solid var(--bdr)}
 .fb-sync{background:var(--cl);color:var(--ct)}
 .fb-offline{background:var(--orl);color:var(--or)}
+
+/* ÚTIL */
+.conv-card{background:var(--cd);border-radius:var(--r);box-shadow:var(--sh);padding:13px;margin-bottom:11px}
+.conv-title{font-weight:700;font-size:.88em;margin-bottom:11px}
+.conv-row{display:flex;align-items:center;gap:9px;margin-bottom:9px}
+.conv-row:last-of-type{margin-bottom:4px}
+.conv-flag{font-size:1.3em;flex-shrink:0;width:26px;text-align:center}
+.conv-lbl{font-size:.75em;font-weight:700;color:var(--txl);width:34px;flex-shrink:0}
+.conv-input{flex:1;border:1.5px solid var(--bdr);border-radius:8px;padding:8px 10px;font-size:16px;font-family:inherit;color:var(--tx);background:#f8fafc;outline:none;text-align:right;transition:border-color .15s}
+.conv-input:focus{border-color:var(--a2);background:#fff}
+.conv-note{font-size:.7em;color:var(--txl);text-align:center;margin-top:8px;padding-top:8px;border-top:1px solid var(--bdr)}
+.lang-sel{display:flex;gap:7px;margin-bottom:12px}
+.lang-btn{flex:1;padding:8px 4px;border:1.5px solid var(--bdr);background:none;border-radius:8px;cursor:pointer;font-size:.82em;font-weight:600;color:var(--txl);transition:all .15s}
+.lang-btn.active{border-color:var(--a2);background:var(--al);color:var(--a2)}
+.frase-card{background:var(--cd);border-radius:var(--r);box-shadow:var(--sh);margin-bottom:9px;overflow:hidden}
+.frase-hdr{padding:10px 13px;font-weight:700;font-size:.86em;cursor:pointer;user-select:none;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid transparent}
+.frase-hdr.expanded{border-bottom-color:var(--bdr)}
+.frase-hdr .ea{transition:transform .2s;color:var(--txl)}
+.frase-hdr.expanded .ea{transform:rotate(180deg)}
+.frase-body{display:none}.frase-body.open{display:block}
+.frase-row{padding:8px 13px;border-bottom:1px solid var(--bdr);font-size:.84em}
+.frase-row:last-child{border-bottom:none}
+.frase-es{color:var(--txl);font-size:.88em;display:block;margin-bottom:2px}
+.frase-tr{font-weight:600;display:block}
+.frase-fo{color:var(--txl);font-style:italic;font-size:.82em;display:block;margin-top:1px}
+@media(max-width:360px){.nav-tab{font-size:.5em}}
 </style>
 </head>
 <body>
@@ -237,6 +263,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
   <button class="nav-tab" onclick="showTab('logistica',this)"><span class="ti">✅</span>Logística</button>
   <button class="nav-tab" onclick="showTab('mateo',this)"><span class="ti">🎮</span>Mateo</button>
   <button class="nav-tab" onclick="showTab('notas',this)"><span class="ti">📖</span>Diario</button>
+  <button class="nav-tab" onclick="showTab('util',this)"><span class="ti">🛠</span>Útil</button>
 </nav>
 
 <main>
@@ -671,6 +698,49 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 <button class="backup-btn" onclick="exportBackup()">📥 Exportar diario (JSON)</button>
 <div class="ni-list" id="notas-list"></div>
 <p class="n-foot" id="n-foot">Las notas se guardan en este dispositivo (localStorage).</p>
+</div>
+</section>
+
+<!-- ═══════════════ ÚTIL ═══════════════ -->
+<section id="tab-util" class="tab-section">
+<div class="si">
+
+<div class="th">
+  <h2>🛠 Herramientas de viaje</h2>
+  <div class="th-s">Conversor de monedas · Frases en italiano, alemán y francés</div>
+</div>
+
+<div class="conv-card">
+  <div class="conv-title">💱 Conversor de monedas</div>
+  <div class="conv-row">
+    <span class="conv-flag">🇨🇭</span><span class="conv-lbl">CHF</span>
+    <input class="conv-input" type="number" id="conv-CHF" placeholder="0.00" min="0" step="any" oninput="convertFrom('CHF')">
+  </div>
+  <div class="conv-row">
+    <span class="conv-flag">🇪🇺</span><span class="conv-lbl">EUR</span>
+    <input class="conv-input" type="number" id="conv-EUR" placeholder="0.00" min="0" step="any" oninput="convertFrom('EUR')">
+  </div>
+  <div class="conv-row">
+    <span class="conv-flag">🇺🇸</span><span class="conv-lbl">USD</span>
+    <input class="conv-input" type="number" id="conv-USD" placeholder="0.00" min="0" step="any" oninput="convertFrom('USD')">
+  </div>
+  <div class="conv-row">
+    <span class="conv-flag">🇺🇾</span><span class="conv-lbl">UYU</span>
+    <input class="conv-input" type="number" id="conv-UYU" placeholder="0.00" min="0" step="any" oninput="convertFrom('UYU')">
+  </div>
+  <div class="conv-note">⚠️ Tasas orientativas al 12/5/2026 · No se actualizan en tiempo real</div>
+</div>
+
+<div class="conv-card">
+  <div class="conv-title">🗣 Frases útiles</div>
+  <div class="lang-sel">
+    <button class="lang-btn active" data-lang="it" onclick="switchLang('it')">🇮🇹 Italiano</button>
+    <button class="lang-btn" data-lang="de" onclick="switchLang('de')">🇩🇪 Alemán</button>
+    <button class="lang-btn" data-lang="fr" onclick="switchLang('fr')">🇫🇷 Francés</button>
+  </div>
+  <div id="frases-container"></div>
+</div>
+
 </div>
 </section>
 
@@ -1360,6 +1430,160 @@ function exportBackup() {
 }
 
 // ════════════════════════════════════════
+// CONVERSOR
+// ════════════════════════════════════════
+const RATES = {
+  CHF:{CHF:1,      EUR:1.0913, USD:1.2856, UYU:51.59},
+  EUR:{CHF:0.9164, EUR:1,      USD:1.178,  UYU:47.26},
+  USD:{CHF:0.7778, EUR:0.8488, USD:1,      UYU:40.12},
+  UYU:{CHF:0.0194, EUR:0.0212, USD:0.0249, UYU:1}
+};
+function convertFrom(src) {
+  const val = parseFloat(document.getElementById('conv-'+src).value);
+  ['CHF','EUR','USD','UYU'].forEach(c => {
+    if(c === src) return;
+    document.getElementById('conv-'+c).value = isNaN(val) ? '' : (val * RATES[src][c]).toFixed(2);
+  });
+}
+
+// ════════════════════════════════════════
+// FRASES
+// ════════════════════════════════════════
+const PHRASES = {
+  it:{cats:[
+    {t:'👋 Saludos',items:[
+      ['Hola / Buen día','Ciao / Buongiorno','(chao / buon-jorno)'],
+      ['Gracias','Grazie','(grà-tsie)'],
+      ['Por favor','Per favore','(per fa-vò-re)'],
+      ['Disculpe','Mi scusi','(mi scù-zi)'],
+      ['No entiendo','Non capisco','(non ca-pì-sco)'],
+      ['¿Habla inglés?','Parla inglese?','(pàr-la in-glè-ze)'],
+    ]},
+    {t:'🍽 Restaurante',items:[
+      ['Mesa para 3','Un tavolo per tre','(un tà-vo-lo per tre)'],
+      ['La carta / menú','Il menù','(il me-nù)'],
+      ['La cuenta','Il conto','(il còn-to)'],
+      ['Agua','Acqua','(àc-qua)'],
+      ['Sin gluten','Senza glutine','(sèn-tsa glù-ti-ne)'],
+      ['¡Está muy rico!','È squisito!','(è squì-zi-to)'],
+    ]},
+    {t:'🆘 Emergencia',items:[
+      ['¡Ayuda!','Aiuto!','(a-yù-to)'],
+      ['Llamen un médico','Chiamate un medico','(kia-mà-te un mè-di-co)'],
+      ['¿Dónde está el hospital?','Dov\'è l\'ospedale?','(do-vè los-pe-dà-le)'],
+      ['Me robaron','Mi hanno derubato','(mi àn-no de-ru-bà-to)'],
+      ['Soy alérgico a...','Sono allergico a...','(sò-no a-lèr-ji-co a)'],
+    ]},
+    {t:'👶 Niños',items:[
+      ['¿Dónde está el baño?','Dov\'è il bagno?','(do-vè il bà-nio)'],
+      ['¿Hay silla para bebé?','C\'è un seggiolone?','(chè un sed-jo-lò-ne)'],
+      ['Tiene 4 años','Ha quattro anni','(a quàt-tro àn-ni)'],
+      ['¿Puede jugar aquí?','Può giocare qui?','(può jo-cà-re qui)'],
+    ]},
+    {t:'💊 Farmacia',items:[
+      ['Analgésico / ibuprofeno','Antidolorifico / ibuprofene','(an-ti-do-lo-rì-fi-co)'],
+      ['Fiebre','Febbre','(fèb-bre)'],
+      ['Diarrea','Diarrea','(dia-rré-a)'],
+      ['Protector solar','Crema solare','(crè-ma so-là-re)'],
+      ['Curitas / tiritas','Cerotti','(che-rót-ti)'],
+    ]},
+  ]},
+  de:{cats:[
+    {t:'👋 Saludos',items:[
+      ['Hola / Buen día','Hallo / Guten Morgen','(há-lo / gú-ten mór-gen)'],
+      ['Gracias','Danke','(dán-ke)'],
+      ['Por favor','Bitte','(bí-te)'],
+      ['Disculpe','Entschuldigung','(ent-shúl-di-gung)'],
+      ['No entiendo','Ich verstehe nicht','(ij fer-shtè-e nijt)'],
+      ['¿Habla inglés?','Sprechen Sie Englisch?','(shprè-jen zi én-glish)'],
+    ]},
+    {t:'🍽 Restaurante',items:[
+      ['Mesa para 3','Einen Tisch für drei','(ái-nen tish fuer drái)'],
+      ['La carta','Die Speisekarte','(di sháI-ze-kar-te)'],
+      ['La cuenta','Die Rechnung','(di réj-nung)'],
+      ['Agua','Wasser','(vá-ser)'],
+      ['Sin gluten','Ohne Gluten','(ó-ne glú-ten)'],
+      ['¡Está muy rico!','Es schmeckt sehr gut!','(es shméckt zer gut)'],
+    ]},
+    {t:'🆘 Emergencia',items:[
+      ['¡Ayuda!','Hilfe!','(híl-fe)'],
+      ['Llamen un médico','Rufen Sie einen Arzt','(rú-fen zi ái-nen artst)'],
+      ['¿Dónde está el hospital?','Wo ist das Krankenhaus?','(vo ist das krán-ken-haus)'],
+      ['Me robaron','Ich wurde bestohlen','(ij vúr-de be-shtò-len)'],
+      ['Soy alérgico a...','Ich bin allergisch gegen...','(ij bin a-lèr-gish gé-gen)'],
+    ]},
+    {t:'👶 Niños',items:[
+      ['¿Dónde está el baño?','Wo ist die Toilette?','(vo ist di toa-lé-te)'],
+      ['¿Hay silla para bebé?','Gibt es einen Kinderstuhl?','(gibt es ái-nen kín-der-shtuhl)'],
+      ['Tiene 4 años','Er ist 4 Jahre alt','(er ist fir yá-re alt)'],
+      ['¿Puede jugar aquí?','Kann er hier spielen?','(kan er hir shpí-len)'],
+    ]},
+    {t:'💊 Farmacia',items:[
+      ['Analgésico','Ein Schmerzmittel','(ain shmérts-mi-tel)'],
+      ['Fiebre','Fieber','(fí-ber)'],
+      ['Diarrea','Durchfall','(dúrj-fal)'],
+      ['Protector solar','Sonnenschutzcreme','(zó-nen-shuts-krè-me)'],
+      ['Curitas / tiritas','Pflaster','(pflás-ter)'],
+    ]},
+  ]},
+  fr:{cats:[
+    {t:'👋 Saludos',items:[
+      ['Hola / Buen día','Bonjour','(bon-zhùr)'],
+      ['Gracias','Merci','(mer-sì)'],
+      ['Por favor','S\'il vous plaît','(sil vu plè)'],
+      ['Disculpe','Excusez-moi','(ex-kù-ze mua)'],
+      ['No entiendo','Je ne comprends pas','(zhe ne kon-prán pa)'],
+      ['¿Habla inglés?','Parlez-vous anglais?','(par-lè vu an-glè)'],
+    ]},
+    {t:'🍽 Restaurante',items:[
+      ['Mesa para 3','Une table pour trois','(un tabl pur trua)'],
+      ['La carta','La carte','(la kart)'],
+      ['La cuenta','L\'addition','(la-di-sión)'],
+      ['Agua','De l\'eau','(de lo)'],
+      ['Sin gluten','Sans gluten','(san glu-tén)'],
+      ['¡Está muy rico!','C\'est délicieux!','(se dé-li-siò)'],
+    ]},
+    {t:'🆘 Emergencia',items:[
+      ['¡Ayuda!','Au secours!','(o se-kùr)'],
+      ['Llamen un médico','Appelez un médecin','(a-ple un med-sén)'],
+      ['¿Dónde está el hospital?','Où est l\'hôpital?','(u è lo-pi-tàl)'],
+      ['Me robaron','On m\'a volé','(on ma vo-lé)'],
+      ['Soy alérgico a...','Je suis allergique à...','(zhe sui a-ler-zhìk a)'],
+    ]},
+    {t:'👶 Niños',items:[
+      ['¿Dónde está el baño?','Où sont les toilettes?','(u son le tua-lèt)'],
+      ['¿Hay silla para bebé?','Avez-vous une chaise bébé?','(a-vè vu un shèz bé-bé)'],
+      ['Tiene 4 años','Il a 4 ans','(il a katr an)'],
+      ['¿Puede jugar aquí?','Il peut jouer ici?','(il pu zhué i-sì)'],
+    ]},
+    {t:'💊 Farmacia',items:[
+      ['Analgésico','Un analgésique','(un a-nal-zé-zik)'],
+      ['Fiebre','Fièvre','(fièvr)'],
+      ['Diarrea','Diarrhée','(dia-ré)'],
+      ['Protector solar','Crème solaire','(krèm so-lèr)'],
+      ['Curitas / tiritas','Pansements','(pans-mán)'],
+    ]},
+  ]},
+};
+
+function toggleFrase(hdr) {
+  const body = hdr.nextElementSibling;
+  const open = body.classList.toggle('open');
+  hdr.classList.toggle('expanded', open);
+}
+
+function switchLang(lang) {
+  document.querySelectorAll('.lang-btn').forEach(b => b.classList.toggle('active', b.dataset.lang === lang));
+  document.getElementById('frases-container').innerHTML = PHRASES[lang].cats.map(cat =>
+    `<div class="frase-card"><div class="frase-hdr" onclick="toggleFrase(this)">${cat.t}<span class="ea">▾</span></div><div class="frase-body">${
+      cat.items.map(([es,tr,fo]) =>
+        `<div class="frase-row"><span class="frase-es">${es}</span><span class="frase-tr">${tr}</span><span class="frase-fo">${fo}</span></div>`
+      ).join('')
+    }</div></div>`
+  ).join('');
+}
+
+// ════════════════════════════════════════
 // INIT
 // ════════════════════════════════════════
 document.addEventListener('DOMContentLoaded', ()=>{
@@ -1369,7 +1593,17 @@ document.addEventListener('DOMContentLoaded', ()=>{
   buildReservas();
   renderNotas();
   initFirebase();
+  switchLang('it');
 });
+
+// ════════════════════════════════════════
+// SERVICE WORKER
+// ════════════════════════════════════════
+if('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('./sw.js').catch(() => {});
+  });
+}
 </script>
 </body>
 </html>
