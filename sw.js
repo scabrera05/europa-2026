@@ -1,4 +1,4 @@
-const CACHE = 'europa2026-v1';
+const CACHE = 'europa2026-v2';
 
 const CDN_PRECACHE = [
   'https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js',
@@ -12,7 +12,7 @@ self.addEventListener('install', e => {
   self.skipWaiting();
 });
 
-// Activar: limpiar caches viejos
+// Activar: limpiar caches viejos (europa2026-v1, etc.)
 self.addEventListener('activate', e => {
   e.waitUntil(
     caches.keys().then(keys =>
@@ -22,28 +22,37 @@ self.addEventListener('activate', e => {
   self.clients.claim();
 });
 
-// Fetch: cache-first para app + CDN, network-only para Firebase API
+// Fetch:
+//  - index.html → network-first (siempre trae la versión más nueva)
+//  - Firebase CDN → cache-first (scripts estáticos, no cambian)
+//  - Firebase API / Nominatim → solo red, nunca cachear
 self.addEventListener('fetch', e => {
   if(e.request.method !== 'GET') return;
   const url = e.request.url;
 
-  // No cachear llamadas a Firebase API ni Nominatim
+  // No cachear APIs externas
   if(
     url.includes('firebaseio.com') ||
     url.includes('firebasestorage.app') ||
     url.includes('nominatim.openstreetmap.org')
   ) return;
 
-  e.respondWith(
-    caches.match(e.request).then(cached => {
-      if(cached) return cached;
-      return fetch(e.request).then(res => {
-        if(res && res.ok) {
-          const clone = res.clone();
-          caches.open(CACHE).then(c => c.put(e.request, clone));
-        }
+  // CDN Firebase → cache-first
+  if(url.includes('gstatic.com')) {
+    e.respondWith(
+      caches.match(e.request).then(cached => cached || fetch(e.request).then(res => {
+        if(res && res.ok) caches.open(CACHE).then(c => c.put(e.request, res.clone()));
         return res;
-      });
-    })
+      }))
+    );
+    return;
+  }
+
+  // index.html y resto del origen → network-first, fallback a caché
+  e.respondWith(
+    fetch(e.request).then(res => {
+      if(res && res.ok) caches.open(CACHE).then(c => c.put(e.request, res.clone()));
+      return res;
+    }).catch(() => caches.match(e.request))
   );
 });
