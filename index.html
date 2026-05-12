@@ -173,6 +173,30 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 .n-empty{text-align:center;color:var(--txl);font-size:.86em;padding:24px 14px}
 .n-foot{text-align:center;font-size:.7em;color:var(--txl);padding:12px 14px 4px}
 .day-cur{box-shadow:0 0 0 2px var(--a2),var(--sh)}
+
+/* RESERVAS */
+.rv-list{margin-bottom:14px}
+.rv-hdr{background:linear-gradient(90deg,var(--a1),var(--a2));border-radius:var(--r);padding:11px 13px;color:#fff;font-weight:700;font-size:.9em;margin-bottom:8px;display:flex;align-items:center;gap:7px;cursor:pointer;user-select:none}
+.rv-hdr .ea{margin-left:auto;font-size:.85em;transition:transform .2s}
+.rv-hdr.expanded .ea{transform:rotate(180deg)}
+.rv-card{background:var(--cd);border-radius:var(--r);box-shadow:var(--sh);margin-bottom:8px;overflow:hidden;padding:10px 13px;display:flex;align-items:flex-start;gap:10px;flex-wrap:wrap}
+.rv-info{flex:1;min-width:0}
+.rv-name{font-weight:700;font-size:.88em;margin-bottom:2px}
+.rv-dates{font-size:.78em;color:var(--txl);margin-bottom:2px}
+.rv-source{font-size:.72em;color:var(--txl)}
+.rv-right{display:flex;flex-direction:column;align-items:flex-end;gap:6px;flex-shrink:0}
+.rv-link{font-size:.72em;font-weight:700;color:var(--a2);text-decoration:none;padding:3px 9px;border:1.5px solid var(--a2);border-radius:6px;white-space:nowrap}
+.rv-link:active{background:var(--al)}
+.cbad{border-radius:20px;padding:2px 9px;font-size:.7em;font-weight:700;white-space:nowrap}
+.cbad-r{background:#fee2e2;color:#dc2626}
+.cbad-o{background:#ffedd5;color:#c2410c}
+.cbad-g{background:#dcfce7;color:#15803d}
+
+/* FIREBASE BANNER */
+.fb-banner{border-radius:var(--r);padding:8px 13px;margin-bottom:10px;font-size:.78em;display:flex;align-items:center;gap:7px;font-weight:600}
+.fb-local{background:#f1f5f9;color:var(--gy);border:1px solid var(--bdr)}
+.fb-sync{background:var(--cl);color:var(--ct)}
+.fb-offline{background:var(--orl);color:var(--or)}
 </style>
 </head>
 <body>
@@ -592,14 +616,44 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
   <textarea id="nota-input" placeholder="Escribí una nota del viaje... Un recuerdo, una recomendación, un dato útil."></textarea>
   <button class="sv-btn" onclick="saveNota()">💾 Guardar nota</button>
 </div>
+<div id="fb-banner" style="display:none"></div>
 <div class="ni-list" id="notas-list"></div>
-<p class="n-foot">Las notas se guardan en este dispositivo (localStorage).</p>
+<p class="n-foot" id="n-foot">Las notas se guardan en este dispositivo (localStorage).</p>
 </div>
 </section>
 
 </main>
 
+<!-- Firebase SDKs (compat) — necesarios para Cambio 2 -->
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
+
 <script>
+// ════════════════════════════════════════
+// FIREBASE CONFIG — pegar aquí el config de tu proyecto
+// ════════════════════════════════════════
+const FIREBASE_CONFIG = {
+  apiKey: "AIzaSyDzPIvYkBtSb6Hkc8nBN6HVZ6RKzFH5nUw",
+  authDomain: "pandafamilycare-dev.firebaseapp.com",
+  databaseURL: "https://pandafamilycare-dev.firebaseio.com",
+  projectId: "pandafamilycare-dev",
+  storageBucket: "pandafamilycare-dev.firebasestorage.app",
+  messagingSenderId: "475021299108",
+  appId: "1:475021299108:web:332f86b5fc44d36e920531"
+};
+
+// ════════════════════════════════════════
+// RESERVACIONES CONFIRMADAS
+// ════════════════════════════════════════
+const reservaciones = [
+  {lugar:'Ausserberg',       emoji:'🏠',fechas:'Noche 19/5',             tipo:'Airbnb',       cancelacion:'2026-05-14',url:'https://es-l.airbnb.com/trips/.../HM8PXNHYKF'},
+  {lugar:'Frutigen',         emoji:'🏡',fechas:'20–24/5 · 4 noches',    tipo:'Airbnb',       cancelacion:'2026-05-13',url:'https://es-l.airbnb.com/trips/.../HMWR2HFCJA'},
+  {lugar:'Schaffhausen',     emoji:'🏨',fechas:'24/5 · 1 noche',         tipo:'Booking.com',  cancelacion:'2026-05-23',url:'https://secure.booking.com/confirmation.es.html'},
+  {lugar:'Root / Lucerna',   emoji:'🏠',fechas:'25–26/5 · 2 noches',    tipo:'Airbnb',       cancelacion:'2026-05-20',url:'https://es-l.airbnb.com/trips/.../HMHCM2RX4W'},
+  {lugar:'Orea (zona Como)', emoji:'🏡',fechas:'27–29/5 · 3 noches',    tipo:'Airbnb',       cancelacion:'2026-05-26',url:'https://es-l.airbnb.com/trips/.../HMBYQHDM8P'},
+  {lugar:'Glisente (Somma Lombardo)',emoji:'🏠',fechas:'7/6 · 1 noche (última)',tipo:'Airbnb',cancelacion:'2026-06-06',url:'https://es-l.airbnb.com/trips/.../HMFEJ9XW5X'},
+];
+
 // ════════════════════════════════════════
 // DATOS DEL VIAJE
 // ════════════════════════════════════════
@@ -982,6 +1036,79 @@ function toggleLog(id, gid) {
 }
 
 // ════════════════════════════════════════
+// RESERVAS
+// ════════════════════════════════════════
+function _cancelBadge(dateStr) {
+  const today = new Date(); today.setHours(0,0,0,0);
+  const d = new Date(dateStr); d.setHours(0,0,0,0);
+  const diff = Math.round((d - today) / 86400000);
+  if(diff < 0)  return '<span class="cbad cbad-r">🔴 Vencida</span>';
+  if(diff === 0) return '<span class="cbad cbad-o">🟠 Vence hoy</span>';
+  if(diff <= 5)  return `<span class="cbad cbad-o">🟠 Vence en ${diff} día${diff>1?'s':''}</span>`;
+  return `<span class="cbad cbad-g">🟢 OK · ${diff} días</span>`;
+}
+
+function buildReservas() {
+  let html = '<div class="rv-list">';
+  html += `<div class="rv-hdr expanded" id="rv-hdr-btn" onclick="toggleRv()">🔗 Reservas confirmadas <span style="font-size:.75em;opacity:.75;font-weight:400;margin-left:4px">${reservaciones.length} alojamientos</span><span class="ea">▾</span></div>`;
+  html += '<div id="rv-body">';
+  reservaciones.forEach(r => {
+    html += `<div class="rv-card"><div class="rv-info"><div class="rv-name">${r.emoji} ${r.lugar}</div><div class="rv-dates">📅 ${r.fechas}</div><div class="rv-source">${r.tipo}</div></div><div class="rv-right">${_cancelBadge(r.cancelacion)}<a class="rv-link" href="${r.url}" target="_blank" rel="noopener">Abrir reserva ↗</a></div></div>`;
+  });
+  html += '</div></div>';
+  document.getElementById('log-container').insertAdjacentHTML('afterbegin', html);
+}
+
+function toggleRv() {
+  const body = document.getElementById('rv-body');
+  const btn  = document.getElementById('rv-hdr-btn');
+  const open = body.style.display !== 'none';
+  body.style.display = open ? 'none' : '';
+  btn.classList.toggle('expanded', !open);
+}
+
+// ════════════════════════════════════════
+// FIREBASE INIT
+// ════════════════════════════════════════
+let _fbDb = null;
+
+function initFirebase() {
+  const banner = document.getElementById('fb-banner');
+  const foot   = document.getElementById('n-foot');
+  if(!FIREBASE_CONFIG) {
+    if(banner) {
+      banner.className = 'fb-banner fb-local';
+      banner.innerHTML = '📴 <span>Notas locales · <a href="https://console.firebase.google.com" target="_blank" rel="noopener" style="color:inherit;text-decoration:underline">Configurar Firebase</a> para sincronizar entre dispositivos</span>';
+      banner.style.display = 'flex';
+    }
+    return;
+  }
+  try {
+    firebase.initializeApp(FIREBASE_CONFIG);
+    _fbDb = firebase.database();
+    if(foot) foot.style.display = 'none';
+    // Listener en tiempo real
+    _fbDb.ref('notas').on('value', snap => {
+      const data = snap.val() || {};
+      const notes = Object.entries(data)
+        .map(([k,v]) => ({id:k, ...v}))
+        .sort((a,b) => (b.ts||0) - (a.ts||0));
+      _renderNotasList(notes);
+      if(banner){ banner.className='fb-banner fb-sync'; banner.textContent='🟢 Sincronizado — todos los dispositivos ven las mismas notas'; banner.style.display='flex'; }
+    }, err => {
+      console.warn('Firebase error:', err);
+      if(banner){ banner.className='fb-banner fb-offline'; banner.textContent='🔴 Sin conexión — las notas se guardan local temporalmente'; banner.style.display='flex'; }
+    });
+    _fbDb.ref('.info/connected').on('value', snap => {
+      if(!snap.val() && banner){ banner.className='fb-banner fb-offline'; banner.textContent='🔴 Sin conexión — las notas se guardan local temporalmente'; banner.style.display='flex'; }
+    });
+  } catch(e) {
+    console.warn('Firebase init failed:', e);
+    _fbDb = null;
+  }
+}
+
+// ════════════════════════════════════════
 // NOTAS
 // ════════════════════════════════════════
 function getNotes() { try { return JSON.parse(localStorage.getItem('europa26_notes')||'[]'); } catch(e){ return []; } }
@@ -991,24 +1118,36 @@ function saveNota() {
   const ta = document.getElementById('nota-input');
   const txt = ta.value.trim();
   if(!txt) return;
-  const notes = getNotes();
-  notes.unshift({id:Date.now(), date:new Date().toLocaleString('es-AR'), text:txt});
-  saveNotes(notes);
   ta.value = '';
-  renderNotas();
+  if(_fbDb) {
+    _fbDb.ref('notas').push({date: new Date().toLocaleString('es-AR'), text: txt, ts: Date.now()});
+  } else {
+    const notes = getNotes();
+    notes.unshift({id: Date.now(), date: new Date().toLocaleString('es-AR'), text: txt});
+    saveNotes(notes);
+    renderNotas();
+  }
 }
 
 function deleteNota(id) {
   if(!confirm('¿Eliminar esta nota?')) return;
-  saveNotes(getNotes().filter(n=>n.id!==id));
-  renderNotas();
+  if(_fbDb) {
+    _fbDb.ref('notas/' + id).remove();
+  } else {
+    saveNotes(getNotes().filter(n => String(n.id) !== String(id)));
+    renderNotas();
+  }
+}
+
+function _renderNotasList(notes) {
+  const list = document.getElementById('notas-list');
+  if(!notes.length) { list.innerHTML = '<p class="n-empty">Todavía no hay notas.<br>Escribí tu primer recuerdo del viaje 📖</p>'; return; }
+  list.innerHTML = notes.map(n=>`<div class="ni-item"><div class="ni-meta"><span class="ni-date">📅 ${n.date}</span><button class="ni-del" onclick="deleteNota('${n.id}')">✕ eliminar</button></div><div class="ni-txt">${n.text.replace(/</g,'&lt;')}</div></div>`).join('');
 }
 
 function renderNotas() {
-  const notes = getNotes();
-  const list = document.getElementById('notas-list');
-  if(!notes.length) { list.innerHTML = '<p class="n-empty">Todavía no hay notas.<br>Escribí tu primer recuerdo del viaje 📖</p>'; return; }
-  list.innerHTML = notes.map(n=>`<div class="ni-item"><div class="ni-meta"><span class="ni-date">📅 ${n.date}</span><button class="ni-del" onclick="deleteNota(${n.id})">✕ eliminar</button></div><div class="ni-txt">${n.text.replace(/</g,'&lt;')}</div></div>`).join('');
+  if(_fbDb) return; // Firebase maneja el render via onValue
+  _renderNotasList(getNotes());
 }
 
 // ════════════════════════════════════════
@@ -1018,7 +1157,9 @@ document.addEventListener('DOMContentLoaded', ()=>{
   initDashboard();
   buildEquipaje();
   buildLogistica();
+  buildReservas();
   renderNotas();
+  initFirebase();
 });
 </script>
 </body>
