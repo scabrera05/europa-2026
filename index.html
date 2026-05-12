@@ -161,18 +161,32 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 
 /* NOTAS */
 .nf{background:var(--cd);border-radius:var(--r);box-shadow:var(--sh);padding:13px;margin-bottom:13px}
-.nf textarea{width:100%;border:1.5px solid var(--bdr);border-radius:8px;padding:9px 11px;font-size:.9em;font-family:inherit;line-height:1.5;resize:vertical;min-height:90px;color:var(--tx);background:#f8fafc;outline:none;transition:border-color .15s}
+.nf textarea{width:100%;border:1.5px solid var(--bdr);border-radius:8px;padding:9px 11px;font-size:16px;font-family:inherit;line-height:1.5;resize:vertical;min-height:90px;color:var(--tx);background:#f8fafc;outline:none;transition:border-color .15s}
 .nf textarea:focus{border-color:var(--a2);background:#fff}
-.sv-btn{display:block;width:100%;margin-top:8px;padding:9px;border:none;background:linear-gradient(90deg,var(--a1),var(--a2));color:#fff;font-size:.88em;font-weight:700;border-radius:8px;cursor:pointer}
+.nf-actions{display:flex;gap:8px;margin-top:8px}
+.cam-btn{padding:9px 14px;border:1.5px solid var(--a2);background:none;color:var(--a2);font-size:.88em;font-weight:700;border-radius:8px;cursor:pointer;flex-shrink:0;white-space:nowrap}
+.cam-btn:active{background:var(--al)}
+.sv-btn{flex:1;padding:9px;border:none;background:linear-gradient(90deg,var(--a1),var(--a2));color:#fff;font-size:.88em;font-weight:700;border-radius:8px;cursor:pointer}
+.sv-btn.loading{background:#94a3b8;cursor:not-allowed}
+#foto-preview-wrap{margin-top:10px;display:flex;flex-direction:column;align-items:flex-start;gap:6px}
+#foto-preview{max-height:220px;max-width:100%;border-radius:10px;object-fit:cover;box-shadow:var(--sh)}
+.foto-clear-btn{border:none;background:none;color:#ef4444;font-size:.78em;cursor:pointer;padding:2px 5px;border-radius:4px}
 .ni-list{display:flex;flex-direction:column;gap:9px}
 .ni-item{background:var(--cd);border-radius:var(--r);box-shadow:var(--sh);overflow:hidden}
 .ni-meta{display:flex;align-items:center;justify-content:space-between;padding:7px 11px 5px;border-bottom:1px solid var(--bdr)}
 .ni-date{font-size:.7em;color:var(--txl)}
 .ni-del{background:none;border:none;color:#ef4444;font-size:.73em;cursor:pointer;padding:2px 5px;border-radius:4px}
 .ni-txt{padding:9px 11px;font-size:.86em;white-space:pre-wrap;line-height:1.55}
+.ni-img-wrap{padding:0 11px 10px}
+.ni-img{width:100%;max-height:300px;object-fit:cover;border-radius:8px;cursor:pointer;display:block}
+.ni-img:active{opacity:.85}
 .n-empty{text-align:center;color:var(--txl);font-size:.86em;padding:24px 14px}
 .n-foot{text-align:center;font-size:.7em;color:var(--txl);padding:12px 14px 4px}
 .day-cur{box-shadow:0 0 0 2px var(--a2),var(--sh)}
+#lightbox{display:none;position:fixed;inset:0;z-index:999;background:rgba(0,0,0,.92);align-items:center;justify-content:center;cursor:pointer}
+#lightbox.open{display:flex}
+#lightbox-img{max-width:95vw;max-height:90vh;object-fit:contain;border-radius:8px;cursor:default}
+#lightbox-close{position:absolute;top:14px;right:14px;width:36px;height:36px;border-radius:50%;border:2px solid rgba(255,255,255,.5);background:rgba(0,0,0,.5);color:#fff;font-size:1em;cursor:pointer;display:flex;align-items:center;justify-content:center;z-index:1000}
 
 /* RESERVAS */
 .rv-list{margin-bottom:14px}
@@ -212,7 +226,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
   <button class="nav-tab" onclick="showTab('equipaje',this)"><span class="ti">🧳</span>Equipaje</button>
   <button class="nav-tab" onclick="showTab('logistica',this)"><span class="ti">✅</span>Logística</button>
   <button class="nav-tab" onclick="showTab('mateo',this)"><span class="ti">🎮</span>Mateo</button>
-  <button class="nav-tab" onclick="showTab('notas',this)"><span class="ti">📝</span>Notas</button>
+  <button class="nav-tab" onclick="showTab('notas',this)"><span class="ti">📖</span>Diario</button>
 </nav>
 
 <main>
@@ -614,7 +628,16 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 <div class="si">
 <div class="nf">
   <textarea id="nota-input" placeholder="Escribí una nota del viaje... Un recuerdo, una recomendación, un dato útil."></textarea>
-  <button class="sv-btn" onclick="saveNota()">💾 Guardar nota</button>
+  <div class="nf-actions">
+    <button class="cam-btn" onclick="document.getElementById('foto-input').click()">📷 Foto</button>
+    <input type="file" id="foto-input" accept="image/*" capture="environment"
+           style="display:none" onchange="onFotoSelected(this)">
+    <button class="sv-btn" id="sv-btn" onclick="saveNota()">💾 Guardar</button>
+  </div>
+  <div id="foto-preview-wrap" style="display:none">
+    <img id="foto-preview" src="" alt="Preview">
+    <button class="foto-clear-btn" onclick="clearFoto()">✕ Quitar foto</button>
+  </div>
 </div>
 <div id="fb-banner" style="display:none"></div>
 <div class="ni-list" id="notas-list"></div>
@@ -624,9 +647,15 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 
 </main>
 
+<div id="lightbox" onclick="closeLightbox()">
+  <button id="lightbox-close" onclick="closeLightbox()">✕</button>
+  <img id="lightbox-img" src="" alt="">
+</div>
+
 <!-- Firebase SDKs (compat) — necesarios para Cambio 2 -->
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-storage-compat.js"></script>
 
 <script>
 // ════════════════════════════════════════
@@ -761,7 +790,7 @@ function initDashboard() {
     <div class="dash-card">
       <h3>📝 Guardá tus recuerdos</h3>
       <p style="font-size:.86em;color:var(--txl);margin-bottom:8px">Escribí tus momentos favoritos del viaje antes de que se olviden.</p>
-      <button class="go-btn" onclick="showTab('notas')">📝 Ir a Notas</button>
+      <button class="go-btn" onclick="showTab('notas')">📖 Ir al Diario</button>
     </div>`;
   } else {
     // During trip
@@ -1071,6 +1100,8 @@ function toggleRv() {
 // FIREBASE INIT
 // ════════════════════════════════════════
 let _fbDb = null;
+let _fbStorage = null;
+let _selectedFile = null;
 
 function initFirebase() {
   const banner = document.getElementById('fb-banner');
@@ -1086,6 +1117,7 @@ function initFirebase() {
   try {
     firebase.initializeApp(FIREBASE_CONFIG);
     _fbDb = firebase.database();
+    _fbStorage = firebase.storage();
     if(foot) foot.style.display = 'none';
     // Listener en tiempo real
     _fbDb.ref('notas').on('value', snap => {
@@ -1109,23 +1141,109 @@ function initFirebase() {
 }
 
 // ════════════════════════════════════════
+// FOTO HELPERS
+// ════════════════════════════════════════
+function _compressImage(file) {
+  return new Promise(resolve => {
+    const img = new Image();
+    const url = URL.createObjectURL(file);
+    img.onload = () => {
+      URL.revokeObjectURL(url);
+      const MAX = 1200;
+      let w = img.width, h = img.height;
+      if(w > MAX || h > MAX) {
+        if(w > h) { h = Math.round(h * MAX / w); w = MAX; }
+        else       { w = Math.round(w * MAX / h); h = MAX; }
+      }
+      const canvas = document.createElement('canvas');
+      canvas.width = w; canvas.height = h;
+      canvas.getContext('2d').drawImage(img, 0, 0, w, h);
+      canvas.toBlob(resolve, 'image/jpeg', 0.80);
+    };
+    img.src = url;
+  });
+}
+
+async function _uploadPhoto(file) {
+  const blob = await _compressImage(file);
+  const ts = Date.now();
+  const ref = _fbStorage.ref('fotos/' + ts + '.jpg');
+  await ref.put(blob, {contentType:'image/jpeg'});
+  return await ref.getDownloadURL();
+}
+
+function onFotoSelected(input) {
+  const file = input.files[0];
+  if(!file) return;
+  _selectedFile = file;
+  const wrap = document.getElementById('foto-preview-wrap');
+  const preview = document.getElementById('foto-preview');
+  preview.src = URL.createObjectURL(file);
+  wrap.style.display = '';
+}
+
+function clearFoto() {
+  _selectedFile = null;
+  const wrap = document.getElementById('foto-preview-wrap');
+  const preview = document.getElementById('foto-preview');
+  const input = document.getElementById('foto-input');
+  if(preview.src) URL.revokeObjectURL(preview.src);
+  preview.src = '';
+  wrap.style.display = 'none';
+  input.value = '';
+}
+
+function openLightbox(url) {
+  document.getElementById('lightbox-img').src = url;
+  document.getElementById('lightbox').classList.add('open');
+}
+
+function closeLightbox() {
+  document.getElementById('lightbox').classList.remove('open');
+  document.getElementById('lightbox-img').src = '';
+}
+
+document.addEventListener('keydown', e => { if(e.key === 'Escape') closeLightbox(); });
+
+// ════════════════════════════════════════
 // NOTAS
 // ════════════════════════════════════════
 function getNotes() { try { return JSON.parse(localStorage.getItem('europa26_notes')||'[]'); } catch(e){ return []; } }
 function saveNotes(arr) { localStorage.setItem('europa26_notes', JSON.stringify(arr)); }
 
-function saveNota() {
+async function saveNota() {
   const ta = document.getElementById('nota-input');
+  const btn = document.getElementById('sv-btn');
   const txt = ta.value.trim();
-  if(!txt) return;
-  ta.value = '';
-  if(_fbDb) {
-    _fbDb.ref('notas').push({date: new Date().toLocaleString('es-AR'), text: txt, ts: Date.now()});
-  } else {
-    const notes = getNotes();
-    notes.unshift({id: Date.now(), date: new Date().toLocaleString('es-AR'), text: txt});
-    saveNotes(notes);
-    renderNotas();
+  if(!txt && !_selectedFile) return;
+  const entry = {date: new Date().toLocaleString('es-AR'), text: txt, ts: Date.now()};
+  try {
+    if(_selectedFile && _fbStorage) {
+      btn.textContent = '⏳ Subiendo...';
+      btn.classList.add('loading');
+      btn.disabled = true;
+      entry.imageUrl = await _uploadPhoto(_selectedFile);
+    } else if(_selectedFile && !_fbStorage) {
+      alert('Firebase Storage no está configurado. Guardá solo texto por ahora.');
+      return;
+    }
+    if(_fbDb) {
+      _fbDb.ref('notas').push(entry);
+    } else {
+      const notes = getNotes();
+      notes.unshift({id: Date.now(), ...entry});
+      saveNotes(notes);
+      renderNotas();
+    }
+    ta.value = '';
+    clearFoto();
+  } catch(e) {
+    console.error('Error guardando nota:', e);
+    alert('Error al subir la foto. Revisá la conexión e intentá de nuevo.');
+  } finally {
+    btn.textContent = '💾 Guardar';
+    btn.classList.remove('loading');
+    btn.disabled = false;
   }
 }
 
@@ -1142,7 +1260,13 @@ function deleteNota(id) {
 function _renderNotasList(notes) {
   const list = document.getElementById('notas-list');
   if(!notes.length) { list.innerHTML = '<p class="n-empty">Todavía no hay notas.<br>Escribí tu primer recuerdo del viaje 📖</p>'; return; }
-  list.innerHTML = notes.map(n=>`<div class="ni-item"><div class="ni-meta"><span class="ni-date">📅 ${n.date}</span><button class="ni-del" onclick="deleteNota('${n.id}')">✕ eliminar</button></div><div class="ni-txt">${n.text.replace(/</g,'&lt;')}</div></div>`).join('');
+  list.innerHTML = notes.map(n => {
+    const imgHtml = n.imageUrl
+      ? `<div class="ni-img-wrap"><img class="ni-img" src="${n.imageUrl}" loading="lazy" onclick="openLightbox('${n.imageUrl}')"></div>`
+      : '';
+    const txtHtml = n.text ? `<div class="ni-txt">${n.text.replace(/</g,'&lt;')}</div>` : '';
+    return `<div class="ni-item"><div class="ni-meta"><span class="ni-date">📅 ${n.date}</span><button class="ni-del" onclick="deleteNota('${n.id}')">✕ eliminar</button></div>${txtHtml}${imgHtml}</div>`;
+  }).join('');
 }
 
 function renderNotas() {
