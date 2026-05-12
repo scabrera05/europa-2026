@@ -2,7 +2,7 @@
 
 ## Proyecto
 App web de viaje familiar a Europa (18 mayo → 8 junio 2026).
-Familia: Mariana, Mery, Mateo (4 años). Ruta: Suiza → Italia → Austria (camper Bloque C).
+Familia: Seba (papá), Mery (mamá), Mateo (hijo, 4 años). Ruta: Suiza → Italia → Austria (camper Bloque C).
 
 **Repo:** https://github.com/scabrera05/europa-2026
 **Deploy:** https://scabrera05.github.io/europa-2026/ (GitHub Pages, rama `main`)

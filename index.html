@@ -143,6 +143,8 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 .lw{font-size:.78em;font-weight:700;background:var(--orl);color:var(--or);border-radius:4px;padding:1px 5px;white-space:nowrap;flex-shrink:0}
 
 /* MATEO */
+.game-link{color:var(--a2);font-weight:700;text-decoration:none;border-bottom:1px solid var(--al)}
+.game-link:active{opacity:.7}
 .mh{background:linear-gradient(135deg,#7c3aed,#a855f7,#ec4899);border-radius:var(--r);padding:16px;margin-bottom:13px;color:#fff;text-align:center}
 .mh h2{font-size:1.1em;font-weight:800;margin-bottom:3px}
 .mh p{font-size:.8em;opacity:.85}
@@ -182,6 +184,14 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 .ni-img:active{opacity:.85}
 .n-empty{text-align:center;color:var(--txl);font-size:.86em;padding:24px 14px}
 .n-foot{text-align:center;font-size:.7em;color:var(--txl);padding:12px 14px 4px}
+.nf-loc{display:flex;gap:8px;margin-top:8px}
+.nf-loc input{flex:1;border:1.5px solid var(--bdr);border-radius:8px;padding:8px 11px;font-size:16px;font-family:inherit;color:var(--tx);background:#f8fafc;outline:none;transition:border-color .15s}
+.nf-loc input:focus{border-color:var(--a2);background:#fff}
+.loc-btn{padding:8px 13px;border:1.5px solid var(--bdr);background:none;border-radius:8px;cursor:pointer;font-size:1em;flex-shrink:0}
+.loc-btn.spin{opacity:.5;cursor:not-allowed}
+.ni-loc{font-size:.68em;color:var(--txl);margin-top:1px;display:block}
+.backup-btn{display:block;width:100%;padding:8px;margin-top:6px;border:1.5px solid var(--bdr);background:none;color:var(--txl);font-size:.8em;font-weight:600;border-radius:8px;cursor:pointer;text-align:center}
+.backup-btn:active{border-color:var(--a2);color:var(--a2)}
 .day-cur{box-shadow:0 0 0 2px var(--a2),var(--sh)}
 #lightbox{display:none;position:fixed;inset:0;z-index:999;background:rgba(0,0,0,.92);align-items:center;justify-content:center;cursor:pointer}
 #lightbox.open{display:flex}
@@ -620,6 +630,19 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 </div>
 </div>
 
+<div class="mc">
+<div class="mch">🎮 Juegos en el navegador (sin descarga)</div>
+<div class="mcb">
+<div class="mi"><span class="mtag tp">Juego</span> <a class="game-link" href="https://pbskids.org" target="_blank" rel="noopener">PBS Kids Games</a> — Daniel Tiger, Curious George · gratis · funciona en Safari/Chrome móvil</div>
+<div class="mi"><span class="mtag tp">Juego</span> <a class="game-link" href="https://sesamestreet.org/games" target="_blank" rel="noopener">Sesame Street Games</a> — Elmo, Cookie Monster · arrastre de objetos · perfecto para 4 años</div>
+<div class="mi"><span class="mtag tp">Juego</span> <a class="game-link" href="https://toytheater.com" target="_blank" rel="noopener">Toy Theater</a> — puzzles, colorear, música · muy táctil · algunos funcionan sin conexión</div>
+<div class="mi"><span class="mtag tp">Juego</span> <a class="game-link" href="https://www.nickjr.com/games" target="_blank" rel="noopener">Nick Jr Games</a> — Peppa Pig, Paw Patrol · minijuegos táctiles · disponible en español</div>
+<div class="mi"><span class="mtag tp">Juego</span> <a class="game-link" href="https://www.google.com/doodles" target="_blank" rel="noopener">Google Doodles interactivos</a> — varios son minijuegos · buscar "Coding for Carrots" o "Cricket"</div>
+<div class="mi"><span class="mtag tp">Juego</span> <a class="game-link" href="https://scratch.mit.edu/projects/editor" target="_blank" rel="noopener">Scratch (modo libre)</a> — mover personajes arrastrando bloques de color · sin registro</div>
+<div class="mtip">💡 En Safari: Compartir → "Añadir a pantalla de inicio" para acceso directo sin buscar. Algunos funcionan sin WiFi una vez que cargaron.</div>
+</div>
+</div>
+
 </div><!-- /si -->
 </section>
 
@@ -628,6 +651,11 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 <div class="si">
 <div class="nf">
   <textarea id="nota-input" placeholder="Escribí una nota del viaje... Un recuerdo, una recomendación, un dato útil."></textarea>
+  <div class="nf-loc">
+    <input type="text" id="loc-input" placeholder="📍 Ubicación (ej: Zermatt, Suiza)"
+           autocomplete="off" autocorrect="off" spellcheck="false">
+    <button class="loc-btn" id="loc-btn" onclick="getGeoLocation()">📍</button>
+  </div>
   <div class="nf-actions">
     <button class="cam-btn" onclick="document.getElementById('foto-input').click()">📷 Foto</button>
     <input type="file" id="foto-input" accept="image/*" capture="environment"
@@ -640,6 +668,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
   </div>
 </div>
 <div id="fb-banner" style="display:none"></div>
+<button class="backup-btn" onclick="exportBackup()">📥 Exportar diario (JSON)</button>
 <div class="ni-list" id="notas-list"></div>
 <p class="n-foot" id="n-foot">Las notas se guardan en este dispositivo (localStorage).</p>
 </div>
@@ -1102,6 +1131,8 @@ function toggleRv() {
 let _fbDb = null;
 let _fbStorage = null;
 let _selectedFile = null;
+let _currentLat = null;
+let _currentLng = null;
 
 function initFirebase() {
   const banner = document.getElementById('fb-banner');
@@ -1143,6 +1174,36 @@ function initFirebase() {
 // ════════════════════════════════════════
 // FOTO HELPERS
 // ════════════════════════════════════════
+async function getGeoLocation() {
+  if(!navigator.geolocation) { alert('Tu navegador no soporta geolocalización.'); return; }
+  const btn = document.getElementById('loc-btn');
+  const input = document.getElementById('loc-input');
+  btn.classList.add('spin');
+  btn.disabled = true;
+  navigator.geolocation.getCurrentPosition(async pos => {
+    _currentLat = pos.coords.latitude;
+    _currentLng = pos.coords.longitude;
+    try {
+      const res = await fetch(
+        `https://nominatim.openstreetmap.org/reverse?lat=${_currentLat}&lon=${_currentLng}&format=json&accept-language=es`,
+        {headers:{'Accept-Language':'es'}}
+      );
+      const data = await res.json();
+      const a = data.address || {};
+      const parts = [a.city||a.town||a.village||a.hamlet, a.country].filter(Boolean);
+      input.value = parts.join(', ') || data.display_name.split(',').slice(0,2).join(',').trim();
+    } catch(e) {
+      input.value = `${_currentLat.toFixed(4)}, ${_currentLng.toFixed(4)}`;
+    }
+    btn.classList.remove('spin');
+    btn.disabled = false;
+  }, () => {
+    alert('No se pudo obtener la ubicación. Escribíla manualmente.');
+    btn.classList.remove('spin');
+    btn.disabled = false;
+  }, {timeout:10000, enableHighAccuracy:true});
+}
+
 function _compressImage(file) {
   return new Promise(resolve => {
     const img = new Image();
@@ -1217,6 +1278,9 @@ async function saveNota() {
   const txt = ta.value.trim();
   if(!txt && !_selectedFile) return;
   const entry = {date: new Date().toLocaleString('es-AR'), text: txt, ts: Date.now()};
+  const loc = document.getElementById('loc-input').value.trim();
+  if(loc) entry.location = loc;
+  if(_currentLat !== null) { entry.lat = _currentLat; entry.lng = _currentLng; }
   try {
     if(_selectedFile && _fbStorage) {
       btn.textContent = '⏳ Subiendo...';
@@ -1237,6 +1301,8 @@ async function saveNota() {
     }
     ta.value = '';
     clearFoto();
+    document.getElementById('loc-input').value = '';
+    _currentLat = null; _currentLng = null;
   } catch(e) {
     console.error('Error guardando nota:', e);
     alert('Error al subir la foto. Revisá la conexión e intentá de nuevo.');
@@ -1265,13 +1331,32 @@ function _renderNotasList(notes) {
       ? `<div class="ni-img-wrap"><img class="ni-img" src="${n.imageUrl}" loading="lazy" onclick="openLightbox('${n.imageUrl}')"></div>`
       : '';
     const txtHtml = n.text ? `<div class="ni-txt">${n.text.replace(/</g,'&lt;')}</div>` : '';
-    return `<div class="ni-item"><div class="ni-meta"><span class="ni-date">📅 ${n.date}</span><button class="ni-del" onclick="deleteNota('${n.id}')">✕ eliminar</button></div>${txtHtml}${imgHtml}</div>`;
+    const locHtml = n.location ? `<br><span class="ni-loc">📍 ${n.location}</span>` : '';
+    return `<div class="ni-item"><div class="ni-meta"><span class="ni-date">📅 ${n.date}${locHtml}</span><button class="ni-del" onclick="deleteNota('${n.id}')">✕ eliminar</button></div>${txtHtml}${imgHtml}</div>`;
   }).join('');
 }
 
 function renderNotas() {
   if(_fbDb) return; // Firebase maneja el render via onValue
   _renderNotasList(getNotes());
+}
+
+function exportBackup() {
+  const doExport = entries => {
+    const blob = new Blob([JSON.stringify(entries, null, 2)], {type:'application/json'});
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url; a.download = 'diario-europa-2026.json'; a.click();
+    URL.revokeObjectURL(url);
+  };
+  if(_fbDb) {
+    _fbDb.ref('notas').once('value', snap => {
+      const data = snap.val() || {};
+      doExport(Object.entries(data).map(([k,v])=>({id:k,...v})).sort((a,b)=>(a.ts||0)-(b.ts||0)));
+    });
+  } else {
+    doExport(getNotes());
+  }
 }
 
 // ════════════════════════════════════════
