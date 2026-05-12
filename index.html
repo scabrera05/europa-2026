@@ -1171,7 +1171,8 @@ function toggleLog(id, gid) {
 // ════════════════════════════════════════
 function _cancelBadge(dateStr) {
   const today = new Date(); today.setHours(0,0,0,0);
-  const d = new Date(dateStr); d.setHours(0,0,0,0);
+  const [y,m,day] = dateStr.split('-').map(Number);
+  const d = new Date(y, m-1, day); // local time, evita el offset UTC
   const diff = Math.round((d - today) / 86400000);
   if(diff < 0)  return '<span class="cbad cbad-r">🔴 Vencida</span>';
   if(diff === 0) return '<span class="cbad cbad-o">🟠 Vence hoy</span>';
