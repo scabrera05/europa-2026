@@ -5,7 +5,7 @@ Archivo de planificación. Se actualiza al cerrar cada sesión de trabajo.
 
 ---
 
-## Estado al 12/5/2026
+## Estado al 16/5/2026
 
 ### Tabs
 | Tab | ID |
@@ -31,8 +31,11 @@ Archivo de planificación. Se actualiza al cerrar cada sesión de trabajo.
 - [x] Diario — botón 📷 Foto sin `capture` (iOS muestra cámara + carrete)
 - [x] Tab 🛠 Útil — conversor CHF/EUR/USD/UYU (tasas fijas 12/5/2026)
 - [x] Tab 🛠 Útil — frases útiles italiano/alemán/francés (5 categorías)
-- [x] Service Worker (sw.js) — network-first para index.html, cache-first para Firebase CDN
+- [x] Service Worker (sw.js v2) — network-first para index.html, cache-first para Firebase CDN
 - [x] Fallback a localStorage si Firebase no disponible
+- [x] mateo.html — 3 secciones nuevas: Montañas (4), Camper (4), Autos/Cars (4) → total 36 slides
+- [x] mateo.html — orden: portada / países / **montañas** / animales / **camper** / actividades / **autos** / palabras / final
+- [x] sw.js v3 — precachea `mateo.html` en install → disponible offline desde primera carga
 
 ---
 
