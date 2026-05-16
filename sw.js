@@ -1,4 +1,4 @@
-const CACHE = 'europa2026-v2';
+const CACHE = 'europa2026-v3';
 
 const CDN_PRECACHE = [
   'https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js',
@@ -6,9 +6,15 @@ const CDN_PRECACHE = [
   'https://www.gstatic.com/firebasejs/9.23.0/firebase-storage-compat.js',
 ];
 
-// Instalar: pre-cachear Firebase CDN
+const LOCAL_PRECACHE = ['./mateo.html'];
+
+// Instalar: pre-cachear Firebase CDN + mateo.html (disponible offline desde el primer uso)
 self.addEventListener('install', e => {
-  e.waitUntil(caches.open(CACHE).then(c => c.addAll(CDN_PRECACHE)));
+  e.waitUntil(
+    caches.open(CACHE).then(c =>
+      Promise.all([c.addAll(CDN_PRECACHE), c.addAll(LOCAL_PRECACHE)])
+    )
+  );
   self.skipWaiting();
 });
 

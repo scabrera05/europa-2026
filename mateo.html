@@ -1,0 +1,725 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<title>El Viaje de Mateo 🌍</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+html,body{width:100%;height:100%;overflow:hidden;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif}
+
+/* ─── Animaciones ─── */
+@keyframes bounce{
+  0%,100%{transform:translateY(0)}
+  50%{transform:translateY(-18px)}
+}
+@keyframes pop{
+  0%{transform:scale(0)}
+  70%{transform:scale(1.12)}
+  100%{transform:scale(1)}
+}
+@keyframes shimmer{
+  0%{background-position:200% center}
+  100%{background-position:-200% center}
+}
+@keyframes confetti-fall{
+  0%{transform:translateY(-20px) rotate(0deg);opacity:1}
+  100%{transform:translateY(100vh) rotate(720deg);opacity:0}
+}
+@keyframes spin-in{
+  0%{transform:rotate(-180deg) scale(0);opacity:0}
+  100%{transform:rotate(0deg) scale(1);opacity:1}
+}
+
+/* ─── App shell ─── */
+#app{
+  width:100%;
+  height:100dvh;
+  position:relative;
+  overflow:hidden;
+}
+
+/* ─── Slides ─── */
+.slide{
+  position:absolute;
+  inset:0;
+  display:flex;
+  flex-direction:column;
+  transition:transform 300ms ease;
+  will-change:transform;
+}
+.slide.active{transform:translateX(0)}
+.slide.prev{transform:translateX(-100%)}
+.slide.next{transform:translateX(100%)}
+
+/* ─── Slide inner ─── */
+.slide-inner{
+  flex:1;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  padding:20px 24px;
+  text-align:center;
+  gap:12px;
+  min-height:0;
+}
+
+/* ─── Barra superior ─── */
+.slide-topbar{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  padding:10px 16px 8px;
+  background:rgba(0,0,0,.18);
+  flex-shrink:0;
+}
+.slide-section-label{
+  font-size:.75em;
+  font-weight:700;
+  color:rgba(255,255,255,.9);
+  letter-spacing:.06em;
+  text-transform:uppercase;
+}
+.slide-counter{
+  font-size:.75em;
+  font-weight:600;
+  color:rgba(255,255,255,.8);
+}
+
+/* ─── Contenido ─── */
+.slide-emoji{
+  font-size:clamp(72px,18vw,120px);
+  line-height:1;
+  animation:bounce 2.4s ease-in-out infinite;
+}
+.slide-emoji.pop{
+  animation:pop .5s cubic-bezier(.36,.07,.19,.97) both, bounce 2.4s ease-in-out infinite .5s;
+}
+.slide-title{
+  font-size:clamp(1.6em,7vw,2.8em);
+  font-weight:900;
+  color:#fff;
+  line-height:1.1;
+  text-shadow:0 2px 8px rgba(0,0,0,.3);
+}
+.slide-title.shimmer{
+  background:linear-gradient(90deg,#fff 0%,#ffd700 25%,#fff 50%,#ffd700 75%,#fff 100%);
+  background-size:200% auto;
+  -webkit-background-clip:text;
+  background-clip:text;
+  -webkit-text-fill-color:transparent;
+  animation:shimmer 3s linear infinite;
+}
+.slide-subtitle{
+  font-size:clamp(1em,4.5vw,1.5em);
+  font-weight:700;
+  color:rgba(255,255,255,.9);
+}
+.slide-icons{
+  font-size:clamp(1.6em,7vw,2.4em);
+  letter-spacing:.12em;
+  margin:4px 0;
+}
+.slide-text{
+  font-size:clamp(.95em,4vw,1.4em);
+  color:rgba(255,255,255,.92);
+  font-weight:600;
+  line-height:1.4;
+  max-width:340px;
+}
+.slide-pronunc{
+  background:rgba(0,0,0,.22);
+  border-radius:12px;
+  padding:8px 18px;
+  color:#fff;
+  font-size:clamp(.85em,3.5vw,1.1em);
+  letter-spacing:.04em;
+}
+.slide-word{
+  font-size:clamp(2.2em,10vw,4em);
+  font-weight:900;
+  color:#fff;
+  text-shadow:0 3px 12px rgba(0,0,0,.3);
+}
+
+/* ─── Barra inferior / nav ─── */
+.slide-nav{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  padding:10px 12px 16px;
+  background:rgba(0,0,0,.18);
+  gap:8px;
+  flex-shrink:0;
+}
+.nav-btn{
+  width:56px;
+  height:56px;
+  border-radius:50%;
+  border:none;
+  background:rgba(255,255,255,.25);
+  color:#fff;
+  font-size:1.6em;
+  cursor:pointer;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  flex-shrink:0;
+  transition:background .15s, transform .1s;
+  -webkit-tap-highlight-color:transparent;
+}
+.nav-btn:active{background:rgba(255,255,255,.45);transform:scale(.92)}
+.nav-btn:disabled{opacity:.28;pointer-events:none}
+
+.dots-wrap{
+  display:flex;
+  align-items:center;
+  gap:5px;
+  flex:1;
+  justify-content:center;
+  flex-wrap:wrap;
+  max-width:calc(100% - 160px);
+}
+.dot{
+  width:7px;
+  height:7px;
+  border-radius:50%;
+  background:rgba(255,255,255,.35);
+  transition:background .2s, transform .2s;
+  flex-shrink:0;
+}
+.dot.active{
+  background:#fff;
+  transform:scale(1.5);
+}
+.dot.sec-portada{background:rgba(255,255,255,.5)}
+.dot.sec-paises{background:rgba(96,165,250,.7)}
+.dot.sec-animales{background:rgba(74,222,128,.7)}
+.dot.sec-actividades{background:rgba(251,191,36,.7)}
+.dot.sec-palabras{background:rgba(216,180,254,.7)}
+.dot.sec-final{background:rgba(255,214,0,.7)}
+.dot.sec-montanas{background:rgba(148,163,184,.7)}
+.dot.sec-camper{background:rgba(180,83,9,.8)}
+.dot.sec-autos{background:rgba(239,68,68,.8)}
+.dot.active{background:#fff!important;transform:scale(1.5)}
+
+.back-btn{
+  background:rgba(255,255,255,.2);
+  border:1.5px solid rgba(255,255,255,.5);
+  color:#fff;
+  border-radius:20px;
+  padding:8px 14px;
+  font-size:.75em;
+  font-weight:700;
+  cursor:pointer;
+  text-decoration:none;
+  display:flex;
+  align-items:center;
+  gap:4px;
+  white-space:nowrap;
+  flex-shrink:0;
+  -webkit-tap-highlight-color:transparent;
+}
+.back-btn:active{opacity:.7}
+
+/* ─── Colores de fondo por sección ─── */
+.bg-portada{background:linear-gradient(160deg,#6366f1,#a855f7)}
+.bg-paises{background:linear-gradient(160deg,#1d4ed8,#0ea5e9)}
+.bg-animales{background:linear-gradient(160deg,#166534,#16a34a)}
+.bg-actividades{background:linear-gradient(160deg,#c2410c,#f59e0b)}
+.bg-palabras{background:linear-gradient(160deg,#7c3aed,#ec4899)}
+.bg-final{background:linear-gradient(160deg,#0f172a,#1e3a5f)}
+.bg-montanas{background:linear-gradient(160deg,#1e3a5f,#4b5563)}
+.bg-camper{background:linear-gradient(160deg,#78350f,#b45309)}
+.bg-autos{background:linear-gradient(160deg,#dc2626,#ea580c)}
+
+/* ─── Slide celebración ─── */
+.confetti-piece{
+  position:absolute;
+  width:10px;
+  height:10px;
+  border-radius:2px;
+  animation:confetti-fall linear infinite;
+  pointer-events:none;
+}
+.celeb-stars{
+  font-size:clamp(2em,9vw,3.5em);
+  animation:spin-in .6s ease both;
+}
+</style>
+</head>
+<body>
+
+<div id="app"></div>
+
+<script>
+const SLIDES = [
+  /* 0 — Portada */
+  {
+    sec:'portada', bg:'bg-portada', label:'✨ Bienvenida',
+    emoji:'🌍', titleClass:'shimmer',
+    title:'El Viaje\nde Mateo',
+    sub:'¡Vamos a Europa! 🎉',
+    text:''
+  },
+  /* 1-3 — Países */
+  {
+    sec:'paises', bg:'bg-paises', label:'🌍 Países',
+    emoji:'🇨🇭',
+    title:'Suiza',
+    icons:'🏔 🐄 🍫',
+    text:'¡Hay montañas tan altas que llegan a las nubes! Y vacas con campana que dicen din-don.'
+  },
+  {
+    sec:'paises', bg:'bg-paises', label:'🌍 Países',
+    emoji:'🇮🇹',
+    title:'Italia',
+    icons:'🍕 🍝 🍦',
+    text:'¡La pizza, la pasta y el gelato más ricos del mundo! Y la gente habla cantando.'
+  },
+  {
+    sec:'paises', bg:'bg-paises', label:'🌍 Países',
+    emoji:'🇦🇹',
+    title:'Austria',
+    icons:'🏰 🎵 🏔',
+    text:'Castillos de cuento, música por todos lados y montañas verdes muy verdes.'
+  },
+  /* 4-7 — Montañas */
+  {
+    sec:'montanas', bg:'bg-montanas', label:'🏔 Montañas',
+    emoji:'🏔',
+    title:'Los Alpes',
+    icons:'🇨🇭 🇮🇹 🇦🇹',
+    text:'¡La cadena de montañas más famosa de Europa! Son tan grandes que cruzan 8 países.'
+  },
+  {
+    sec:'montanas', bg:'bg-montanas', label:'🏔 Montañas',
+    emoji:'🚇',
+    title:'Los túneles',
+    text:'En los Alpes hay túneles tan largos que tardás 15 minutos adentro. ¡A gritar, contar y jugar en el oscuro!',
+    extra:'🌑 ¡Adentro es de noche de día!'
+  },
+  {
+    sec:'montanas', bg:'bg-montanas', label:'🏔 Montañas',
+    emoji:'🗣️',
+    title:'¡El ECO!',
+    text:'Si gritás fuerte cerca de una montaña, la voz vuelve de rebote. ¡Probá gritar tu nombre bien fuerte!',
+    extra:'eco... eco... eco...'
+  },
+  {
+    sec:'montanas', bg:'bg-montanas', label:'🏔 Montañas',
+    emoji:'☃️',
+    title:'¡Nieve en verano!',
+    text:'En lo alto de los Alpes hay nieve en mayo y junio. ¡Vamos a tocar nieve con calorcito de verano!',
+    extra:'🌞 + ❄️ = ¡¿?!'
+  },
+  /* 8-12 — Animales */
+  {
+    sec:'animales', bg:'bg-animales', label:'🐾 Animales',
+    emoji:'🐄',
+    title:'La vaca suiza',
+    text:'¡Tiene una campana colgada en el cuello! Cuando camina hace din-don-din.',
+    extra:'🔔 din-don-din 🔔'
+  },
+  {
+    sec:'animales', bg:'bg-animales', label:'🐾 Animales',
+    emoji:'🦅',
+    title:'El águila',
+    text:'¡Vuela más alto que las montañas y ve todo desde arriba!'
+  },
+  {
+    sec:'animales', bg:'bg-animales', label:'🐾 Animales',
+    emoji:'🐐',
+    title:'La cabra montesa',
+    text:'¡Sube por las rocas más empinadas como si nada! Es la campeona del equilibrio.'
+  },
+  {
+    sec:'animales', bg:'bg-animales', label:'🐾 Animales',
+    emoji:'🐺',
+    title:'El lobo y el oso',
+    text:'¡Los vamos a ver en el zoológico de Innsbruck! 🐻',
+    extra:'Alpenzoo: el zoo más alto de Europa'
+  },
+  {
+    sec:'animales', bg:'bg-animales', label:'🐾 Animales',
+    emoji:'🦢',
+    title:'Los cisnes',
+    text:'Flotan en el río como barquitos blancos. Son muy elegantes.',
+    extra:'🌊 flap flap 🌊'
+  },
+  /* 13-16 — Camper */
+  {
+    sec:'camper', bg:'bg-camper', label:'🚐 La Camper',
+    emoji:'🚐',
+    title:'Nuestra casa\ncon ruedas',
+    icons:'🛏️ 🍳 🚿',
+    text:'¡La camper es una casa que tiene motor y ruedas! Tiene cama, cocina y baño. ¡Todo viaja con nosotros!'
+  },
+  {
+    sec:'camper', bg:'bg-camper', label:'🚐 La Camper',
+    emoji:'🛏️',
+    title:'¡Tu propia cama!',
+    text:'Mateo va a tener su propio lugar para dormir en la camper. ¡Como dormir en un autobús que viaja entre montañas!',
+    extra:'💤 buenas noches, montaña 💤'
+  },
+  {
+    sec:'camper', bg:'bg-camper', label:'🚐 La Camper',
+    emoji:'🍳',
+    title:'Desayuno\nen la montaña',
+    text:'Papá prepara el desayuno en la cocina de la camper. ¡Con las montañas mirando por la ventana!',
+    extra:'🏔 ¡Mejor vista del mundo!'
+  },
+  {
+    sec:'camper', bg:'bg-camper', label:'🚐 La Camper',
+    emoji:'🌟',
+    title:'Millones\nde estrellas',
+    text:'Paramos donde no hay luces de ciudad. De noche desde la camper se ven millones y millones de estrellas.',
+    extra:'⭐ más que en Uruguay ⭐'
+  },
+  /* 17-22 — Actividades */
+  {
+    sec:'actividades', bg:'bg-actividades', label:'🎡 Actividades',
+    emoji:'❄️',
+    title:'¡Nieve de verdad!',
+    text:'Vamos a tocarla, agarrarla con las manos y hacer una bolita para tirar.',
+    extra:'🏔 ¡Primer nieve!'
+  },
+  {
+    sec:'actividades', bg:'bg-actividades', label:'🎡 Actividades',
+    emoji:'🚡',
+    title:'El teleférico',
+    text:'Una cajita mágica que vuela entre las montañas. ¡Vamos a subir a las nubes!',
+    extra:'⬆️ vrrrrm ⬆️'
+  },
+  {
+    sec:'actividades', bg:'bg-actividades', label:'🎡 Actividades',
+    emoji:'🎢',
+    title:'Tobogán de montaña',
+    text:'¡Un tobogán larguísimo que baja por la montaña! Como una montaña rusa al aire libre.',
+    extra:'🛝 wheeeee! 🛝'
+  },
+  {
+    sec:'actividades', bg:'bg-actividades', label:'🎡 Actividades',
+    emoji:'🛶',
+    title:'Barco en el lago',
+    text:'Remar en un lago tan azul y tan transparente que se ven las piedras del fondo.',
+    extra:'💙 splash splash 💙'
+  },
+  {
+    sec:'actividades', bg:'bg-actividades', label:'🎡 Actividades',
+    emoji:'🌸',
+    title:'Parque en las flores',
+    text:'Un parque de juegos gigante en lo alto de la montaña, entre flores de colores.',
+    extra:'Allmendhubel Flower Park 🌺'
+  },
+  {
+    sec:'actividades', bg:'bg-actividades', label:'🎡 Actividades',
+    emoji:'🍦',
+    title:'Gelato italiano',
+    text:'¡El helado más rico del universo! En Italia hay sabores que no existen en ningún otro lugar.',
+    extra:'🇮🇹 gelato = helado 🇮🇹'
+  },
+  /* 23-26 — Autos */
+  {
+    sec:'autos', bg:'bg-autos', label:'🏎 Autos',
+    emoji:'🏎',
+    title:'¡Luigi\nes italiano!',
+    icons:'🇮🇹 🚗 ⚡',
+    text:'Luigi de Cars tiene un Fiat 500. ¡Y en Italia vamos a ver autos igualitos a él en cada esquina!'
+  },
+  {
+    sec:'autos', bg:'bg-autos', label:'🏎 Autos',
+    emoji:'🔴',
+    title:'¡A buscar\na Luigi!',
+    text:'El juego del viaje: el primero que vea un Fiat 500 grita ¡LUIGI! y gana un punto.',
+    extra:'🏁 Ka-chow! 🏁'
+  },
+  {
+    sec:'autos', bg:'bg-autos', label:'🏎 Autos',
+    emoji:'🏁',
+    title:'Rutas de\nmontaña',
+    text:'Hay rutas en los Alpes con curvas tan cerradas que parecen un espiral. ¡Igual que en las carreras!',
+    extra:'🐍 ¡48 curvas seguidas en el Stelvio!'
+  },
+  {
+    sec:'autos', bg:'bg-autos', label:'🏎 Autos',
+    emoji:'🚐',
+    title:'¡Nuestra\ncamper gana!',
+    text:'Nuestra camper no corre tan rápido como McQueen... ¡pero tiene cama, cocina y vistas increíbles!',
+    extra:'🏆 Ka-chow, camper style! 🏆'
+  },
+  /* 27-34 — Palabras */
+  {
+    sec:'palabras', bg:'bg-palabras', label:'🗣️ Palabras',
+    emoji:'🇮🇹',
+    wordMode:true,
+    word:'CIAO!',
+    sub:'Hola en italiano',
+    pronunc:'Se dice: CHAO'
+  },
+  {
+    sec:'palabras', bg:'bg-palabras', label:'🗣️ Palabras',
+    emoji:'🇩🇪',
+    wordMode:true,
+    word:'HALLO!',
+    sub:'Hola en alemán',
+    pronunc:'Se dice: JA-LO'
+  },
+  {
+    sec:'palabras', bg:'bg-palabras', label:'🗣️ Palabras',
+    emoji:'🙏',
+    wordMode:true,
+    word:'GRAZIE',
+    sub:'Gracias en italiano',
+    pronunc:'Se dice: GRA-TZI-E'
+  },
+  {
+    sec:'palabras', bg:'bg-palabras', label:'🗣️ Palabras',
+    emoji:'🙏',
+    wordMode:true,
+    word:'DANKE',
+    sub:'Gracias en alemán',
+    pronunc:'Se dice: DAN-KE'
+  },
+  {
+    sec:'palabras', bg:'bg-palabras', label:'🗣️ Palabras',
+    emoji:'🍕',
+    wordMode:true,
+    word:'PIZZA',
+    sub:'¡En Italia se dice...',
+    pronunc:'PEETZA — ¡lo mismo!'
+  },
+  {
+    sec:'palabras', bg:'bg-palabras', label:'🗣️ Palabras',
+    emoji:'🍫',
+    wordMode:true,
+    word:'SCHOKOLADE',
+    sub:'Chocolate en alemán',
+    pronunc:'Se dice: sho-ko-LA-de'
+  },
+  {
+    sec:'palabras', bg:'bg-palabras', label:'🗣️ Palabras',
+    emoji:'🏔',
+    wordMode:true,
+    word:'MONTAGNA\nBERG',
+    sub:'La montaña en italiano y alemán',
+    pronunc:'mon-TAN-ya · BERG'
+  },
+  {
+    sec:'palabras', bg:'bg-palabras', label:'🗣️ Palabras',
+    emoji:'🌟',
+    celebMode:true,
+    title:'¡Ya sabés\nhablar europeo!',
+    text:'Ciao · Hallo · Grazie · Danke · Pizza · Schokolade · Montagna'
+  },
+  /* 23 — Final */
+  {
+    sec:'final', bg:'bg-final', label:'🎉 ¡Bon voyage!',
+    emoji:'🎒',
+    finalMode:true,
+    title:'¡Buen viaje,\nMateo!',
+    icons:'✈️ 🌍 🏔 🍕 🍫 🦢 ❄️',
+    text:'22 días de aventura con Papá y Mamá. ¡Va a ser el mejor viaje del mundo!'
+  }
+];
+
+const total = SLIDES.length;
+let current = 0;
+let touchStartX = 0;
+let touchStartY = 0;
+let isAnimating = false;
+
+/* ─── Render ─── */
+function buildSlide(s, i) {
+  const div = document.createElement('div');
+  div.className = 'slide ' + s.bg;
+  div.dataset.index = i;
+
+  let inner = '';
+
+  if (s.wordMode) {
+    inner = `
+      <div class="slide-emoji pop">${s.emoji}</div>
+      <div class="slide-word">${s.word.replace(/\n/g,'<br>')}</div>
+      <div class="slide-subtitle">${s.sub}</div>
+      <div class="slide-pronunc">${s.pronunc}</div>
+    `;
+  } else if (s.celebMode) {
+    inner = `
+      <div class="celeb-stars">⭐🌟✨</div>
+      <div class="slide-title">${s.title.replace(/\n/g,'<br>')}</div>
+      <div class="slide-text">${s.text}</div>
+    `;
+  } else if (s.finalMode) {
+    inner = `
+      <div class="slide-emoji pop">${s.emoji}</div>
+      <div class="slide-title">${s.title.replace(/\n/g,'<br>')}</div>
+      <div class="slide-icons">${s.icons}</div>
+      <div class="slide-text">${s.text}</div>
+    `;
+  } else {
+    inner = `
+      <div class="slide-emoji pop">${s.emoji}</div>
+      <div class="slide-title${s.titleClass?' '+s.titleClass:''}">${s.title.replace(/\n/g,'<br>')}</div>
+      ${s.sub?`<div class="slide-subtitle">${s.sub}</div>`:''}
+      ${s.icons?`<div class="slide-icons">${s.icons}</div>`:''}
+      ${s.text?`<div class="slide-text">${s.text}</div>`:''}
+      ${s.extra?`<div class="slide-pronunc">${s.extra}</div>`:''}
+    `;
+  }
+
+  div.innerHTML = `
+    <div class="slide-topbar">
+      <span class="slide-section-label">${s.label}</span>
+      <span class="slide-counter">${i+1} / ${total}</span>
+    </div>
+    <div class="slide-inner">${inner}</div>
+  `;
+  return div;
+}
+
+function buildDots() {
+  return SLIDES.map((s,i) =>
+    `<span class="dot sec-${s.sec}${i===0?' active':''}" data-i="${i}"></span>`
+  ).join('');
+}
+
+function buildNav() {
+  const nav = document.createElement('div');
+  nav.className = 'slide-nav';
+  nav.innerHTML = `
+    <button class="nav-btn" id="btn-prev" aria-label="Anterior">◀</button>
+    <div class="dots-wrap" id="dots-wrap">${buildDots()}</div>
+    <button class="nav-btn" id="btn-next" aria-label="Siguiente">▶</button>
+    <a href="index.html" class="back-btn" aria-label="Volver">← Volver</a>
+  `;
+  return nav;
+}
+
+/* ─── Inicializar ─── */
+function init() {
+  const app = document.getElementById('app');
+
+  // Slides
+  SLIDES.forEach((s, i) => {
+    const el = buildSlide(s, i);
+    if (i === 0) el.classList.add('active');
+    else el.classList.add('next');
+    app.appendChild(el);
+  });
+
+  // Nav
+  app.appendChild(buildNav());
+
+  // Eventos
+  document.getElementById('btn-prev').addEventListener('click', () => go(-1));
+  document.getElementById('btn-next').addEventListener('click', () => go(1));
+
+  // Swipe
+  app.addEventListener('touchstart', e => {
+    touchStartX = e.touches[0].clientX;
+    touchStartY = e.touches[0].clientY;
+  }, {passive:true});
+  app.addEventListener('touchend', e => {
+    const dx = e.changedTouches[0].clientX - touchStartX;
+    const dy = e.changedTouches[0].clientY - touchStartY;
+    if (Math.abs(dx) > Math.abs(dy) && Math.abs(dx) > 50) go(dx < 0 ? 1 : -1);
+  }, {passive:true});
+
+  // Teclado
+  document.addEventListener('keydown', e => {
+    if (e.key === 'ArrowRight') go(1);
+    if (e.key === 'ArrowLeft') go(-1);
+  });
+
+  updateNav();
+}
+
+/* ─── Ir a slide ─── */
+function go(dir) {
+  if (isAnimating) return;
+  const next = current + dir;
+  if (next < 0 || next >= total) return;
+  isAnimating = true;
+
+  const slides = document.querySelectorAll('.slide');
+  const cur = slides[current];
+  const nxt = slides[next];
+
+  // Posicionar
+  nxt.classList.remove('prev','next','active');
+  nxt.classList.add(dir > 0 ? 'next' : 'prev');
+
+  // Forzar reflow
+  nxt.getBoundingClientRect();
+
+  cur.classList.add(dir > 0 ? 'prev' : 'next');
+  cur.classList.remove('active');
+  nxt.classList.remove('prev','next');
+  nxt.classList.add('active');
+
+  // Re-trigger pop animation en el emoji del nuevo slide
+  const emojiEl = nxt.querySelector('.slide-emoji');
+  if (emojiEl) {
+    emojiEl.classList.remove('pop');
+    void emojiEl.offsetWidth; // reflow
+    emojiEl.classList.add('pop');
+  }
+
+  current = next;
+
+  setTimeout(() => {
+    isAnimating = false;
+  }, 320);
+
+  updateNav();
+}
+
+function updateNav() {
+  document.getElementById('btn-prev').disabled = current === 0;
+  document.getElementById('btn-next').disabled = current === total - 1;
+
+  document.querySelectorAll('.dot').forEach((d,i) => {
+    d.classList.toggle('active', i === current);
+  });
+}
+
+init();
+
+/* ─── Confetti para slide celebración ─── */
+function spawnConfetti() {
+  const app = document.getElementById('app');
+  const colors = ['#ffd700','#ff6b6b','#4ecdc4','#a855f7','#f59e0b','#34d399'];
+  for (let i = 0; i < 30; i++) {
+    const p = document.createElement('div');
+    p.className = 'confetti-piece';
+    p.style.cssText = `
+      left:${Math.random()*100}%;
+      top:-10px;
+      background:${colors[Math.floor(Math.random()*colors.length)]};
+      animation-duration:${1.5+Math.random()*2}s;
+      animation-delay:${Math.random()*1.5}s;
+      width:${8+Math.random()*8}px;
+      height:${8+Math.random()*8}px;
+    `;
+    app.appendChild(p);
+    setTimeout(()=>p.remove(), 4000);
+  }
+}
+
+// Lanzar confetti cuando se llega al slide de celebración
+const celebIdx = SLIDES.findIndex(s => s.celebMode);
+if (celebIdx !== -1) {
+  const observer = new MutationObserver(() => {
+    const slides = document.querySelectorAll('.slide');
+    if (slides[celebIdx] && slides[celebIdx].classList.contains('active')) {
+      spawnConfetti();
+    }
+  });
+  observer.observe(document.getElementById('app'), {subtree:true, attributeFilter:['class']});
+}
+</script>
+</body>
+</html>
