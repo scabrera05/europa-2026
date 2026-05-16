@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>🔍 ¿Cuál es diferente?</title>
+<style>
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent;margin:0;padding:0}
+html,body{height:100%;overflow:hidden;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:linear-gradient(160deg,#166534,#16a34a)}
+body{display:flex;flex-direction:column}
+
+.header{display:flex;align-items:center;gap:10px;padding:12px 16px;background:rgba(0,0,0,.15)}
+.back-btn{color:#fff;text-decoration:none;font-size:.95em;font-weight:700;padding:6px 10px;border-radius:10px;background:rgba(255,255,255,.2)}
+.header h1{color:#fff;font-size:1.1em;font-weight:800;flex:1;text-align:center}
+.header-spacer{width:56px}
+
+.info{display:flex;justify-content:space-between;align-items:center;padding:6px 16px;color:#fff}
+.info-left{font-size:.85em;font-weight:700;opacity:.85}
+.info-right{font-size:.9em;font-weight:800;background:rgba(255,255,255,.18);padding:4px 12px;border-radius:10px}
+
+.question{color:#fff;font-size:1.05em;font-weight:900;text-align:center;padding:6px 12px}
+
+.grid-wrap{flex:1;display:flex;align-items:center;justify-content:center;padding:8px 12px}
+.grid{display:grid;gap:10px;max-width:340px;width:100%}
+.grid.g2{grid-template-columns:repeat(2,1fr)}
+.grid.g3{grid-template-columns:repeat(3,1fr)}
+.grid.g4{grid-template-columns:repeat(4,1fr)}
+
+.cell{background:rgba(255,255,255,.15);border-radius:14px;aspect-ratio:1;display:flex;align-items:center;justify-content:center;font-size:2.2em;cursor:pointer;border:2px solid rgba(255,255,255,.2);transition:transform .1s;min-height:58px}
+.cell:active{transform:scale(.9)}
+.cell.correct{background:rgba(74,222,128,.4);border-color:#4ade80;animation:pop .35s ease}
+.cell.wrong{background:rgba(248,113,113,.4);border-color:#f87171;animation:shake .3s ease}
+@keyframes pop{0%,100%{transform:scale(1)}50%{transform:scale(1.15)}}
+@keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-6px)}75%{transform:translateX(6px)}}
+
+.feedback{color:#fff;font-size:1em;font-weight:900;text-align:center;padding:4px 12px;min-height:28px}
+
+/* End */
+.end{position:fixed;inset:0;background:linear-gradient(160deg,#166534,#16a34a);display:none;flex-direction:column;align-items:center;justify-content:center;gap:14px;padding:24px}
+.end h2{color:#fff;font-size:1.6em;font-weight:900;text-align:center}
+.end-score{font-size:3em;font-weight:900;color:#fff}
+.end p{color:rgba(255,255,255,.85);text-align:center;font-size:.95em}
+.btn-restart{background:#fff;color:#166534;border:none;font-size:1em;font-weight:800;padding:14px 30px;border-radius:18px;cursor:pointer}
+
+/* Confetti */
+.confetti-piece{position:fixed;width:9px;height:9px;pointer-events:none;animation:fall linear forwards}
+@keyframes fall{0%{transform:translateY(-10px) rotate(0deg);opacity:1}100%{transform:translateY(110vh) rotate(720deg);opacity:0}}
+</style>
+</head>
+<body>
+
+<div class="header">
+  <a href="juegos.html" class="back-btn">← Volver</a>
+  <h1>🔍 ¿Cuál es diferente?</h1>
+  <div class="header-spacer"></div>
+</div>
+
+<div class="info">
+  <span class="info-left" id="round-info">Ronda 1/10</span>
+  <span class="info-right">⭐ <span id="score">0</span> pts · 🔥 <span id="streak">0</span></span>
+</div>
+<div class="question">¿Cuál es diferente? 👇</div>
+<div class="grid-wrap"><div class="grid" id="grid"></div></div>
+<div class="feedback" id="feedback"></div>
+
+<div class="end" id="end">
+  <h2>¡Juego terminado!</h2>
+  <div class="end-score" id="end-score"></div>
+  <p id="end-msg"></p>
+  <button class="btn-restart" onclick="startGame()">¡Jugar de nuevo!</button>
+</div>
+
+<script>
+const POOL=['🐄','🦅','🏔','🍕','🍦','🏰','🐐','🦢','🚐','🏎'];
+let round=0, score=0, streak=0, diffIdx=-1, answering=false;
+
+function rand(n){return Math.floor(Math.random()*n);}
+function shuffle(a){const r=[...a];for(let i=r.length-1;i>0;i--){const j=rand(i+1);[r[i],r[j]]=[r[j],r[i]];}return r;}
+function gridCols(r){return r<=3?2:r<=6?3:4;}
+
+function startGame(){
+  round=0;score=0;streak=0;
+  document.getElementById('end').style.display='none';
+  nextRound();
+}
+
+function nextRound(){
+  round++;
+  if(round>10){showEnd();return;}
+  answering=false;
+  document.getElementById('round-info').textContent=`Ronda ${round}/10`;
+  document.getElementById('feedback').textContent='';
+  updateInfo();
+
+  const cols=gridCols(round);
+  const total=cols*cols;
+  const pool=shuffle(POOL);
+  const base=pool[0], diff=pool[1];
+  diffIdx=rand(total);
+
+  const items=Array.from({length:total},(_,i)=>i===diffIdx?diff:base);
+  const grid=document.getElementById('grid');
+  grid.className=`grid g${cols}`;
+  grid.innerHTML='';
+  items.forEach((emoji,i)=>{
+    const c=document.createElement('div');
+    c.className='cell';
+    c.textContent=emoji;
+    c.addEventListener('click',()=>pickCell(c,i));
+    grid.appendChild(c);
+  });
+}
+
+function pickCell(cell,idx){
+  if(answering) return;
+  if(idx===diffIdx){
+    answering=true;
+    cell.classList.add('correct');
+    score++;streak++;
+    updateInfo();
+    document.getElementById('feedback').textContent='✅ ¡Correcto!';
+    setTimeout(nextRound,900);
+  } else {
+    cell.classList.add('wrong');
+    streak=0;
+    updateInfo();
+    document.getElementById('feedback').textContent='❌ ¡Ese no era! Seguí buscando...';
+    setTimeout(()=>{
+      cell.classList.remove('wrong');
+      document.getElementById('feedback').textContent='';
+    },600);
+  }
+}
+
+function updateInfo(){
+  document.getElementById('score').textContent=score;
+  document.getElementById('streak').textContent=streak;
+}
+
+function showEnd(){
+  document.getElementById('end').style.display='flex';
+  document.getElementById('end-score').textContent=`${score}/10`;
+  const msgs=['¡Seguí practicando! 💪','¡Muy bien! 👏','¡Excelente! 🌟','¡Perfecto! 🏆'];
+  const idx=score<=4?0:score<=6?1:score<=9?2:3;
+  document.getElementById('end-msg').textContent=msgs[idx];
+  if(score===10) confetti();
+}
+
+function confetti(){
+  const colors=['#ffd700','#ff6b6b','#74c7ec','#a6e3a1','#f38ba8','#fab387','#cba6f7'];
+  for(let i=0;i<60;i++){
+    const el=document.createElement('div');
+    el.className='confetti-piece';
+    el.style.cssText=`left:${Math.random()*100}%;background:${colors[i%colors.length]};animation-duration:${.8+Math.random()*1.2}s;animation-delay:${Math.random()*.4}s;border-radius:${Math.random()>.5?'50%':'2px'}`;
+    document.body.appendChild(el);
+    setTimeout(()=>el.remove(),2500);
+  }
+}
+
+startGame();
+</script>
+</body>
+</html>

@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>🎯 Ta-te-ti</title>
+<style>
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent;margin:0;padding:0}
+html,body{height:100%;overflow:hidden;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:linear-gradient(160deg,#1d4ed8,#16a34a)}
+body{display:flex;flex-direction:column;align-items:center}
+
+.header{width:100%;display:flex;align-items:center;gap:10px;padding:12px 16px;background:rgba(0,0,0,.15)}
+.back-btn{color:#fff;text-decoration:none;font-size:.95em;font-weight:700;padding:6px 10px;border-radius:10px;background:rgba(255,255,255,.2)}
+.header h1{color:#fff;font-size:1.1em;font-weight:800;flex:1;text-align:center}
+.header-spacer{width:56px}
+
+.flags{color:#fff;font-size:1.4em;letter-spacing:4px;padding:6px 0;text-align:center}
+
+.scores{display:flex;gap:16px;justify-content:center;margin:8px 0;color:#fff}
+.score-box{background:rgba(255,255,255,.15);border-radius:14px;padding:8px 18px;text-align:center;min-width:80px}
+.score-box .player{font-size:1.3em}
+.score-box .pts{font-size:1.5em;font-weight:900}
+.score-box .label{font-size:.65em;opacity:.75;text-transform:uppercase;letter-spacing:.5px}
+
+.turn{color:#fff;font-size:1em;font-weight:700;text-align:center;margin:6px 0;min-height:28px;letter-spacing:.3px}
+
+.board{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;padding:6px;max-width:320px;width:calc(100% - 24px)}
+.cell{background:rgba(255,255,255,.15);border-radius:16px;aspect-ratio:1;display:flex;align-items:center;justify-content:center;font-size:2.4em;cursor:pointer;border:2.5px solid rgba(255,255,255,.2);transition:transform .1s,background .1s;min-height:90px}
+.cell:active:not(.taken){transform:scale(.93);background:rgba(255,255,255,.25)}
+.cell.taken{cursor:default}
+.cell.win{background:rgba(255,220,50,.35);border-color:rgba(255,220,50,.8);animation:pulse .5s ease infinite alternate}
+
+@keyframes pulse{to{background:rgba(255,220,50,.55)}}
+
+.msg{color:#fff;font-size:1.15em;font-weight:900;text-align:center;margin:6px 0;min-height:32px;text-shadow:0 2px 8px rgba(0,0,0,.3)}
+
+.btns{display:flex;gap:10px;margin:6px 0}
+.btn{padding:10px 20px;border-radius:14px;border:none;font-size:.95em;font-weight:800;cursor:pointer}
+.btn-again{background:rgba(255,255,255,.9);color:#1d4ed8}
+.btn-new{background:rgba(255,255,255,.25);color:#fff;border:1.5px solid rgba(255,255,255,.4)}
+
+/* Confetti */
+.confetti-piece{position:fixed;width:9px;height:9px;border-radius:2px;pointer-events:none;animation:fall linear forwards}
+@keyframes fall{0%{transform:translateY(-10px) rotate(0deg);opacity:1}100%{transform:translateY(110vh) rotate(720deg);opacity:0}}
+</style>
+</head>
+<body>
+
+<div class="header">
+  <a href="juegos.html" class="back-btn">← Volver</a>
+  <h1>🎯 Ta-te-ti</h1>
+  <div class="header-spacer"></div>
+</div>
+
+<div class="flags">🇨🇭 🇮🇹 🇦🇹</div>
+
+<div class="scores">
+  <div class="score-box" id="score1">
+    <div class="player">🏔</div>
+    <div class="pts" id="pts1">0</div>
+    <div class="label">Jugador 1</div>
+  </div>
+  <div class="score-box" id="score-draw">
+    <div class="player">🤝</div>
+    <div class="pts" id="pts-draw">0</div>
+    <div class="label">Empate</div>
+  </div>
+  <div class="score-box" id="score2">
+    <div class="player">🍕</div>
+    <div class="pts" id="pts2">0</div>
+    <div class="label">Jugador 2</div>
+  </div>
+</div>
+
+<div class="turn" id="turn">Turno: 🏔</div>
+
+<div class="board" id="board">
+  <div class="cell" data-i="0"></div>
+  <div class="cell" data-i="1"></div>
+  <div class="cell" data-i="2"></div>
+  <div class="cell" data-i="3"></div>
+  <div class="cell" data-i="4"></div>
+  <div class="cell" data-i="5"></div>
+  <div class="cell" data-i="6"></div>
+  <div class="cell" data-i="7"></div>
+  <div class="cell" data-i="8"></div>
+</div>
+
+<div class="msg" id="msg"></div>
+
+<div class="btns">
+  <button class="btn btn-again" onclick="resetBoard()">Otra vez</button>
+  <button class="btn btn-new" onclick="resetAll()">Nuevo juego</button>
+</div>
+
+<script>
+const P1='🏔', P2='🍕';
+const WINS=[[0,1,2],[3,4,5],[6,7,8],[0,3,6],[1,4,7],[2,5,8],[0,4,8],[2,4,6]];
+let board=Array(9).fill(null), cur=P1, locked=false;
+let pts={[P1]:0,[P2]:0,draw:0};
+
+const cells=document.querySelectorAll('.cell');
+cells.forEach(c=>c.addEventListener('click',()=>play(+c.dataset.i)));
+
+function play(i){
+  if(locked||board[i]) return;
+  board[i]=cur;
+  cells[i].textContent=cur;
+  cells[i].classList.add('taken');
+  const w=checkWin();
+  if(w){
+    locked=true;
+    w.forEach(i=>cells[i].classList.add('win'));
+    pts[cur]++;
+    updateScore();
+    document.getElementById('msg').textContent=`¡${cur} gana! 🎉`;
+    document.getElementById('turn').textContent='';
+    confetti();
+  } else if(board.every(Boolean)){
+    locked=true;
+    pts.draw++;
+    updateScore();
+    document.getElementById('msg').textContent='¡Empate! 🤝';
+    document.getElementById('turn').textContent='';
+  } else {
+    cur=cur===P1?P2:P1;
+    document.getElementById('turn').textContent=`Turno: ${cur}`;
+  }
+}
+
+function checkWin(){
+  for(const [a,b,c] of WINS){
+    if(board[a]&&board[a]===board[b]&&board[a]===board[c]) return [a,b,c];
+  }
+  return null;
+}
+
+function updateScore(){
+  document.getElementById('pts1').textContent=pts[P1];
+  document.getElementById('pts2').textContent=pts[P2];
+  document.getElementById('pts-draw').textContent=pts.draw;
+}
+
+function resetBoard(){
+  board=Array(9).fill(null);
+  cur=P1; locked=false;
+  cells.forEach(c=>{c.textContent='';c.classList.remove('taken','win')});
+  document.getElementById('msg').textContent='';
+  document.getElementById('turn').textContent=`Turno: ${cur}`;
+}
+
+function resetAll(){
+  pts={[P1]:0,[P2]:0,draw:0};
+  updateScore();
+  resetBoard();
+}
+
+function confetti(){
+  const colors=['#ffd700','#ff6b6b','#74c7ec','#a6e3a1','#f38ba8','#fab387','#cba6f7'];
+  for(let i=0;i<60;i++){
+    const el=document.createElement('div');
+    el.className='confetti-piece';
+    el.style.cssText=`left:${Math.random()*100}%;background:${colors[i%colors.length]};animation-duration:${.8+Math.random()*1.2}s;animation-delay:${Math.random()*.4}s;border-radius:${Math.random()>.5?'50%':'2px'}`;
+    document.body.appendChild(el);
+    setTimeout(()=>el.remove(),2500);
+  }
+}
+</script>
+</body>
+</html>

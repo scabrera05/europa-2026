@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>🎨 Dibujo libre</title>
+<style>
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent;margin:0;padding:0}
+html,body{height:100%;overflow:hidden;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:#1a1a2e}
+body{display:flex;flex-direction:column}
+
+.header{display:flex;align-items:center;gap:8px;padding:10px 14px;background:rgba(255,255,255,.06);flex-shrink:0}
+.back-btn{color:#fff;text-decoration:none;font-size:.9em;font-weight:700;padding:6px 10px;border-radius:10px;background:rgba(255,255,255,.15)}
+.header h1{color:#fff;font-size:1em;font-weight:800;flex:1;text-align:center}
+.header-spacer{width:56px}
+
+canvas{display:block;flex:1;background:#fff;cursor:crosshair;touch-action:none}
+
+.toolbar{background:#1a1a2e;padding:10px 12px;display:flex;align-items:center;gap:10px;overflow-x:auto;flex-shrink:0;-webkit-overflow-scrolling:touch}
+.toolbar::-webkit-scrollbar{display:none}
+
+.colors{display:flex;gap:7px;flex-shrink:0}
+.swatch{width:36px;height:36px;border-radius:50%;cursor:pointer;border:3px solid transparent;transition:transform .1s;flex-shrink:0}
+.swatch:active{transform:scale(.88)}
+.swatch.active{border-color:#fff;transform:scale(1.12)}
+
+.divider{width:1px;height:32px;background:rgba(255,255,255,.2);flex-shrink:0}
+
+.sizes{display:flex;gap:7px;flex-shrink:0;align-items:center}
+.size-btn{background:rgba(255,255,255,.1);border:2px solid rgba(255,255,255,.2);border-radius:50%;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:background .1s}
+.size-btn:active{background:rgba(255,255,255,.25)}
+.size-btn.active{border-color:#fff;background:rgba(255,255,255,.2)}
+.size-btn.s{width:36px;height:36px}
+.size-btn.m{width:40px;height:40px}
+.size-btn.l{width:44px;height:44px}
+.size-dot{background:#fff;border-radius:50%}
+.size-btn.s .size-dot{width:5px;height:5px}
+.size-btn.m .size-dot{width:11px;height:11px}
+.size-btn.l .size-dot{width:20px;height:20px}
+
+.action-btns{display:flex;gap:7px;flex-shrink:0;margin-left:auto}
+.action-btn{padding:8px 12px;border-radius:12px;border:none;font-size:.82em;font-weight:800;cursor:pointer;white-space:nowrap}
+.eraser-btn{background:rgba(255,255,255,.15);color:#fff;border:1.5px solid rgba(255,255,255,.3)}
+.eraser-btn.active{background:rgba(255,255,255,.3);border-color:#fff}
+.clear-btn{background:#ef4444;color:#fff}
+</style>
+</head>
+<body>
+
+<div class="header">
+  <a href="juegos.html" class="back-btn">← Volver</a>
+  <h1>🎨 ¡Dibujá lo que quieras!</h1>
+  <div class="header-spacer"></div>
+</div>
+
+<canvas id="canvas"></canvas>
+
+<div class="toolbar">
+  <div class="colors" id="colors">
+    <div class="swatch active" style="background:#2563eb" data-color="#2563eb"></div>
+    <div class="swatch" style="background:#dc2626" data-color="#dc2626"></div>
+    <div class="swatch" style="background:#16a34a" data-color="#16a34a"></div>
+    <div class="swatch" style="background:#ca8a04" data-color="#ca8a04"></div>
+    <div class="swatch" style="background:#ea580c" data-color="#ea580c"></div>
+    <div class="swatch" style="background:#9333ea" data-color="#9333ea"></div>
+    <div class="swatch" style="background:#111827" data-color="#111827"></div>
+    <div class="swatch" style="background:#ffffff;border-color:rgba(255,255,255,.4)" data-color="#ffffff"></div>
+  </div>
+  <div class="divider"></div>
+  <div class="sizes">
+    <button class="size-btn s" data-size="6"><div class="size-dot"></div></button>
+    <button class="size-btn m active" data-size="14"><div class="size-dot"></div></button>
+    <button class="size-btn l" data-size="28"><div class="size-dot"></div></button>
+  </div>
+  <div class="divider"></div>
+  <div class="action-btns">
+    <button class="action-btn eraser-btn" id="eraser-btn" onclick="toggleEraser()">🧹 Borrar</button>
+    <button class="action-btn clear-btn" onclick="clearCanvas()">🗑 Limpiar</button>
+  </div>
+</div>
+
+<script>
+const canvas=document.getElementById('canvas');
+const ctx=canvas.getContext('2d');
+let drawing=false, lastX=0, lastY=0;
+let color='#2563eb', size=14, erasing=false;
+
+function resize(){
+  const img=ctx.getImageData(0,0,canvas.width,canvas.height);
+  canvas.width=canvas.offsetWidth;
+  canvas.height=canvas.offsetHeight;
+  ctx.putImageData(img,0,0);
+  ctx.lineCap='round';
+  ctx.lineJoin='round';
+}
+
+window.addEventListener('resize',resize);
+resize();
+
+function getPos(e){
+  const r=canvas.getBoundingClientRect();
+  if(e.touches){
+    return{x:e.touches[0].clientX-r.left,y:e.touches[0].clientY-r.top};
+  }
+  return{x:e.clientX-r.left,y:e.clientY-r.top};
+}
+
+function startDraw(e){
+  e.preventDefault();
+  drawing=true;
+  const{x,y}=getPos(e);
+  lastX=x; lastY=y;
+  ctx.beginPath();
+  ctx.arc(x,y,(erasing?size*1.5:size)/2,0,Math.PI*2);
+  ctx.fillStyle=erasing?'#ffffff':color;
+  ctx.fill();
+}
+
+function draw(e){
+  e.preventDefault();
+  if(!drawing) return;
+  const{x,y}=getPos(e);
+  ctx.beginPath();
+  ctx.moveTo(lastX,lastY);
+  ctx.lineTo(x,y);
+  ctx.strokeStyle=erasing?'#ffffff':color;
+  ctx.lineWidth=erasing?size*3:size;
+  ctx.lineCap='round';
+  ctx.lineJoin='round';
+  ctx.stroke();
+  lastX=x; lastY=y;
+}
+
+function stopDraw(e){e&&e.preventDefault();drawing=false;}
+
+canvas.addEventListener('touchstart',startDraw,{passive:false});
+canvas.addEventListener('touchmove',draw,{passive:false});
+canvas.addEventListener('touchend',stopDraw,{passive:false});
+canvas.addEventListener('mousedown',startDraw);
+canvas.addEventListener('mousemove',draw);
+canvas.addEventListener('mouseup',stopDraw);
+canvas.addEventListener('mouseleave',stopDraw);
+
+// Colors
+document.getElementById('colors').querySelectorAll('.swatch').forEach(s=>{
+  s.addEventListener('click',()=>{
+    document.querySelectorAll('.swatch').forEach(x=>x.classList.remove('active'));
+    s.classList.add('active');
+    color=s.dataset.color;
+    erasing=false;
+    document.getElementById('eraser-btn').classList.remove('active');
+  });
+});
+
+// Sizes
+document.querySelectorAll('.size-btn').forEach(b=>{
+  b.addEventListener('click',()=>{
+    document.querySelectorAll('.size-btn').forEach(x=>x.classList.remove('active'));
+    b.classList.add('active');
+    size=+b.dataset.size;
+  });
+});
+
+function toggleEraser(){
+  erasing=!erasing;
+  document.getElementById('eraser-btn').classList.toggle('active',erasing);
+}
+
+function clearCanvas(){
+  if(confirm('¿Borrás todo el dibujo?')){
+    ctx.clearRect(0,0,canvas.width,canvas.height);
+  }
+}
+</script>
+</body>
+</html>

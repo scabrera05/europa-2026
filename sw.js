@@ -1,4 +1,4 @@
-const CACHE = 'europa2026-v3';
+const CACHE = 'europa2026-v4';
 
 const CDN_PRECACHE = [
   'https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js',
@@ -6,7 +6,15 @@ const CDN_PRECACHE = [
   'https://www.gstatic.com/firebasejs/9.23.0/firebase-storage-compat.js',
 ];
 
-const LOCAL_PRECACHE = ['./mateo.html'];
+const LOCAL_PRECACHE = [
+  './mateo.html',
+  './juegos.html',
+  './tateti.html',
+  './memoria.html',
+  './contar.html',
+  './diferente.html',
+  './dibujar.html',
+];
 
 // Instalar: pre-cachear Firebase CDN + mateo.html (disponible offline desde el primer uso)
 self.addEventListener('install', e => {

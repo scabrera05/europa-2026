@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>🎮 Juegos de Mateo</title>
+<style>
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent;margin:0;padding:0}
+html,body{height:100%;overflow:hidden;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:linear-gradient(160deg,#1e1b4b,#312e81)}
+body{display:flex;flex-direction:column}
+
+.header{display:flex;align-items:center;gap:10px;padding:14px 16px;background:rgba(255,255,255,.07);backdrop-filter:blur(8px)}
+.back-btn{color:#fff;text-decoration:none;font-size:1em;font-weight:700;opacity:.85;padding:6px 10px;border-radius:10px;background:rgba(255,255,255,.15)}
+.header h1{color:#fff;font-size:1.15em;font-weight:800;flex:1;text-align:center}
+.header-spacer{width:56px}
+
+.deco{position:fixed;pointer-events:none;font-size:2.5em;opacity:.08;user-select:none}
+
+.content{flex:1;overflow-y:auto;padding:14px 14px 20px}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+
+.card{display:block;text-decoration:none;background:rgba(255,255,255,.1);border-radius:18px;padding:18px 12px;text-align:center;color:#fff;border:1.5px solid rgba(255,255,255,.15);transition:transform .12s,background .12s;-webkit-tap-highlight-color:transparent}
+.card:active{transform:scale(.96);background:rgba(255,255,255,.18)}
+.card .emoji{font-size:2.6em;display:block;margin-bottom:8px;line-height:1}
+.card .name{font-size:.97em;font-weight:800;display:block;margin-bottom:4px}
+.card .desc{font-size:.72em;opacity:.75;display:block;line-height:1.35}
+
+.card.c1{background:linear-gradient(135deg,rgba(29,78,216,.5),rgba(22,163,74,.5));border-color:rgba(96,165,250,.3)}
+.card.c2{background:linear-gradient(135deg,rgba(124,58,237,.5),rgba(14,165,233,.5));border-color:rgba(167,139,250,.3)}
+.card.c3{background:linear-gradient(135deg,rgba(194,65,12,.5),rgba(245,158,11,.5));border-color:rgba(251,146,60,.3)}
+.card.c4{background:linear-gradient(135deg,rgba(22,101,52,.5),rgba(22,163,74,.5));border-color:rgba(74,222,128,.3)}
+.card.c5{background:linear-gradient(135deg,rgba(109,40,217,.5),rgba(220,38,38,.5));border-color:rgba(196,181,253,.3)}
+</style>
+</head>
+<body>
+
+<div class="deco" style="top:10%;left:5%">🏔</div>
+<div class="deco" style="top:20%;right:8%">🍕</div>
+<div class="deco" style="top:50%;left:3%">🐄</div>
+<div class="deco" style="top:65%;right:5%">🏎</div>
+<div class="deco" style="bottom:12%;left:45%">✈️</div>
+
+<div class="header">
+  <a href="index.html" class="back-btn">← Volver</a>
+  <h1>🎮 Juegos de Mateo</h1>
+  <div class="header-spacer"></div>
+</div>
+
+<div class="content">
+  <div class="grid">
+    <a href="tateti.html" class="card c1">
+      <span class="emoji">🎯</span>
+      <span class="name">Ta-te-ti</span>
+      <span class="desc">🏔 vs 🍕<br>¡Ganale a papá!</span>
+    </a>
+    <a href="memoria.html" class="card c2">
+      <span class="emoji">🃏</span>
+      <span class="name">Memoria</span>
+      <span class="desc">Encontrá los pares<br>del viaje</span>
+    </a>
+    <a href="contar.html" class="card c3">
+      <span class="emoji">🔢</span>
+      <span class="name">¿Cuántos hay?</span>
+      <span class="desc">Contá los emojis<br>y elegí el número</span>
+    </a>
+    <a href="diferente.html" class="card c4">
+      <span class="emoji">🔍</span>
+      <span class="name">¿Cuál es diferente?</span>
+      <span class="desc">Encontrá el emoji<br>que no es igual</span>
+    </a>
+    <a href="dibujar.html" class="card c5" style="grid-column:span 2">
+      <span class="emoji">🎨</span>
+      <span class="name">Dibujo libre</span>
+      <span class="desc">Dibujá con el dedo lo que quieras</span>
+    </a>
+  </div>
+</div>
+
+</body>
+</html>
