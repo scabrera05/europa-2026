@@ -6,7 +6,7 @@
 <title>🎨 Dibujo libre</title>
 <style>
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent;margin:0;padding:0}
-html,body{height:100dvh;overflow:hidden;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:#1a1a2e}
+html,body{height:var(--app-h,100dvh);overflow:hidden;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:#1a1a2e}
 body{display:flex;flex-direction:column}
 
 .header{display:flex;align-items:center;gap:8px;padding:10px 14px;background:rgba(255,255,255,.06);flex-shrink:0}
@@ -16,7 +16,7 @@ body{display:flex;flex-direction:column}
 
 canvas{display:block;flex:1;background:#fff;cursor:crosshair;touch-action:none}
 
-.toolbar{background:#1a1a2e;padding:10px 12px;display:flex;align-items:center;gap:10px;overflow-x:auto;flex-shrink:0;-webkit-overflow-scrolling:touch}
+.toolbar{background:#1a1a2e;padding:10px 12px calc(10px + env(safe-area-inset-bottom,0px));display:flex;align-items:center;gap:10px;overflow-x:auto;flex-shrink:0;-webkit-overflow-scrolling:touch}
 .toolbar::-webkit-scrollbar{display:none}
 
 .colors{display:flex;gap:7px;flex-shrink:0}
@@ -89,6 +89,12 @@ canvas{display:block;flex:1;background:#fff;cursor:crosshair;touch-action:none}
 </div>
 
 <script>
+function setAppHeight() {
+  document.documentElement.style.setProperty('--app-h', window.innerHeight + 'px');
+}
+setAppHeight();
+window.addEventListener('resize', setAppHeight);
+
 const canvas=document.getElementById('canvas');
 const ctx=canvas.getContext('2d');
 let drawing=false, lastX=0, lastY=0;
