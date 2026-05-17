@@ -567,6 +567,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 <div class="si">
 <div style="margin-bottom:13px"><strong style="font-size:.95em">🧳 Equipaje</strong> <span style="font-size:.78em;color:var(--txl);margin-left:6px">Tildá los ítems listos — se guarda automáticamente</span></div>
 <div id="eq-container"></div>
+<div id="eq-extras-section"></div>
 </div>
 </section>
 
@@ -1140,6 +1141,72 @@ function resetEquipaje() {
   buildEquipaje();
 }
 
+// EXTRAS EQUIPAJE
+// ════════════════════════════════════════
+function _getExtras() {
+  return JSON.parse(localStorage.getItem('eq_extras') || '[]');
+}
+function _saveExtras(items) {
+  localStorage.setItem('eq_extras', JSON.stringify(items));
+}
+
+function buildExtras() {
+  const items = _getExtras();
+  const cont = document.getElementById('eq-extras-section');
+  let html = `<div class="eqg" style="margin-top:4px">
+    <div class="eqgh" style="background:#475569">
+      <span>➕ Extras</span>
+    </div>
+    <div style="padding:10px 13px;display:flex;gap:8px;border-bottom:1px solid var(--bdr)">
+      <input id="extras-input" type="text" placeholder="Agregar ítem..."
+        style="flex:1;border:1.5px solid var(--bdr);border-radius:8px;padding:7px 10px;
+               font-size:16px;background:var(--cd);color:var(--tx);outline:none">
+      <button onclick="addExtra()" style="padding:7px 14px;border-radius:8px;border:none;
+              background:var(--a1);color:#fff;font-weight:800;font-size:.9em;cursor:pointer">+</button>
+    </div>`;
+  if (items.length === 0) {
+    html += `<div style="padding:12px 13px;color:var(--txl);font-size:.85em">Sin ítems aún</div>`;
+  } else {
+    items.forEach(item => {
+      html += `<div class="eqi${item.done?' chk':''}">
+        <input type="checkbox" ${item.done?'checked':''} onchange="toggleExtra('${item.id}')">
+        <label style="flex:1">${item.text}</label>
+        <button onclick="removeExtra('${item.id}')" style="background:none;border:none;
+                color:var(--txl);font-size:1.1em;cursor:pointer;padding:0 4px">×</button>
+      </div>`;
+    });
+  }
+  html += `</div>`;
+  cont.innerHTML = html;
+
+  document.getElementById('extras-input').addEventListener('keydown', e => {
+    if (e.key === 'Enter') addExtra();
+  });
+}
+
+function addExtra() {
+  const input = document.getElementById('extras-input');
+  const text = input.value.trim();
+  if (!text) return;
+  const items = _getExtras();
+  items.push({ id: 'ex_' + Date.now(), text, done: false });
+  _saveExtras(items);
+  buildExtras();
+}
+
+function toggleExtra(id) {
+  const items = _getExtras();
+  const item = items.find(i => i.id === id);
+  if (item) item.done = !item.done;
+  _saveExtras(items);
+  buildExtras();
+}
+
+function removeExtra(id) {
+  _saveExtras(_getExtras().filter(i => i.id !== id));
+  buildExtras();
+}
+
 // ════════════════════════════════════════
 // RENDER LOGÍSTICA
 // ════════════════════════════════════════
@@ -1600,6 +1667,7 @@ function switchLang(lang) {
 document.addEventListener('DOMContentLoaded', ()=>{
   initDashboard();
   buildEquipaje();
+  buildExtras();
   buildLogistica();
   buildReservas();
   renderNotas();
