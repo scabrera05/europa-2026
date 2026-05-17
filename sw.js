@@ -1,4 +1,4 @@
-const CACHE = 'europa2026-v4';
+const CACHE = 'europa2026-v5';
 
 const CDN_PRECACHE = [
   'https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js',
@@ -7,6 +7,10 @@ const CDN_PRECACHE = [
 ];
 
 const LOCAL_PRECACHE = [
+  './manifest.json',
+  './icon-192.png',
+  './icon-512.png',
+  './apple-touch-icon.png',
   './mateo.html',
   './juegos.html',
   './tateti.html',
