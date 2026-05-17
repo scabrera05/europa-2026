@@ -82,11 +82,7 @@ html,body{width:100%;height:100%;overflow:hidden;font-family:-apple-system,Blink
   letter-spacing:.06em;
   text-transform:uppercase;
 }
-.slide-counter{
-  font-size:.75em;
-  font-weight:600;
-  color:rgba(255,255,255,.8);
-}
+/* counter movido al nav inferior */
 
 /* ─── Contenido ─── */
 .slide-emoji{
@@ -148,11 +144,32 @@ html,body{width:100%;height:100%;overflow:hidden;font-family:-apple-system,Blink
 .slide-nav{
   display:flex;
   align-items:center;
-  justify-content:space-between;
-  padding:10px 12px 16px;
+  padding:12px 16px 20px;
   background:rgba(0,0,0,.18);
-  gap:8px;
+  gap:12px;
   flex-shrink:0;
+}
+.nav-progress-bar{
+  flex:1;
+  height:10px;
+  background:rgba(255,255,255,.2);
+  border-radius:6px;
+  overflow:hidden;
+}
+.nav-progress-fill{
+  height:100%;
+  background:rgba(255,255,255,.9);
+  border-radius:6px;
+  transition:width 300ms ease;
+}
+.nav-counter{
+  font-size:1em;
+  font-weight:800;
+  color:rgba(255,255,255,.9);
+  white-space:nowrap;
+  flex-shrink:0;
+  min-width:52px;
+  text-align:right;
 }
 .nav-btn{
   width:56px;
@@ -173,37 +190,6 @@ html,body{width:100%;height:100%;overflow:hidden;font-family:-apple-system,Blink
 .nav-btn:active{background:rgba(255,255,255,.45);transform:scale(.92)}
 .nav-btn:disabled{opacity:.28;pointer-events:none}
 
-.dots-wrap{
-  display:flex;
-  align-items:center;
-  gap:5px;
-  flex:1;
-  justify-content:center;
-  flex-wrap:wrap;
-  max-width:calc(100% - 160px);
-}
-.dot{
-  width:7px;
-  height:7px;
-  border-radius:50%;
-  background:rgba(255,255,255,.35);
-  transition:background .2s, transform .2s;
-  flex-shrink:0;
-}
-.dot.active{
-  background:#fff;
-  transform:scale(1.5);
-}
-.dot.sec-portada{background:rgba(255,255,255,.5)}
-.dot.sec-paises{background:rgba(96,165,250,.7)}
-.dot.sec-animales{background:rgba(74,222,128,.7)}
-.dot.sec-actividades{background:rgba(251,191,36,.7)}
-.dot.sec-palabras{background:rgba(216,180,254,.7)}
-.dot.sec-final{background:rgba(255,214,0,.7)}
-.dot.sec-montanas{background:rgba(148,163,184,.7)}
-.dot.sec-camper{background:rgba(180,83,9,.8)}
-.dot.sec-autos{background:rgba(239,68,68,.8)}
-.dot.active{background:#fff!important;transform:scale(1.5)}
 
 .back-btn{
   background:rgba(255,255,255,.2);
@@ -234,6 +220,64 @@ html,body{width:100%;height:100%;overflow:hidden;font-family:-apple-system,Blink
 .bg-montanas{background:linear-gradient(160deg,#1e3a5f,#4b5563)}
 .bg-camper{background:linear-gradient(160deg,#78350f,#b45309)}
 .bg-autos{background:linear-gradient(160deg,#dc2626,#ea580c)}
+
+/* ─── Botón salir — discreto ─── */
+.exit-btn {
+  background: none;
+  border: none;
+  color: rgba(255,255,255,0.42);
+  font-size: 1.4em;
+  font-weight: 300;
+  line-height: 1;
+  padding: 4px 8px;
+  cursor: pointer;
+  flex-shrink: 0;
+  -webkit-tap-highlight-color: transparent;
+}
+.exit-btn:active { color: rgba(255,255,255,0.75); }
+
+/* ─── Overlay confirmación ─── */
+.exit-overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.55);
+  z-index: 999;
+  align-items: center;
+  justify-content: center;
+}
+.exit-overlay.show { display: flex; }
+.exit-dialog {
+  background: #1e293b;
+  border-radius: 20px;
+  padding: 28px 24px 20px;
+  text-align: center;
+  max-width: 280px;
+  width: 85%;
+  box-shadow: 0 8px 40px rgba(0,0,0,0.5);
+}
+.exit-dialog p {
+  color: #fff;
+  font-size: 1.05em;
+  font-weight: 700;
+  margin-bottom: 20px;
+}
+.exit-dialog-btns {
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+}
+.exit-dialog-btns button {
+  flex: 1;
+  padding: 12px 0;
+  border-radius: 14px;
+  border: none;
+  font-size: .95em;
+  font-weight: 800;
+  cursor: pointer;
+}
+.btn-cancel { background: rgba(255,255,255,0.12); color: #fff; }
+.btn-salir  { background: #ef4444; color: #fff; }
 
 /* ─── Slide celebración ─── */
 .confetti-piece{
@@ -572,31 +616,21 @@ function buildSlide(s, i) {
 
   div.innerHTML = `
     <div class="slide-topbar">
+      <button class="exit-btn" onclick="confirmExit()" aria-label="Salir">×</button>
       <span class="slide-section-label">${s.label}</span>
-      <span class="slide-counter">${i+1} / ${total}</span>
     </div>
     <div class="slide-inner">${inner}</div>
+    <div class="slide-nav">
+      <div class="nav-progress-bar">
+        <div class="nav-progress-fill" style="width:${((i+1)/total*100).toFixed(1)}%"></div>
+      </div>
+      <span class="nav-counter">${i+1} / ${total}</span>
+      <button class="nav-btn" onclick="go(1)" ${i===total-1?'disabled':''} aria-label="Siguiente">▶</button>
+    </div>
   `;
   return div;
 }
 
-function buildDots() {
-  return SLIDES.map((s,i) =>
-    `<span class="dot sec-${s.sec}${i===0?' active':''}" data-i="${i}"></span>`
-  ).join('');
-}
-
-function buildNav() {
-  const nav = document.createElement('div');
-  nav.className = 'slide-nav';
-  nav.innerHTML = `
-    <button class="nav-btn" id="btn-prev" aria-label="Anterior">◀</button>
-    <div class="dots-wrap" id="dots-wrap">${buildDots()}</div>
-    <button class="nav-btn" id="btn-next" aria-label="Siguiente">▶</button>
-    <a href="index.html" class="back-btn" aria-label="Volver">← Volver</a>
-  `;
-  return nav;
-}
 
 /* ─── Inicializar ─── */
 function init() {
@@ -609,13 +643,6 @@ function init() {
     else el.classList.add('next');
     app.appendChild(el);
   });
-
-  // Nav
-  app.appendChild(buildNav());
-
-  // Eventos
-  document.getElementById('btn-prev').addEventListener('click', () => go(-1));
-  document.getElementById('btn-next').addEventListener('click', () => go(1));
 
   // Swipe
   app.addEventListener('touchstart', e => {
@@ -634,7 +661,6 @@ function init() {
     if (e.key === 'ArrowLeft') go(-1);
   });
 
-  updateNav();
 }
 
 /* ─── Ir a slide ─── */
@@ -674,16 +700,6 @@ function go(dir) {
     isAnimating = false;
   }, 320);
 
-  updateNav();
-}
-
-function updateNav() {
-  document.getElementById('btn-prev').disabled = current === 0;
-  document.getElementById('btn-next').disabled = current === total - 1;
-
-  document.querySelectorAll('.dot').forEach((d,i) => {
-    d.classList.toggle('active', i === current);
-  });
 }
 
 init();
@@ -709,6 +725,16 @@ function spawnConfetti() {
   }
 }
 
+/* ─── Salir con confirmación ─── */
+function confirmExit() {
+  document.getElementById('exit-overlay').classList.add('show');
+}
+function cancelExit(e) {
+  if (!e || e.target === document.getElementById('exit-overlay')) {
+    document.getElementById('exit-overlay').classList.remove('show');
+  }
+}
+
 // Lanzar confetti cuando se llega al slide de celebración
 const celebIdx = SLIDES.findIndex(s => s.celebMode);
 if (celebIdx !== -1) {
@@ -721,5 +747,16 @@ if (celebIdx !== -1) {
   observer.observe(document.getElementById('app'), {subtree:true, attributeFilter:['class']});
 }
 </script>
+
+<div class="exit-overlay" id="exit-overlay" onclick="cancelExit(event)">
+  <div class="exit-dialog">
+    <p>¿Salir de los slides de Mateo?</p>
+    <div class="exit-dialog-btns">
+      <button class="btn-cancel" onclick="cancelExit()">Seguir viendo</button>
+      <button class="btn-salir" onclick="location.href='index.html'">Salir</button>
+    </div>
+  </div>
+</div>
+
 </body>
 </html>
